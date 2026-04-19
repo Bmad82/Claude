@@ -31,3 +31,31 @@
 ## Dont's für Supervisor
 - PROJEKTDOKUMENTATION.md NICHT vollständig laden (Kontextverschwendung)
 - Memory-Edits max 500 Zeichen pro Eintrag
+
+## Bug-Tracker Übersicht
+
+Globaler Bug-Tracker: https://github.com/Bmad82/Claude/bugs/
+Projektspezifische Bugs: `bugs/<projektname>/`
+
+**Rolle des Supervisors:**
+- Bei Patch-Planung: offene Bugs sichten und entscheiden ob sie in den aktuellen Patch passen
+- Bei größeren Bugs: eigenen Patch-Scope vorschlagen
+- Neue Bugs aus der Chat-Konversation erfassen und kategorisieren
+- Severity einschätzen (Hoch/Mittel/Niedrig) und Lösungsansatz skizzieren
+
+**Rolle der Chat-Instanz (Hypervisor):**
+- Bugs aus dem Gespräch identifizieren und für den Bug-Tracker formulieren
+- Einschätzen ob ein Bug sofort als Patch lohnt oder gesammelt werden sollte
+- Den User darauf hinweisen wenn sich genug Bugs für einen Sammel-Patch angehäuft haben
+
+## Prompt-Ausgabe für Claude Code
+
+Wenn der Supervisor oder die Chat-Instanz einen Prompt für Claude Code generiert:
+- IMMER als herunterladbare Datei ausgeben, NIEMALS inline im Chat mit Kommentaren dazwischen
+- Der Prompt enthält ausschließlich die Anweisung — kein Vor- oder Nachtext, keine Zwischenbemerkungen
+- Der User kopiert den Prompt 1:1 vom Handy in Claude Code — jedes Wort das nicht zur Anweisung gehört muss manuell gelöscht werden und kostet Zeit und Nerven
+- Format: Markdown-Datei (.md) mit klaren Block-Nummern
+
+## Handy-First
+
+Der Architekt arbeitet primär auf dem Mobilgerät. Alles was das Projekt an UI, Ausgaben, Dateien oder Interaktion produziert, muss zuerst auf einem kleinen Touchscreen funktionieren. Das betrifft nicht nur das Produkt selbst, sondern auch die Kommunikation zwischen Supervisor und User: kurze Absätze, keine verschachtelten Listen, Dateien statt Inline-Walls-of-Text.
