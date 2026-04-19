@@ -30,5 +30,6 @@ Vollständige Projektdokumentation: `docs/PROJEKTDOKUMENTATION.md`
 4. [PROJEKTSPEZIFISCHE REGELN ERGÄNZEN]
 
 ## Weiterführende Doku
-- **Fallstricke & Lektionen:** projektspezifisch in `lessons.md`, global in https://github.com/Bmad82/Claude/lessons/
+- **Projektspezifische Lessons:** `lessons.md` im Projektroot
+- **Globale Lessons:** https://github.com/Bmad82/Claude/tree/main/lessons
 - **Vollständiges Patch-Archiv:** `docs/PROJEKTDOKUMENTATION.md`
