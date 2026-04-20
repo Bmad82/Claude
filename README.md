@@ -17,3 +17,17 @@ In der projekt-eigenen CLAUDE.md am Anfang:
 > Globale Wissensbasis: https://github.com/Bmad82/Claude
 > Vor Arbeitsbeginn: `lessons/`-Ordner auf relevante Einträge prüfen.
 > Nach Abschluss: Neue universelle Erkenntnisse dort eintragen.
+
+## ⚠️ Dateinamen-Konvention (WICHTIG)
+
+Projektspezifische Dateien tragen IMMER den Projektnamen als Suffix:
+- `CLAUDE_[PROJEKTNAME].md` — z.B. `CLAUDE_ZERBERUS.md`
+- `SUPERVISOR_[PROJEKTNAME].md` — z.B. `SUPERVISOR_ZERBERUS.md`
+
+Die Templates in `templates/` sind Schablonen für Tag 1 eines neuen Projekts.
+- Templates werden EINMAL bei Projekterstellung kopiert → danach irrelevant
+- Wenn ein Projekt bereits `CLAUDE_[PROJEKT].md` hat: Templates NICHT anfassen
+- `lessons/` hingegen ist lebendig — wird bei JEDEM Patch konsultiert und ergänzt
+
+Claude Code darf Templates lesen, aber NIEMALS eine `CLAUDE_[PROJEKT].md`
+mit einem Template überschreiben oder zusammenführen.

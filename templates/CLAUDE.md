@@ -1,4 +1,8 @@
-# CLAUDE.md – [PROJEKTNAME]
+<!-- ⚠️ TEMPLATE — NUR FÜR NEUE PROJEKTE
+Bei Projekterstellung als CLAUDE_[PROJEKTNAME].md kopieren.
+NIEMALS eine bestehende CLAUDE_[PROJEKT].md damit überschreiben. -->
+
+# CLAUDE_[PROJEKTNAME].md – [PROJEKTNAME]
 
 ## Globale Wissensbasis
 Repository: https://github.com/Bmad82/Claude

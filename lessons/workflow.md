@@ -9,3 +9,4 @@
 - Code-Instanz = Executor (implementiert, testet). Folgt dem Prompt, fragt bei Unklarheiten nach
 - Bei mehreren Code-Pfaden (z.B. legacy.py vs. orchestrator.py): IMMER prüfen welcher Router den aktiven Traffic führt, bevor ein Fix nur in einem Pfad landet (Zerberus P80b)
 - Bei jedem Pipeline-Fix alle betroffenen Pfade prüfen — nicht nur den offensichtlichen (Zerberus P82)
+- CLAUDE_[PROJEKTNAME].md Konvention: Projektspezifische Dateien tragen IMMER den Projektnamen als Suffix. Claude Code liest beim Start automatisch eine globale CLAUDE.md und verwechselt sie sonst mit der projektspezifischen. In Prompts IMMER vollen Dateinamen verwenden. (Zerberus P100)

@@ -1,4 +1,8 @@
-# SUPERVISOR.md – [PROJEKTNAME]
+<!-- ⚠️ TEMPLATE — NUR FÜR NEUE PROJEKTE
+Bei Projekterstellung als SUPERVISOR_[PROJEKTNAME].md kopieren.
+NIEMALS eine bestehende SUPERVISOR_[PROJEKT].md damit überschreiben. -->
+
+# SUPERVISOR_[PROJEKTNAME].md – [PROJEKTNAME]
 *Strategischer Stand für die Supervisor-Instanz (claude.ai Chat)*
 *Letzte Aktualisierung: Patch [N] ([DATUM])*
 
