@@ -1,0 +1,152 @@
+# lessons.md – Zerberus Pro 4.0 (projektspezifisch)
+*Gelernte Lektionen. Nach jeder Korrektur ergänzen.*
+
+Universelle Erkenntnisse: https://github.com/Bmad82/Claude/lessons/
+
+## Konfiguration
+- config.yaml ist Single Source of Truth — config.json nie als Konfig-Quelle verwenden (Split-Brain Patch 34)
+- Module mit `enabled: false` in config.yaml nicht anfassen — auch nicht "kurz testen"
+- Pacemaker-Änderungen in config.yaml wirken erst nach Neustart (kein Live-Reload)
+
+## Datenbank
+- bunker_memory.db niemals manuell editieren oder löschen
+- interactions-Tabelle hat keine User-Spalte — User-Trennung nur per Session-ID (unzuverlässig, vor Metrik-Auswertung klären)
+
+## RAG
+- Orchestrator Auto-Indexing deaktiviert lassen — erzeugt sonst unerwünschte "source: orchestrator"-Chunks nach manuellem Clear (Patch 68)
+- RAG-Upload Mobile: MIME-Type-Check schlägt mobil fehl → nur Dateiendung prüfen (Patch 61)
+- chunk_size=800 Wörter, overlap=160 Wörter — Einheit ist Wörter, nicht Token (Patch 66)
+- Code-Pfad prüfen: Patch 78b implementierte RAG-Skip-Logik nur in orchestrator.py, aber das Nala-Frontend nutzt legacy.py → Fix griff nicht. IMMER prüfen welcher Router den aktiven Traffic führt (Patch 80b)
+- RAG-Skip-Logik: OR-basierter Skip (`intent==CONVERSATION OR (kurz AND kein ?)`) ist zu aggressiv — skipped auch QUESTION-Intent ohne "?". MUSS AND-verknüpft sein: nur skippen wenn CONVERSATION UND kurz UND kein ? (Patch 85)
+- Orchestrator Auto-Index erzeugt "source: orchestrator"-Chunks die echte Dokument-Chunks verdrängen → nach jedem RAG-Clear prüfen ob nur gewünschte Quellen im Index sind
+- Kurze "Residual-Tail"-Chunks (<50 Wörter) aus dem 800/160-Word-Chunking kapern bei normalisierten MiniLM-Embeddings systematisch Rang 1 gegen inhaltsreiche Chunks. Bei Retrieval-Problemen immer zuerst Chunk-Längen-Verteilung prüfen (Patch 87)
+- Embedding-Modell `paraphrase-multilingual-MiniLM-L12-v2` findet deutsche Eigennamen/Redewendungen selbst bei wörtlicher Präsenz nicht zuverlässig in Top-5 — Cross-Encoder-Reranker oder stärkeres Modell nötig (Patch 87)
+- `rag_eval.py` hardcoded auf `http://127.0.0.1:5000` — Server läuft auf HTTPS seit Patch 82. Script anpassen oder Eval inline mit SSL-Skip (Patch 87)
+- Min-Chunk-Schwelle (Patch 88, `min_chunk_words=120`) in Chunking UND Retrieval: Chunking-Merge sorgt für saubere Quelldaten, Retrieval-Filter ist Sicherheitsnetz für Alt-Indizes. Reihenfolge der Fixes: erst Chunking säubern, dann Reranker, erst danach Modell-Wechsel (Patch 88)
+- `_search_index()` in `rag/router.py` (NICHT `_rag_search`) ist die FAISS-Search-Funktion. Im Orchestrator wird sie als `rag_search` importiert und dort in `_rag_search()` gewrappt — Patch-Prompts oft missverständlich, immer den tatsächlichen Funktionsnamen prüfen (Patch 88)
+- Cross-Encoder-Reranker als zweite Retrieval-Stufe: **BAAI/bge-reranker-v2-m3** (Apache 2.0). Pattern: FAISS over-fetched `top_k * rerank_multiplier`, Cross-Encoder scored Query+Chunk-Paare neu. Bei aktivem Rerank L2-Threshold-Filter überspringen. Fail-Safe-Fallback auf FAISS-Order bei Reranker-Exception (Patch 89)
+- **Eval-Delta Reranker: 4/11 JA → 10/11 JA** (Patch 89). Q4 (Perseiden-Nacht) und Q10 (Verkaufsoffener Sonntag in Ulm) geheilt.
+
+## Security / Auth
+- JWT blockiert externe Clients (Dictate, SillyTavern) vollständig → static_api_key in config.yaml als Workaround (Patch 59/64)
+- .env niemals in Logs ausgeben oder committen
+- Rosa Security Layer: Dateien im Projektordner sind nur Vorbereitung — Verschlüsselung ist NICHT aktiv
+- Bei Profil-Key-Umbenennung (z.B. user2 → jojo) immer password_hash explizit prüfen und im Log bestätigen lassen — fehlende Hashes erzeugen lautlose Login-Fehler (Patch 83)
+- **/v1/-Endpoints MÜSSEN auth-frei bleiben** — Dictate-App (Android-Tastatur) kann keine Custom-Headers (X-API-Key, JWT) setzen. Bei JEDEM Patch der die Auth-Middleware anfasst: `/v1/chat/completions` und `/v1/audio/transcriptions` ohne Auth testen. Bypass liegt in `_JWT_EXCLUDED_PREFIXES` (Prefix `/v1/`) in `zerberus/core/middleware.py`. Regression ist hier ein Dauerbrenner (Hotfix 103a).
+
+## Deployment (Zerberus-spezifisch)
+- start.bat muss `call venv\Scripts\activate` vor uvicorn enthalten
+- spaCy-Modell einmalig manuell installieren: `python -m spacy download de_core_news_sm`
+
+## Pacemaker
+- Pacemaker Double-Start: update_interaction() muss async sein, alle Call-Sites brauchen await (Patch 59)
+- Lock-Guard prüfen ob Task bereits läuft bevor neuer gestartet wird
+
+## Architektur / Bekannte Schulden
+- interactions-Tabelle ohne User-Spalte: Metriken per User erst nach DB-Fix (Alembic) vertrauenswürdig
+- Rosa Security Layer ist NICHT aktiv — nur Dateivorbereitung vorhanden
+- JWT + static_api_key: externe Clients (Dictate, SillyTavern) brauchen X-API-Key Header
+- RAG Lazy-Load-Guard in _encode(): _model war None bei erstem Upload-Call → immer auf None prüfen vor Modell-Nutzung
+
+## Pipeline / Routing
+- Das Nala-Frontend routet über /v1/chat/completions (legacy.py), NICHT über den Orchestrator. Fixes die nur in orchestrator.py landen wirken nicht auf den Haupt-Chat-Pfad.
+- Bei jedem Pipeline-Fix: alle drei Pfade prüfen — legacy.py, orchestrator.py, nala.py /voice
+- Änderungen in legacy.py betreffen auch externe Clients (Dictate, SillyTavern) — immer prüfen ob /v1/audio/transcriptions und der Static-API-Key-Bypass intakt sind (Patch 82)
+- Dictate-Tastatur (Android) schickt bereits transkribierte+bereinigte Texte an /v1/chat/completions. legacy.py wendet den Whisper-Cleaner erneut an — das ist doppelt, aber aktuell harmlos (Cleaner-Regeln sind idempotent). Falls künftig nicht-idempotente Regeln hinzukommen, braucht der /v1/-Endpoint einen Skip-Flag oder Header (z.B. X-Already-Cleaned: true). Backlog-Item, kein akuter Fix. (Patch 107)
+- Intent-Klassen TRANSFORM (Übersetzen/Lektorieren/Zusammenfassen/…) skippen RAG komplett. Der User liefert den Bearbeitungstext mit — RAG-Treffer wären Lärm, Cross-Encoder-Rerank kostet ~47 s auf CPU für nichts. Pattern match NUR am Nachrichtenanfang (sonst kapert "übersetze" mitten im Text jede Frage). Muster in `_TRANSFORM_PATTERNS` in orchestrator.py (Patch 106).
+
+## Konfiguration (Fortsetzung)
+- Hel-Admin-UI `/hel/admin/config` arbeitet seit Patch 105 auf config.yaml als Single Source of Truth. Vorher Split-Brain: UI schrieb `llm.cloud_model` nach config.json, LLMService las `legacy.models.cloud_model` aus config.yaml → UI-Auswahl wirkte nie. `_yaml_replace_scalar` (hel.py) macht eine line-basierte In-Place-Ersetzung, damit die handgepflegten Kommentare in config.yaml erhalten bleiben (yaml.safe_dump würde alles neu serialisieren). config.json darf nicht mehr als Authoritative-Quelle verwendet werden — Debug-Endpunkte dürfen es anzeigen, aber nichts darf von dort lesen/schreiben.
+
+## RAG (Fortsetzung)
+- Reranker-Minimum-Score (`modules.rag.rerank_min_score`, Default 0.05) filtert nach dem Cross-Encoder-Pass: liegt der Top-Score darunter, ist KEIN Chunk wirklich relevant → RAG-Kontext wird komplett verworfen (z.B. bei Übersetzungs-Requests). Fix greift in `_rag_search()`, automatisch für legacy.py und orchestrator.py. Logging `[THRESHOLD-105]` (Patch 105).
+
+## Dialekt-Weiche (Patch 103)
+- **Marker-Länge:** Emoji-Marker im `detect_dialect_marker` sind historisch ×5 (Teclado/Dictate-Pattern). Zwischenzeitliche ×2-Variante in `zerberus/core/dialect.py` produzierte 400/500, weil der `stripped[len(marker):]`-Offset nur 2 Emojis abschnitt und drei Emojis im rest-Text übrig blieben. IMMER ×5 als Invariante behalten.
+- **Wortgrenzen-Matching Pflicht:** `apply_dialect` muss `re.sub(r'(?<!\w)KEY(?!\w)', ...)` nutzen, nicht `str.replace()`. Sonst matcht `ich` in `nich` und erzeugt `nick`. Case-sensitive bleibt (dialect.json hat `Ich` und `ich` als separate Keys). Multi-Wort-Keys (`haben wir`) funktionieren dank Length-sortiertem Durchlauf weiter.
+
+## Frontend / JS in Python-Strings
+- **Python-HTML-Strings mit JS:** `'\n'` in einem Python-String der HTML/JS enthält wird als echtes Newline gerendert und bricht JS-String-Literale (`SyntaxError: unterminated string literal`). Innerhalb `ADMIN_HTML = """..."""`/`NALA_HTML = """..."""` immer `'\\n'` (bzw. `\\r`, `\\t`) schreiben. Betrifft jeden String in nala.py und hel.py der JavaScript-Code enthält. Erstmals Patch 69c (`exportChat`), erneut sichtbar Patch 100 (`showMetricInfo` — seit Patch 91 latent).
+- **JS-Syntax immer mit `node --check` verifizieren:** Nach jedem Patch der das `<script>`-Block in hel.py/nala.py ändert, HTML aus dem Router rendern, `<script>`-Blöcke extrahieren, einzeln durch `node --check` jagen. Der Test `TestJavaScriptIntegrity` (Patch 100) fängt den Fehler im Playwright-Browser — `node --check` ist die schnelle Pre-Commit-Variante.
+- DOM-/API-Level-Tests (Playwright ohne `pageerror`-Listener) fangen JS-Parse-Errors NICHT. `page.on("pageerror", ...)` MUSS VOR `page.goto()` registriert werden, sonst werden initiale Script-Errors verschluckt.
+
+## Chunking-Weiche pro Category (Patch 110)
+- **Pro-Category-Profile statt globale Defaults:** `CHUNK_CONFIGS` in [hel.py](zerberus/app/routers/hel.py) mapped jede Category auf `{chunk_size, overlap, min_chunk_words, split}`. `narrative`/`lore` behalten 800/160/120 aus Patch 75 — die sind mit dem bge-reranker-v2-m3 aus Patch 89 validiert (10/11 JA im Eval). Kleinere Chunks (z.B. 300/60 für `reference`) brauchen entsprechend niedrigere `min_chunk_words` (50 statt 120), sonst mergt der Residual-Pass alles zu einem Einzel-Chunk — getestet im Unit-Test `test_override_parameters_produce_expected_chunk_count`.
+- **Split-Strategien:** `"chapter"` (Prolog/Akt/Epilog/Glossar, `_CHAPTER_RE`), `"markdown"` (`# … ######`, `_MD_HEADER_RE`, für `technical`), `"none"` (nur Wortfenster, für `reference`). Die beiden Regex-Patterns lassen sich parametrisch wählen, der Rest der Chunk-Logik bleibt gleich.
+- **Rückwärtskompat:** `config.yaml modules.rag.min_chunk_words` (Patch 88) überschreibt weiterhin den Category-Default, falls gesetzt — so bleibt Chris' globaler Tuning-Hebel intakt.
+- **JSON + CSV als Klartext indizieren:** `.json` → `json.dumps(data, indent=2, ensure_ascii=False)` liefert strukturerhaltenden Klartext für das Embedding. `.csv` → Header-Zeile, dann pro Daten-Zeile `"Header1: Wert1; Header2: Wert2"` (leere Zellen ausgelassen). Kein neues Dependency nötig, beides stdlib.
+
+## SSE / Streaming Resilience (Patch 109)
+- **Frontend-Timeout ≠ Backend-Timeout:** Der 45-s-Frontend-Timeout bricht den `fetch()` ab, das Backend arbeitet trotzdem weiter und speichert die fertige Antwort via `store_interaction()` in die DB. Ein naiver Retry-Button, der einfach `sendMessage(text)` nochmal aufruft, produziert **doppelte LLM-Calls** (doppelte OpenRouter-Kosten + Verwirrung in der Session-Historie).
+- **Fix-Pattern:** Retry-Button prüft erst per REST-Endpoint (`/archive/session/{id}`) ob die DB inzwischen eine Antwort zum gleichen User-Text enthält. Nur wenn keine späte Antwort gefunden wird, läuft ein echter Retry. Kein neuer Endpoint nötig — das Archive-Endpoint existiert bereits für Session-Load. `fetchLateAnswer(sid, userText)` + `retryOrRecover(retryText, retrySid, cleanupFn)` in [nala.py](zerberus/app/routers/nala.py) kapseln die Logik (Patch 109).
+- **Signatur-Hinweis:** Retry-Handler (`setTypingState`, `showErrorBubble`) müssen die `reqSessionId` als dritten Parameter durchreichen — nicht `sessionId` zur Click-Zeit verwenden, weil der User inzwischen die Session gewechselt haben kann.
+
+## Theme-Defaults (Patch 109)
+- **Anti-Invariante „nie schwarz auf schwarz":** Bubble-Background-Defaults in `:root` müssen **lesbare Werte** haben, selbst ohne gesetztes Theme oder Favorit. `rgba(…, 0.85–0.88)`-Werte mit den Theme-Hex-Farben als Basis geben optische Tiefe ohne den Kontrast zu brechen. User-Bubble `rgba(236, 64, 122, 0.88)` + LLM-Bubble `rgba(26, 47, 78, 0.85)` entsprechen Chris's Purple/Gold-Scheme.
+- **Reset muss vollständig sein:** `resetTheme()` darf nicht nur die 5 Theme-Farben zurücksetzen — sonst bleiben alte Bubble-Overrides (z.B. schwarzer Hintergrund) in `localStorage` aktiv und übersteuern die rgba-Defaults. Lösung: `resetTheme()` ruft `resetAllBubbles()` + `resetFontSize()` mit auf.
+
+## RAG GPU-Acceleration (Patch 111)
+- **torch-Variante checken:** `pip list | grep torch` zeigt `+cpu` wenn CUDA nicht drin ist. RTX 3060 bleibt ungenutzt bis `pip install torch --index-url https://download.pytorch.org/whl/cu121` (oder passender CUDA-Version). Der Device-Helper aus Patch 111 fällt defensiv auf CPU zurück — also keine Regression, aber auch kein Speed-Up.
+- **VRAM-Threshold 2 GB:** MiniLM ~0.5 GB + bge-reranker-v2-m3 ~1 GB + Puffer. Whisper frisst ~4 GB, BERT-Sentiment ~0.5 GB → auf einer 12-GB-Karte bleiben 7 GB frei, mehr als genug. Der Check soll nur verhindern dass bei gleichzeitig belegtem VRAM (z.B. paralleler Whisper-Call) das Embedding auf OOM läuft.
+- **CrossEncoder nimmt `device` direkt:** In `sentence-transformers >= 2.2` akzeptiert `CrossEncoder(model, device=...)` den Konstruktor-Parameter. Keine nachträgliche `.to(device)`-Verschiebung nötig. In Patch 111 mit `inspect.signature(CrossEncoder.__init__)` verifiziert.
+- **`_cuda_state()` isolieren:** Die eine Funktion ist mockbar ohne `torch`-Dependency in Tests — `monkeypatch.setattr(dev_mod, "_cuda_state", lambda: (True, 8.0, 12.0, "RTX 3060"))`. 9 Unit-Tests für Device-Detection ohne jede GPU (Patch 111).
+
+## Query-Router / Category-Boost (Patch 111)
+- **Wortgrenzen-Matching IMMER:** Naives Substring-`in` findet `api` in `Kapitel` → false positive. `re.search(r'(?<!\w)kw(?!\w)', text.lower())` ist Pflicht. Multi-Wort-Keys (`"ich habe"`) fallen auf einfaches `in` zurück, weil der Leerzeichen-Kontext selbst Wortgrenze ist. Lesson analog zu Patch 103 Dialekt-Weiche.
+- **Boost statt Filter:** Category-Filtering als hartes Drop würde Retrieval brüchig machen (Fehl-Klassifikation der Heuristik = leeres Ergebnis). Score-Bonus (Default 0.1) auf `rerank_score` (Cross-Encoder, Patch 89) bzw. `score` als Fallback verschiebt nur die Reihenfolge. Flag `category_boosted: True` pro Chunk für Debugging.
+- **Keyword-Listen kurz halten:** Lieber false negatives (kein Boost) als false positives (falscher Boost). 5-15 Keywords pro Category reicht — LLM-basierte Detection kommt eh in Phase 4.
+
+## Auto-Category-Detection (Patch 111)
+- **Extension-Map statt Content-Analyse:** Erste Stufe reicht `Path(filename).suffix.lower()` → dict lookup. Content-basierte Detection (LLM-Call) kommt in Phase 4. `.json`/`.yaml`/`.md` → technical, `.csv` → reference, `.pdf`/`.txt`/`.docx` → general. Bei `.txt`/`.pdf` gibt's keine saubere Zuordnung — `general` ist die richtige Wahl (Chris kann manuell overriden).
+- **`"general"` als Detection-Trigger behalten:** Nicht nur `"auto"`. Grund: Alt-Uploads mit `general` sind meist unbewusst gesetzt, die Auto-Detection verbessert ohne Opt-In. User-Override (narrative/technical/…) gewinnt immer.
+- **Python `\u{…}` in HTML-Strings bricht Parse:** Emoji-Literale wie `\u{1F50D}` sind ES6+ JS-Syntax, aber Python's String-Parser erwartet nach `\u` genau 4 Hex-Chars → `SyntaxError: truncated \uXXXX escape` beim Import. Entweder Emoji direkt einfügen oder `\\u{1F50D}` (doppel-escape). Analog zur Patch-69c/100-Lesson zu `\n` in JS-Strings.
+
+## GPU / PyTorch (Patch 111b)
+- **pip default = CPU-only:** `pip install torch` zieht `2.x.y+cpu`. Für GPU ist der CUDA-Extra-Index Pflicht: `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 --force-reinstall`. CUDA-Version per `nvidia-smi` (Treiber rückwärtskompatibel, Driver 591.44 = CUDA 13.1 akzeptiert alle cu11x/cu12x-Wheels). RTX 3060 läuft stabil mit cu124 + torch 2.5.1.
+- **typing-extensions Ripple:** `torch 2.5.1+cu124` downgradet `typing_extensions` auf 4.9.0, `cryptography>=46` verlangt aber 4.13.2+. Nach jedem torch-Reinstall prüfen: `pip install --upgrade "typing-extensions>=4.13.2"`. Sichtbares Symptom: `ImportError: cannot import name 'TypeIs' from 'typing_extensions'`.
+- **`+cu124`-Suffix als Beweis:** `pip list | grep torch` muss `torch 2.5.1+cu124` zeigen (mit Plus-Suffix). Ohne Suffix = CPU-only oder noch aus der `-orch`-Umbenennung mitten im Install. Erst `torch.cuda.is_available() == True` UND `torch.cuda.get_device_name(0)` zeigt echten GPU-Status.
+- **Frei VRAM nach Whisper/BERT:** Auf 12-GB-Karte bleiben nach Windows-Desktop-Usage ~11 GB frei. MiniLM + bge-reranker-v2-m3 brauchen zusammen <2 GB — reichlich Luft. Patch 111's 2-GB-Threshold ist konservativ aber korrekt.
+
+## DB-Dedup / Insert-Guard (Patch 113a)
+- **Schema-Check vor Dedup-Query:** Die `interactions`-Tabelle hat `content`+`role`, NICHT `user_message` wie oft in externen Beispielen angenommen. Vor jedem Dedup-SQL `PRAGMA table_info(interactions)` laufen lassen.
+- **Dedup-Scope ≠ alle Rollen:** `whisper_input` hat häufig `session_id=NULL` (Dictate-Direct-Logging) — nur `role IN ('user','assistant')` mit konkreter session_id deduplizieren. Der Insert-Guard in `store_interaction` prüft session_id vorher explizit, damit Whisper-Log-Pipeline unberührt bleibt.
+- **30-Sekunden-Fenster ist der Sweet Spot:** LLM-Call + Retry-Button bei Timeout liegen typischerweise 15-45s auseinander. 30s fängt die meisten Double-Inserts ab ohne legitime schnelle Nachsendungen zu blocken.
+
+## Whisper Sentence-Repetition (Patch 113b / W-001b)
+- **Wort-Dedup ≠ Satz-Dedup:** `detect_phrase_repetition` (Patch 102) cappt N-Gramme bis 6 Wörter. Ganze Sätze > 6 Wörter ("Ich gehe nach Hause.") rutschten durch. `detect_sentence_repetition` splittet an `(?<=[.!?])\s+` und dedupliziert **konsekutive** Sätze (case-insensitive, whitespace-collapsed).
+- **Reihenfolge zwingend:** Erst Mikro (Phrase), dann Makro (Sentence) — sonst würden Sätze mit internen Phrase-Loops erst korrekt gekürzt und dann eventuell zu früh als gleich erkannt.
+- **Nicht-konsekutive behalten:** `"A. B. A."` bleibt `"A. B. A."` (Refrain-Safe). Nur direkte Nachbarschaft fällt weg.
+
+## SSE-Heartbeat + Watchdog-Reset (Patch 114a)
+- **Heartbeat statt fixem Timeout:** Server sendet alle 5 s `event: heartbeat\ndata: processing\n\n` während LLM-Verarbeitung. Frontend `addEventListener('heartbeat', …)` setzt den 15-s-Watchdog zurück. Hard-Stop bei 120 s total verhindert Leaks. CPU-Fallback (kein GPU) bleibt so bis zum harten Limit funktionsfähig, GPU-Pfad bekommt straffe 15-s-UX.
+- **`retry: 5000` am Stream-Anfang:** EventSource-Reconnect-Interval ändert sich dauerhaft für diese Verbindung (SSE-Spec). 5 s ist zahm genug um Mobile-Reconnect-Stürme zu vermeiden.
+- **`window.__nalaSseWatchdogReset` als loses Coupling:** Das SSE-Listener-Binding lebt sessionübergreifend, aber der Watchdog gehört zu einer einzelnen fetch-Transaktion. Global-Funktion-Pointer (null wenn kein Request läuft) erlaubt das Cross-Wire ohne harte Abhängigkeit.
+
+## Background Memory Extraction (Patch 115)
+- **Overnight-Erweiterung statt eigener Cron:** Der 04:30-APScheduler-Job aus Patch 57 (BERT-Sentiment) wird am Ende um Memory-Extraction erweitert. Separater Scheduler wäre Duplizierung — Reihenfolge Sentiment-dann-Extraction ist egal, beide laufen read-only auf 24h-Nachrichten.
+- **Cosine aus L2 bei normalisierten Embeddings:** MiniLM-Embeddings sind per `normalize_embeddings=True` unit-normalized. FAISS IndexFlatL2 liefert L2-Distanz; Umrechnung `cos = 1 - L2²/2`. Threshold 0.9 (cos) entspricht L2 ≈ 0.447 — passend für "fast gleiche Aussagen" ohne Refrain-Safe-Fehlinterpretationen.
+- **Fail-Safe in Overnight-Job:** Exception aus `extract_memories()` darf den Overnight-Job NICHT abbrechen (Sentiment-Auswertung hängt nicht davon ab). `try/except` außen, fehlschlagende Extraction wird geloggt, Job endet normal.
+- **Source-Tag mit Datum:** `source: "memory_extraction_2026-04-23"` statt fixem Tag erlaubt späteres gezieltes Löschen/Audit per Datum via Soft-Delete (Patch 116). Kein Datums-Rollover-Bug, weil `datetime.utcnow().strftime("%Y-%m-%d")` pro Batch einmal gelesen wird.
+- **Prompt-Template mit `{messages}`-Placeholder:** Python `str.format()` auf Prompt-Konstante. Alle anderen `{}` im Prompt müssen als `{{}}` escaped werden, sonst KeyError. Lieblingsstelle: das JSON-Output-Beispiel — da müssen `[{{"fact": "..."}}]` doppelt geklammert sein.
+
+## RAG Soft-Delete + Gruppierte Dokumentenliste (Patch 116)
+- **FAISS kann nicht selektiv löschen:** `IndexFlatL2` hat kein `remove(idx)`. Zwei Optionen: (1) Rebuild (`_reset_sync` + alle überlebenden Chunks re-encoden) oder (2) Soft-Delete (Metadata-Flag `deleted: true`, beim Retrieval + Status-Listing filtern). Option 2 ist in O(1) statt O(N) und braucht kein erneutes Encoding — einziger Preis: Index wächst bis zum nächsten Reindex.
+- **Drei Filter-Stellen:** `_search_index()` (Retrieval), `/admin/rag/status` (Listing), `/admin/rag/reindex` (Rebuild-Quelle). Bei einer vergessenen Stelle lebt der gelöschte Chunk weiter. Grep-Checkpoint: `m.get("deleted") is True` muss in allen drei Pfaden stehen.
+- **`encodeURIComponent` für Query-Param mit Leerzeichen:** `source=Neon Kadath.txt` bricht bei URL-Concat, `?source=Neon%20Kadath.txt` funktioniert. JS `fetch('/…?source=' + encodeURIComponent(source))` — nie mit Template-Strings direkt.
+- **XSS-Hardening bei Card-Rendering:** `innerHTML` des gruppierten Listings enthält User-Daten (Dateiname). `source.replace(/"/g, '&quot;')` + `source.replace(/</g, '&lt;')` fängt Angle-Bracket- und Quote-Breaks. Datenherkunft ist intern (Admin-Uploads), aber defensiv kostet nichts.
+
+## Portabilität via `%~dp0` in .bat (Patch 117)
+- **`%~dp0` = Script-Directory:** Ersetzt hardcodiertes `cd /d C:\...`. Läuft aus jedem Verzeichnis, auf jedem System — das Script wechselt in seinen eigenen Ordner. Muss in Anführungszeichen stehen wenn Pfad Leerzeichen enthält: `cd /d "%~dp0"`.
+- **Python-Code war bereits portabel:** `Path("config.yaml")`, `Path("./data/vectors")`, `Path("bunker_memory.db")` alle relativ zum CWD. Kein Handlungsbedarf in `.py`-Dateien. Dokumentations-Markdowns enthalten weiterhin absolute Pfade für Chris-als-User — das sind keine Code-Referenzen, sondern Beispiele.
+
+## Decision-Boxes + Feature-Flags (Patch 118a)
+- **Marker-Parsing ohne `eval()`/innerHTML-Injection:** Regex findet `[DECISION]…[/DECISION]`-Blöcke, Inhalt geht durch `[OPTION:wert]` Label. Text ausserhalb der Marker wandert als `document.createTextNode` in die Bubble; nur die `<button>` werden strukturell gebaut. Kein `innerHTML` mit User/LLM-Content.
+- **Python-String-Falle bei JS-Regex-Charakterklassen:** `[^\n\r\[]+` im Triple-Quote-String wird beim Python-Parse zu echten Newlines → kaputtes JS-Regex (`Invalid regular expression`). Entweder `[^\\n\\r\\[]+` (Python-Doppel-Escape) oder einfacher: `(.+)` (matcht default kein `\n`). Lesson analog zu Patch 69c/100/111.
+- **Feature-Flag als Dict-Default in Settings:** `features: Dict[str, Any] = {"decision_boxes": True}` in `config.py`. config.yaml gitignored → Default muss im Pydantic-Model stehen (wie OpenRouter-Blacklist in Patch 102). `settings.features.get("decision_boxes", False)` greift nach frischem Clone auf True zurück.
+- **`append_decision_box_hint()` zentral:** Gemeinsamer Helper in `zerberus/core/prompt_features.py`, importiert in legacy.py UND orchestrator.py. Doppel-Injection per `"[DECISION]" in prompt`-Check verhindert. Prompt-Erweiterung ist sauber getrennt vom System-Prompt-Laden.
+
+## Dateinamen-Konvention (Patch 100)
+- Projektspezifische CLAUDE.md IMMER als `CLAUDE_[PROJEKTNAME].md` benennen
+- Gleiches für Supervisor-Briefing: `SUPERVISOR_[PROJEKTNAME].md`
+- In Patch-Prompts IMMER den vollen Dateinamen verwenden
+- Hintergrund: Patch 100 — Claude Code hat die projektspezifische Datei mit der globalen verwechselt
