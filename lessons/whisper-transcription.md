@@ -13,3 +13,4 @@
 - Audio-Format: MP4/AAC Mono 44.1kHz als bester Kompromiss. FLAC wenn verlustfrei nötig
 - `WHISPER_CONDITION_ON_PREVIOUS_TEXT=false` verhindert Kontamination zwischen Chunks
 - Satz-Deduplizierungs-Filter nötig — Wort-RepFilter fängt Sentence-Repetition nicht
+- **Zwei-stufige Dedup-Pipeline:** Mikro (`detect_phrase_repetition`, N-Gramme bis 6 Wörter, Patch 102) plus Makro (`detect_sentence_repetition`, konsekutive ganze Sätze via `(?<=[.!?])\s+`-Split, Patch 113b). Erst Mikro, dann Makro — sonst werden Sätze mit internen Phrase-Loops falsch verglichen. Vergleich case-insensitive, whitespace-collapsed. NICHT-konsekutive Duplikate erhalten (Refrain-Safe: "A. B. A." bleibt) (Zerberus P113b)
