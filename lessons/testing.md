@@ -6,3 +6,4 @@
 - Chaos-Tests: `@pytest.mark.parametrize` für Payload-Listen, `force=True` bei `.click()`, Exceptions in Schleifen stumm schlucken (Zerberus P93)
 - `playwright install chromium` = einmaliger ~250 MB Download, dann offline nutzbar (Zerberus P93)
 - `page.on("pageerror", ...)` MUSS VOR `page.goto()` registriert werden — initiale Script-Parse-Errors werden sonst verschluckt. DOM-/API-Level-Tests ohne `pageerror`-Listener fangen JS-Syntax-Fehler NICHT (Zerberus P100)
+- Tests schreiben UND ausführen — nicht nur schreiben und annehmen sie laufen

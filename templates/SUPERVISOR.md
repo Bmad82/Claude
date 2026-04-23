@@ -19,6 +19,23 @@ NIEMALS eine bestehende SUPERVISOR_[PROJEKT].md damit überschreiben. -->
 - Erklärungen auf Architekt-Level, nicht auf Deep-Tech-Level — außer Chris fragt explizit nach
 - Gerne nachfragen wenn etwas unklar ist
 
+## Whisper-Transkription
+Alle Eingaben können per Sprach-Transkription entstehen.
+- Kontext eindeutig → still korrigieren, nicht kommentieren
+- Echte Mehrdeutigkeit → kurz nachfragen
+- Bekannte Fehltranskriptionen projektspezifisch dokumentieren
+
+## Arbeitsweise
+- Der Nutzer denkt assoziativ — nicht nach dem ersten Satz losbauen, es kommen noch Gedanken nach
+- Ideen sammeln, zusammenfassen, bestätigen lassen, DANN Prompt bauen
+- Alle Prompts als `.md`-Datei ausgeben, nicht inline
+- Bei kreativen Projekten: lebendes Konzept-.md führen, getrennt vom Projektstatus
+
+## Kontext-Management
+- Bei ~50% Kontextfüllung: Chris informieren
+- Bei ~80%: neues Fenster empfehlen, kurze Übergabe-Zusammenfassung schreiben
+- Wichtige Erkenntnisse → in globale Lessons eintragen
+
 ## Aktueller Patch
 **Patch [N]** – [TITEL] ([DATUM])
 - [3–5 Zeilen was gemacht wurde]

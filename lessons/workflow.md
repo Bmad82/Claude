@@ -10,3 +10,15 @@
 - Bei mehreren Code-Pfaden (z.B. legacy.py vs. orchestrator.py): IMMER prüfen welcher Router den aktiven Traffic führt, bevor ein Fix nur in einem Pfad landet (Zerberus P80b)
 - Bei jedem Pipeline-Fix alle betroffenen Pfade prüfen — nicht nur den offensichtlichen (Zerberus P82)
 - CLAUDE_[PROJEKTNAME].md Konvention: Projektspezifische Dateien tragen IMMER den Projektnamen als Suffix. Claude Code liest beim Start automatisch eine globale CLAUDE.md und verwechselt sie sonst mit der projektspezifischen. In Prompts IMMER vollen Dateinamen verwenden. (Zerberus P100)
+- Alle Prompts und strukturierte Ausgaben als `.md`-Datei ausgeben — kein Inline-Text, mobilfreundlich kopierbar
+- Konzept vor Implementierung: bei kreativen Projekten erst Konzept als .md ausarbeiten, dann technische Umsetzung
+- Lebende Konzept-Dokumente: Ideen, Audits, Design-Regeln in separater .md sammeln, getrennt vom Projektstatus
+- Kein opportunistisches Refactoring: Claude Code ändert nur was der aktuelle Patch erfordert
+- Bei Scope-Unsicherheit: FRAGEN, nicht selbst entscheiden — keine kreativen Erweiterungen über den Prompt hinaus
+- Entscheidungsboxen: bei Aktionen die User-Input erfordern (Server-Restart, destruktive Ops) immer klar formatierte Box mit konkreten Optionen + "Soll ich das übernehmen?"
+- Verbosity-Management: Coding-Instanz = stiller Handwerker (kurz, präzise). Chat-Instanz = ausführlich, assoziativ. Nicht mischen
+- Diagnose vor Fix: erst grep/Select-String, dann reparieren — betroffenen Code-Pfad identifizieren bevor ein Patch landet
+- Git-Push-Verifikation: nach jedem `git push` Exit-Code prüfen (`$LASTEXITCODE`), bei Fehler User auf Deutsch informieren
+- Git-Credential-Prüfung: vor erstem Push in einer Session `git config credential.helper` checken
+- PowerShell kennt kein `&&` — Befehle mit `;` trennen oder einzeln ausführen
+- OneDrive NIEMALS als Arbeitsverzeichnis für aktive Projekte — lockt Dateien (SQLite, Logs, Python-Prozesse)

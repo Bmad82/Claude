@@ -70,3 +70,26 @@ Der Architekt kommuniziert ca. 75% per Spracheingabe (Whisper/Dictation). Phonet
 - `@media (orientation: landscape) and (max-height: 500px)` für Landscape-Edge-Cases
 - Beispiel FALSCH: Button mit 28px Höhe, nur `:hover`-State, feste `100vh`-Höhe
 - Beispiel RICHTIG: Button mit 44px min-height, `:active`-State, `100dvh`-Höhe, Touch-Target-Padding
+
+## Ausgabe-Regeln
+- Alle Prompts und strukturierte Ausgaben als `.md`-Datei — kein Inline-Text
+- Datei ist self-contained und mobilfreundlich kopierbar
+
+## Arbeitsweise
+- Nur ändern was für den aktuellen Patch nötig ist — kein opportunistisches Refactoring
+- Vor jedem Fix: Diagnose mit `grep` / `Select-String` — betroffenen Code-Pfad identifizieren
+- Bei Unsicherheit: FRAGEN, nicht raten
+- Keine Annahmen über Dateninhalte — immer verifizieren
+- Request-Pfad mental durchsimulieren: Welcher Router verarbeitet den Request wirklich?
+- Endpoints die von externen Apps ohne Auth-Header-Support angesprochen werden (z.B. Tastaturen, Bots, IoT): Auth-Ausnahme in der Middleware als Invariante dokumentieren. Bei jedem Auth-Refactoring: alle dokumentierten Ausnahmen prüfen — Regression hier ist ein Dauerbrenner.
+
+## Session-Grenzen
+- Max 2–3 Patches pro Session — ab Patch 4+ sinkt Kontextqualität
+- Vor jeder Session: Git-Checkpoint anlegen
+
+## Git-Pflichtschritte nach jedem Patch
+1. Tests ausführen und Ergebnis prüfen
+2. `git add -A`
+3. `git commit -m "Patch XX – [Kurztitel]"`
+4. `git push` — `$LASTEXITCODE` prüfen, bei Fehler User informieren
+5. SUPERVISOR_[PROJEKT].md aktualisieren

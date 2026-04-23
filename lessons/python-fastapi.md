@@ -6,3 +6,10 @@
 - Async-Funktionen: `update_interaction()` o.ä. muss async sein, alle Call-Sites brauchen `await` — sonst Double-Start / Race Conditions (Zerberus P59)
 - Lock-Guard bei Background-Tasks: prüfen ob Task bereits läuft bevor neuer gestartet wird
 - Pacemaker/Config-Änderungen in YAML wirken erst nach Neustart (kein Live-Reload bei den meisten FastAPI-Setups)
+- Config-Split-Brain: wenn UI in eine Datei schreibt (json) und Backend eine andere liest (yaml), wirken UI-Änderungen nie → eine einzige Config-Datei als Single Source of Truth
+- Async-First: alle I/O-Operationen (DB, Netzwerk, TTS) async. Kein blocking call im asyncio-Loop — `aiohttp` statt `requests`
+- In-Memory-Cache für Hot-Path-Daten statt DB-Hit (z.B. bei GPS-Pings mit 10 Hz → SQLite-Trommelfeuer → Absturz)
+- Pro-Verbindung eigene Session-Instanz, kein globaler Singleton — verhindert State-Mixing bei mehreren Clients
+- Deterministisches Caching via Hash: Dateiname = Hash des Inhalts → gleicher Input = gleiche Datei, kein Doppelt-Generieren
+- Path-Traversal-Schutz: `os.path.basename()` auf alles was vom User kommt, auch bei "internen" Download-Routes
+- `isoformat()` produziert `T`-Separator, SQLite speichert mit Space → Vergleiche brechen lautlos
