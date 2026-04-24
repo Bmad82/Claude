@@ -11,6 +11,7 @@ Im Zweifel: NICHT committen und nachfragen.
 ## Struktur
 - `templates/` — Vorlagen für CLAUDE.md und SUPERVISOR.md (nur manuell ändern)
 - `lessons/` — Projektübergreifende Lessons-Learned (darf von Claude Code beschrieben werden)
+- `DESIGN.md` — Globale Design-Referenz (Farben, Typography, Komponenten, Mobile-Regeln). Lebendes Dokument, wird direkt referenziert, nicht kopiert.
 
 ## Einbindung in Projekte
 In der projekt-eigenen CLAUDE.md am Anfang:
