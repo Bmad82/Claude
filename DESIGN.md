@@ -19,15 +19,16 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Primär | `--color-primary` | `[WERT]` | Hauptfarbe, Buttons, aktive Elemente, Highlights |
 | Primär Hover | `--color-primary-hover` | `[WERT]` | Hover/Active-Zustand der Primärfarbe |
 | Primär gedämpft | `--color-primary-muted` | `[WERT]` | Dezente Variante für Hintergründe, Badges |
+| Primär Mittel | `--color-primary-mid` | `[WERT]` | Basis für LLM-Bubble-Background (rgba-Ableitung) |
 | Sekundär | `--color-secondary` | `[WERT]` | Ergänzungsfarbe, sekundäre Buttons |
 | Sekundär Hover | `--color-secondary-hover` | `[WERT]` | Hover/Active-Zustand der Sekundärfarbe |
-| Akzent | `--color-accent` | `[WERT]` | Eyecatcher, sparsam einsetzen (Sterne, Badges, Highlights) |
+| Akzent | `--color-accent` | `[WERT]` | Eyecatcher, sparsam einsetzen (Sterne, Badges, Highlights). Basis für User-Bubble-Background |
 
 ### 1.2 Hintergrundfarben
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| App-Hintergrund | `--bg-app` | `[WERT]` | Gesamter Seitenhintergrund |
+| App-Hintergrund | `--bg-app` | `[WERT]` | Gesamter Seitenhintergrund (Dark-First) |
 | Flächen-Hintergrund | `--bg-surface` | `[WERT]` | Cards, Panels, Container |
 | Flächen-Hintergrund erhöht | `--bg-surface-raised` | `[WERT]` | Modals, Dropdowns, Overlays |
 | Sidebar-Hintergrund | `--bg-sidebar` | `[WERT]` | Navigation, Seitenleisten |
@@ -72,23 +73,25 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| User-Bubble Hintergrund | `--bubble-user-bg` | `[WERT]` | Chat: Hintergrund der User-Nachrichten |
+| User-Bubble Hintergrund | `--bubble-user-bg` | `rgba(236, 64, 122, 0.88)` | Chat: Hintergrund der User-Nachrichten (Akzent-Ableitung mit Alpha) |
 | User-Bubble Text | `--bubble-user-text` | `[WERT]` | Chat: Textfarbe in User-Nachrichten |
-| Bot-Bubble Hintergrund | `--bubble-bot-bg` | `[WERT]` | Chat: Hintergrund der Bot-Nachrichten |
+| Bot-Bubble Hintergrund | `--bubble-llm-bg` | `rgba(26, 47, 78, 0.85)` | Chat: Hintergrund der Bot-Nachrichten (Primary-Mid-Ableitung mit Alpha) |
 | Bot-Bubble Text | `--bubble-bot-text` | `[WERT]` | Chat: Textfarbe in Bot-Nachrichten |
 | Overlay/Backdrop | `--color-overlay` | `[WERT]` | Halbdurchsichtiger Hintergrund hinter Modals |
 | Schatten | `--color-shadow` | `[WERT]` | Box-Shadow-Farbe für Elevation |
 | Scrollbar Track | `--scrollbar-track` | `[WERT]` | Scrollbar-Hintergrund |
 | Scrollbar Thumb | `--scrollbar-thumb` | `[WERT]` | Scrollbar-Griff |
 
+**Anti-Invariante:** Bubble-Backgrounds dürfen NIE `#000000` oder `transparent` als Default haben — "nie schwarz auf schwarz". Immer rgba-Werte mit Alpha 0.85–0.88 als Basis verwenden. `resetTheme()` muss `resetAllBubbles()` + `resetFontSize()` mitrufen.
+
 ### 1.7 Dark/Light Mode
 
-| Eigenschaft | Beschreibung |
-|-------------|--------------|
-| Standard-Modus | `[dark / light / system]` |
-| Umschaltbar | `[ja / nein]` |
-| Speicherung | `[localStorage Key oder WERT]` |
-| FOUC-Vermeidung | `[Early-Load-IIFE im <head> / anderer Mechanismus]` |
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Standard-Modus | `dark` | Dark-First — Nala ist primär ein Dark-Mode-UI |
+| Umschaltbar | ja | Theme-Presets via Settings-Modal |
+| Speicherung | `localStorage` Keys: `nala_theme`, `nala_last_active_favorite`, `nala_fav_1`…`nala_fav_3` (v2-Schema) | Persistenz über Browser-Neustart |
+| FOUC-Vermeidung | Early-Load-IIFE im `<head>` | Prüft `nala_last_active_favorite` → lädt Fav-Slot (v2: Theme + Bubble + fontSize) → wendet CSS-Props an, bevor Body rendert. Fav hat Vorrang vor flachem `nala_theme` |
 
 ---
 
@@ -101,7 +104,7 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Hauptschrift | `--font-family-base` | `[WERT]` | Fließtext, UI-Elemente |
 | Monospace | `--font-family-mono` | `[WERT]` | Code, Klickpfade, technische Werte |
 | Display/Headline | `--font-family-display` | `[WERT]` | Große Überschriften, Titel (optional, kann gleich wie Base sein) |
-| Quelle | — | `[Google Fonts / lokal / inline]` | Wie werden Fonts geladen |
+| Quelle | — | `[WERT]` | Wie werden Fonts geladen |
 
 ### 2.2 Größen-Skala
 
@@ -109,7 +112,7 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 |-------|-------------|------|---------|
 | XS | `--font-size-xs` | `[WERT]` | Timestamps, Badges, Footnotes |
 | SM | `--font-size-sm` | `[WERT]` | Labels, Hilfstexte, Captions |
-| Base | `--font-size-base` | `[WERT]` | Fließtext, Inputs, Buttons |
+| Base | `--font-size-base` | `15px` (Preset "Normal") | Fließtext, Inputs, Buttons |
 | MD | `--font-size-md` | `[WERT]` | Hervorgehobener Text, Card-Titel |
 | LG | `--font-size-lg` | `[WERT]` | Abschnitts-Überschriften (H3) |
 | XL | `--font-size-xl` | `[WERT]` | Seitenüberschriften (H2) |
@@ -135,10 +138,10 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 | Preset | Base-Wert | Beschreibung |
 |--------|-----------|--------------|
-| Klein | `[WERT]` | Kompakte Ansicht |
-| Normal | `[WERT]` | Standard |
-| Groß | `[WERT]` | Bessere Lesbarkeit |
-| Extra groß | `[WERT]` | Accessibility, ältere Nutzer |
+| Klein | `13px` | Kompakte Ansicht |
+| Normal | `15px` | Standard |
+| Groß | `17px` | Bessere Lesbarkeit |
+| Extra groß | `19px` | Accessibility, ältere Nutzer |
 
 ---
 
@@ -197,17 +200,17 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Eigenschaft | Primär | Sekundär | Danger | Ghost |
 |-------------|--------|----------|--------|-------|
 | Hintergrund | `--color-primary` | `--bg-surface` | `--color-error` | `transparent` |
-| Textfarbe | `--text-on-primary` | `--text-primary` | `[WERT]` | `--text-primary` |
+| Textfarbe | `--text-on-primary` | `--text-primary` | `#ffffff` | `--text-primary` |
 | Border | `none` | `1px solid --border-color` | `none` | `none` |
 | Border-Radius | `--radius-sm` | `--radius-sm` | `--radius-sm` | `--radius-sm` |
 | Padding | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
 | Min-Höhe | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
 | Min-Höhe Touch | `44px` | `44px` | `44px` | `44px` |
-| Hover-Effekt | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
+| Hover-Effekt | `--color-primary-hover` | `[WERT]` | `[WERT]` | `[WERT]` |
 | Active-Effekt | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
-| Disabled | `opacity: [WERT]` | `opacity: [WERT]` | `opacity: [WERT]` | `opacity: [WERT]` |
+| Disabled | `opacity: 0.5` | `opacity: 0.5` | `opacity: 0.5` | `opacity: 0.5` |
 | Box-Shadow | `[WERT]` | `[WERT]` | `[WERT]` | `none` |
-| Übergang | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
+| Übergang | `all 0.3s ease` | `all 0.3s ease` | `all 0.3s ease` | `all 0.3s ease` |
 
 ### 4.2 Eingabefelder
 
@@ -225,8 +228,8 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Min-Höhe | `[WERT]` | Desktop |
 | Min-Höhe Touch | `44px` | Mobile |
 | Textarea Expand | `[WERT]` | Auto-Expand-Verhalten (min/max Höhe) |
-| Textarea Vollbild | `[ja/nein]` | Vollbild-Modal für lange Texte |
-| Autocomplete | `off` / `new-password` | Browser-Autofill unterdrücken |
+| Textarea Vollbild | ja | Vollbild-Modal für lange Texte (`#fullscreen-modal`) |
+| Autocomplete | `off` / `new-password` | Browser-Autofill unterdrücken (Firefox-Fix Patch 101) |
 
 ### 4.3 Dropdowns & Selects
 
@@ -248,14 +251,15 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Hintergrund | `--bg-surface-raised` | Modal-Fläche |
 | Overlay | `--color-overlay` | Hintergrund-Abdunklung |
 | Max-Breite | `[WERT]` | Desktop |
-| Max-Breite Mobile | `[WERT]` | Mobile (z.B. 95vw) |
+| Max-Breite Mobile | `95vw` | Mobile |
 | Max-Höhe | `[WERT]` | Scroll bei langem Inhalt |
 | Border-Radius | `--radius-lg` | Ecken |
 | Box-Shadow | `[WERT]` | Elevation |
 | Z-Index | `--z-modal` | Über Backdrop |
 | Animation | `[WERT]` | Öffnen/Schließen |
-| Schließen-Button | `[Position, Größe]` | X-Button oben rechts |
-| Landscape-Anpassung | `[WERT]` | Höhenanpassung bei flachen Viewports |
+| Schließen-Button | `[WERT]` | X-Button oben rechts |
+| Landscape-Anpassung | Max-Höhe reduziert bei `max-height: 500px` | Höhenanpassung bei flachen Viewports |
+| Backdrop-Close | Zentraler IIFE-Handler am Script-Ende | Klick neben Modal schließt es (`#settings-modal`, `#export-modal`, `#fullscreen-modal`, `#pw-modal`). `#ee-modal` hat eigenen Handler |
 
 ### 4.5 Cards & Panels
 
@@ -277,10 +281,10 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Tab-Textfarbe | `[WERT]` | Inaktiv |
 | Tab-Textfarbe Aktiv | `[WERT]` | Aktiv |
 | Unterstrich/Highlight | `[WERT]` | Aktiver-Tab-Indikator (Farbe, Dicke) |
-| Sticky | `[ja/nein, top-Wert]` | Fixiert beim Scrollen |
-| Scroll Horizontal | `[overflow-x: auto]` | Bei vielen Tabs auf Mobile |
+| Sticky | `[WERT]` | Fixiert beim Scrollen |
+| Scroll Horizontal | `overflow-x: auto` + `scrollbar-width: none` | Bei vielen Tabs auf Mobile |
 | Touch-Target | `44px` | Minimum Höhe |
-| Persistenz | `[localStorage Key]` | Aktiver Tab über Reload merken |
+| Persistenz | `[WERT]` | Aktiver Tab über Reload merken |
 
 ### 4.7 Sidebar / Hamburger-Menü
 
@@ -288,16 +292,17 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 |-------------|------|--------------|
 | Breite | `[WERT]` | Sidebar-Breite |
 | Hintergrund | `--bg-sidebar` | Sidebar-Fläche |
-| Overlay | `[ja/nein]` | Abdunklung des Hauptinhalts |
+| Overlay | ja | Abdunklung des Hauptinhalts |
 | Animation | `[WERT]` | Öffnen/Schließen (slide, fade) |
-| Trigger | `[Hamburger-Icon / Swipe / beides]` | Wie wird die Sidebar geöffnet |
+| Trigger | Hamburger-Icon (☰) in Top-Bar | Wie wird die Sidebar geöffnet |
 | Breakpoint | `[WERT]` | Ab wann permanent sichtbar (Desktop) |
+| Inhalt | Sessions-Liste (📌 Angepinnt oben, 📋 Letzte Chats unten) + Abmelden | Pinned Sessions via `localStorage` (Migration aus sessionStorage in Patch 101) |
 
 ### 4.8 Toast-Benachrichtigungen
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Position | `[top-right / bottom-center / ...]` | Wo erscheinen Toasts |
+| Position | `[WERT]` | Wo erscheinen Toasts |
 | Dauer | `[WERT]` | Auto-Dismiss in ms |
 | Hintergrund Erfolg | `--color-success-bg` | Erfolgs-Toast |
 | Hintergrund Fehler | `--color-error-bg` | Fehler-Toast |
@@ -315,8 +320,8 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Border-Radius | `[WERT]` | Ecken |
 | Padding | `[WERT]` | Innenabstand |
 | Max-Breite | `[WERT]` | Zeilenumbruch |
-| Pfeil | `[ja/nein]` | Dreieck-Pfeil zum Trigger |
-| Trigger | `[hover / click / both]` | Auslöser (Touch: immer click) |
+| Pfeil | `[WERT]` | Dreieck-Pfeil zum Trigger |
+| Trigger | Touch: immer click | Auslöser (Touch: immer click, kein Hover) |
 | Delay | `[WERT]` | Verzögerung vor Anzeige |
 | Z-Index | `--z-tooltip` | Ganz oben |
 
@@ -329,30 +334,32 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Thumb | `--scrollbar-thumb` | Griff |
 | Thumb Hover | `[WERT]` | Griff bei Hover |
 | Border-Radius | `[WERT]` | Abrundung des Griffs |
-| Verstecken Mobile | `[ja/nein]` | `scrollbar-width: none` auf Touch |
+| Verstecken Mobile | ja | `scrollbar-width: none` auf Touch |
 
 ### 4.11 Ladeindikator / Spinner
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Typ | `[spinner / dots / skeleton / pulse]` | Art des Indikators |
-| Farbe | `[WERT]` | Spinner/Dots-Farbe |
-| Größe | `[WERT]` | Durchmesser/Breite |
-| Typing-Bubble | `[ja/nein]` | Springende Punkte bei Chat/LLM-Antwort |
-| Skeleton Screens | `[ja/nein]` | Platzhalter-Blocks beim Laden |
+| Typ | `spinner` | Spinner-Rad (Patch 102: von springenden Punkten auf Spinner umgestellt) |
+| Farbe | `[WERT]` | Spinner-Farbe |
+| Größe | `[WERT]` | Durchmesser |
+| Typing-Bubble | ja, Spinner-Rad + `@keyframes spin` | Zustandsanzeige bei Chat/LLM-Antwort |
+| Zustandsmaschine | `setTypingState('running' \| 'timeout' \| 'error')` | Visuelles Feedback: normal / 45s-Timeout / Fehler mit Retry-Button |
+| Skeleton Screens | nein | Kein Platzhalter-Block-System |
 
 ### 4.12 Chat-Bubbles
 
 | Eigenschaft | User | Bot/LLM |
 |-------------|------|---------|
-| Hintergrund | `--bubble-user-bg` | `--bubble-bot-bg` |
+| Hintergrund | `--bubble-user-bg` = `rgba(236, 64, 122, 0.88)` | `--bubble-llm-bg` = `rgba(26, 47, 78, 0.85)` |
 | Textfarbe | `--bubble-user-text` | `--bubble-bot-text` |
 | Border-Radius | `[WERT]` | `[WERT]` |
 | Max-Breite | `[WERT]` | `[WERT]` |
 | Padding | `[WERT]` | `[WERT]` |
-| Toolbar | `[Welche Buttons: Copy, Retry, Edit, Timestamp]` | `[Welche Buttons]` |
-| Toolbar Sichtbarkeit | `[hover / always / touch: always]` | `[hover / always]` |
-| Code-Blöcke | `[Hintergrund, Font, Padding]` | `[Hintergrund, Font, Padding]` |
+| Toolbar | Copy, Retry, Timestamp | Copy, Retry, Timestamp |
+| Toolbar Sichtbarkeit | Touch: always (leicht opak) | Touch: always (leicht opak) |
+| Code-Blöcke | `[WERT]` | `[WERT]` |
+| Error-Bubble | — | `showErrorBubble()` bei NetworkError + Retry-Button. SSE-Fallback prüft `/archive/session/{id}` vor echtem Retry (Patch 109) |
 
 ---
 
@@ -360,10 +367,10 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Icon-Set | `[Emoji / Lucide / FontAwesome / Custom SVG / Mix]` | Welches Icon-System |
+| Icon-Set | Emoji | Unicode-Emojis als Icon-System (☰ Navigation, 🔧 Settings, 💾 Export, 📌 Pinned, 📋 Sessions) |
 | Standardgröße | `[WERT]` | Normale Icons in Text/Buttons |
 | Große Icons | `[WERT]` | Tab-Icons, Nav-Icons |
-| Farbe | `[inherit / --text-primary / --color-primary]` | Standard-Icon-Farbe |
+| Farbe | `inherit` | Standard-Icon-Farbe |
 | Touch-Target | `44px` | Klickbereich um Icons herum (unabhängig von Icon-Größe) |
 
 ---
@@ -373,10 +380,11 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Eigenschaft | CSS-Variable | Wert | Beschreibung |
 |-------------|-------------|------|--------------|
 | Schnell | `--transition-fast` | `[WERT]` | Hover, Fokus, kleine Zustandswechsel |
-| Normal | `--transition-base` | `[WERT]` | Modals, Dropdowns, Panels |
+| Normal | `--transition-base` | `all 0.3s ease` | Modals, Dropdowns, Panels |
 | Langsam | `--transition-slow` | `[WERT]` | Seitenübergänge, große Animationen |
-| Easing | `--easing-default` | `[WERT]` | Standard-Easing (ease, ease-out, cubic-bezier) |
+| Easing | `--easing-default` | `ease` | Standard-Easing |
 | Reduce-Motion | — | `@media (prefers-reduced-motion: reduce)` | Animationen respektieren, auf Minimum reduzieren |
+| Spinner | — | `@keyframes spin` | Typing-Indicator Spinner-Rad (Patch 102) |
 
 ---
 
@@ -396,33 +404,34 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 ### 8.1 Touch-Grundregeln
 - Minimum Touch-Target: `44px` × `44px` — kleinere Buttons werden verfehlt
-- `:hover` funktioniert auf Touch nicht → IMMER `:active` als Alternative
+- `:hover` funktioniert auf Touch nicht → IMMER `:active` als Alternative (Sweep seit Patch 85)
 - Toolbar-Sichtbarkeit: auf Touch-Geräten immer sichtbar (leicht opak), nicht nur bei Hover
 - `backdrop-filter: blur()` braucht Fallback für ältere Browser
 - `-webkit-overflow-scrolling: touch` für flüssiges Scroll-Verhalten
 - `scrollbar-width: none` für cleane horizontal-scrollbare Bereiche (Tabs)
+- Primäre Nutzer: Jojo (iPhone via Tailscale), Chris (Android) — Mobile-First ist Pflicht
 
 ### 8.2 Viewport-Handling
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Höheneinheit | `[dvh / vh / svh]` | Welche Viewport-Höhe (dvh gegen Keyboard-Overlap) |
+| Höheneinheit | `dvh` | Dynamische Viewport-Höhe gegen Keyboard-Overlap |
 | Keyboard-Anpassung | `[WERT]` | Verhalten wenn Soft-Keyboard aufgeht |
-| Safe-Areas | `[env(safe-area-inset-*)]` | iPhone-Notch/Dynamic-Island |
+| Safe-Areas | `env(safe-area-inset-*)` | iPhone-Notch/Dynamic-Island |
 
 ### 8.3 Landscape-Modus
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Breakpoint | `@media (orientation: landscape) and (max-height: 500px)` | Wann greifen Landscape-Regeln |
-| Header | `[Kompaktierung: Höhe, Padding]` | Header schrumpfen |
-| Modals | `[Max-Höhe anpassen]` | Modals kleiner |
-| Input-Bar | `[Kompaktierung]` | Chat-Eingabe flacher |
+| Breakpoint | `@media (orientation: landscape) and (max-height: 500px)` | Wann greifen Landscape-Regeln (Patch 86, N-F10) |
+| Header | Kompaktierung: reduzierte Höhe + Padding | Header schrumpfen |
+| Modals | Max-Höhe anpassen | Modals kleiner |
+| Input-Bar | Kompaktierung | Chat-Eingabe flacher |
 
 ### 8.4 Offline / Shop-Floor
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Externe Abhängigkeiten | `[CDN erlaubt / alles inline]` | Darf das UI CDN-Ressourcen laden |
-| Fonts | `[Google Fonts @import / inline / system]` | Font-Ladestrategie |
-| Single-File | `[ja/nein]` | Alles in einer HTML-Datei |
+| Externe Abhängigkeiten | CDN erlaubt (jsPDF, Chart.js, chartjs-plugin-zoom, Hammer.js) | Nala lädt CDN-Ressourcen |
+| Fonts | `[WERT]` | Font-Ladestrategie |
+| Single-File | ja | Nala-HTML wird als Python-String in nala.py inline ausgeliefert |
 
 ---
 
@@ -430,14 +439,15 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Themes | `[Liste: z.B. Dark, Light, Hel-Gold, Custom]` | Verfügbare Themes |
-| Standard-Theme | `[WERT]` | Default beim ersten Besuch |
-| Speicherung | `[localStorage Key]` | Persistenz |
-| FOUC-Vermeidung | `[Early-Load-IIFE im <head>]` | Flash-of-Unstyled-Content verhindern |
-| CSS-Variablen-Root | `[:root / body.theme-X]` | Wo werden Variablen gesetzt |
-| User-Customization | `[Color-Picker / Presets / beides]` | Darf der User Farben anpassen |
-| Favoriten-Slots | `[Anzahl]` | Speicherbare Theme-Presets |
-| Was wird gespeichert | `[Theme + Bubble-Farben + Schriftgröße + ...]` | Umfang eines Favoriten-Slots |
+| Themes | Dark (Standard), weitere via Color-Picker | Verfügbare Themes |
+| Standard-Theme | Dark | Default beim ersten Besuch |
+| Speicherung | `localStorage` Keys: `nala_theme`, `nala_last_active_favorite` | Persistenz |
+| FOUC-Vermeidung | Early-Load-IIFE im `<head>` | Prüft `nala_last_active_favorite` zuerst, liest v2-Slot, wendet CSS-Props an bevor Body rendert |
+| CSS-Variablen-Root | `:root` | Wo werden Variablen gesetzt |
+| User-Customization | Color-Picker + Presets | User darf Farben anpassen (Theme-Farben + Bubble-Farben separat) |
+| Favoriten-Slots | 3 | Speicherbare Theme-Presets |
+| Was wird gespeichert | Theme + Bubble-Farben + Schriftgröße (v2-Schema seit Patch 86) | Umfang eines Favoriten-Slots |
+| Reset | `resetTheme()` → ruft `resetAllBubbles()` + `resetFontSize()` mit auf | Vollständiger Reset aller Overrides (Patch 109) |
 
 ---
 
@@ -445,13 +455,13 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Kontrast-Ziel | `[WCAG AA / AAA]` | Mindest-Kontrastverhältnis |
+| Kontrast-Ziel | WCAG AA | Mindest-Kontrastverhältnis |
 | Fokus-Indikator | `[WERT]` | Sichtbarer Fokus-Ring (Farbe, Breite, Offset) |
-| Skip-Link | `[ja/nein]` | "Zum Inhalt springen" für Screenreader |
-| Aria-Labels | `[Pflicht auf allen interaktiven Elementen]` | Screenreader-Support |
-| Reduce-Motion | `[respektieren]` | Animationen auf Minimum bei User-Präferenz |
-| Schriftgrößen-Wahl | `[ja/nein, Anzahl Presets]` | User kann Schriftgröße anpassen |
-| Farbblindheit | `[Farbe nie als einziger Informationsträger]` | Immer zusätzlich Icon/Text |
+| Skip-Link | nein | Noch nicht implementiert |
+| Aria-Labels | Pflicht auf allen interaktiven Elementen | Screenreader-Support |
+| Reduce-Motion | respektieren | Animationen auf Minimum bei User-Präferenz |
+| Schriftgrößen-Wahl | ja, 4 Presets (13/15/17/19px) | User kann Schriftgröße anpassen |
+| Farbblindheit | Farbe nie als einziger Informationsträger | Immer zusätzlich Icon/Text |
 
 ---
 
@@ -467,8 +477,29 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 ---
 
+## Offene Werte — Nächster UI-Patch ausfüllen
+
+Die folgenden Werte müssen beim nächsten UI-Patch direkt aus dem `:root`-Block in `nala.py` extrahiert werden:
+
+- **1.1 Kernfarben:** Alle Hex-Werte für Primary, Secondary, Accent und deren Hover/Muted-Varianten
+- **1.2 Hintergründe:** `--bg-app`, `--bg-surface`, `--bg-surface-raised`, `--bg-sidebar`, `--bg-input`
+- **1.3 Textfarben:** `--text-primary`, `--text-secondary`, `--text-disabled`, etc.
+- **1.4 Statusfarben:** Success/Warning/Error/Info Hex-Werte
+- **1.5 Randfarben:** Alle `--border-color-*` Werte
+- **2.1 Fonts:** Font-Familien, Ladestrategie
+- **3.1 Spacing:** Gesamte Spacing-Skala
+- **3.2 Border-Radius:** `--radius-sm`, `--radius-md`, `--radius-lg`
+- **3.4 Z-Index:** Alle Z-Index-Stufen
+- **4.x Komponenten:** Padding-Werte, Min-Höhen, Box-Shadows
+- **7. Schatten:** Alle `--shadow-*` Werte
+
+**Methode:** Claude Code Patch-Block mit `grep -n 'root\|--color\|--bg-\|--text-\|--border\|--radius\|--shadow\|--font\|--space\|--z-' zerberus/app/routers/nala.py | head -80` → Werte hierher übertragen.
+
+---
+
 ## Änderungshistorie
 
 | Datum | Beschreibung |
 |-------|--------------|
 | 2026-04-24 | Initiale Struktur angelegt (alle Werte als Platzhalter) |
+| 2026-04-24 | Erste Befüllung aus Lessons/SUPERVISOR: Bubble-Defaults, Font-Presets, Theme-System, Touch-Regeln, Spinner-Typ, Sidebar-Inhalt, Landscape, Modal-Handling, CDN-Deps, Anti-Invariante dokumentiert. ~40% der Werte befüllt, Hex-Werte aus `:root` stehen aus |
