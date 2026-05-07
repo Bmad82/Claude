@@ -82,16 +82,27 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Scrollbar Track | `--scrollbar-track` | `[WERT]` | Scrollbar-Hintergrund |
 | Scrollbar Thumb | `--scrollbar-thumb` | `[WERT]` | Scrollbar-Griff |
 
-**Anti-Invariante:** Bubble-Backgrounds dürfen NIE `#000000` oder `transparent` als Default haben — "nie schwarz auf schwarz". Immer rgba-Werte mit Alpha 0.85–0.88 als Basis verwenden. `resetTheme()` muss `resetAllBubbles()` + `resetFontSize()` mitrufen.
+**Anti-Invariante:** Bubble-Backgrounds dürfen NIE `#000000` oder `transparent` als Default haben — "nie schwarz auf schwarz".
+Immer rgba-Werte mit Alpha 0.85–0.88 als Basis verwenden. `resetTheme()` muss `resetAllBubbles()` + `resetFontSize()` mitrufen.
 
 ### 1.7 Dark/Light Mode
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Standard-Modus | `dark` | Dark-First — Nala ist primär ein Dark-Mode-UI |
+| Standard-Modus | `dark` | Dark-First — primär ein Dark-Mode-UI |
 | Umschaltbar | ja | Theme-Presets via Settings-Modal |
 | Speicherung | `localStorage` Keys: `nala_theme`, `nala_last_active_favorite`, `nala_fav_1`…`nala_fav_3` (v2-Schema) | Persistenz über Browser-Neustart |
 | FOUC-Vermeidung | Early-Load-IIFE im `<head>` | Prüft `nala_last_active_favorite` → lädt Fav-Slot (v2: Theme + Bubble + fontSize) → wendet CSS-Props an, bevor Body rendert. Fav hat Vorrang vor flachem `nala_theme` |
+
+### 1.8 Hintergrundbild
+
+| Eigenschaft | CSS-Variable | Wert | Beschreibung |
+|-------------|-------------|------|--------------|
+| Bild-URL | `--bg-image-url` | `none` | Vom User wählbares Hintergrundbild |
+| Skalierung | `--bg-image-size` | `cover` | `cover`, `contain`, `stretch`, `tile` — User-wählbar |
+| Position | `--bg-image-position` | `center center` | Ausrichtung des Bildes |
+| Durchscheinen | `--bg-image-opacity` | `0.15` | Wie stark das Bild durchscheint (0.0–1.0). Default sehr dezent |
+| Overlay-Methode | — | `::before` Pseudo-Element mit `--bg-app` + `--bg-image-opacity` | Hintergrundbild liegt unter einem halbtransparenten Overlay der App-Hintergrundfarbe |
 
 ---
 
@@ -112,7 +123,7 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 |-------|-------------|------|---------|
 | XS | `--font-size-xs` | `[WERT]` | Timestamps, Badges, Footnotes |
 | SM | `--font-size-sm` | `[WERT]` | Labels, Hilfstexte, Captions |
-| Base | `--font-size-base` | `15px` (Preset "Normal") | Fließtext, Inputs, Buttons |
+| Base | `--font-size-base` | `15px` (Default) | Fließtext, Inputs, Buttons |
 | MD | `--font-size-md` | `[WERT]` | Hervorgehobener Text, Card-Titel |
 | LG | `--font-size-lg` | `[WERT]` | Abschnitts-Überschriften (H3) |
 | XL | `--font-size-xl` | `[WERT]` | Seitenüberschriften (H2) |
@@ -134,14 +145,25 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Medium | `--font-weight-medium` | `[WERT]` | Labels, leichte Hervorhebung |
 | Bold | `--font-weight-bold` | `[WERT]` | Überschriften, starke Hervorhebung |
 
-### 2.5 Schriftgrößen-Presets (User-wählbar)
+### 2.5 Skalierungssystem (2-Achsen)
 
-| Preset | Base-Wert | Beschreibung |
-|--------|-----------|--------------|
-| Klein | `13px` | Kompakte Ansicht |
-| Normal | `15px` | Standard |
-| Groß | `17px` | Bessere Lesbarkeit |
-| Extra groß | `19px` | Accessibility, ältere Nutzer |
+Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ / −), sofort sichtbare Änderung ohne Speichern-Button.
+
+| Achse | CSS-Variable | Beschreibung | Min | Max | Schrittweite |
+|-------|-------------|--------------|-----|-----|-------------|
+| UI-Skalierung | `--ui-scale` | Symbole, Buttons, Touch-Targets, Abstände, UI-Labels. Beeinflusst NICHT den Chat-Content | `0.8` | `1.5` | `0.05` |
+| Content-Schriftgröße | `--font-size-base` | Text in Bubbles (User + LLM). Unabhängig von UI-Elementen | `11px` | `24px` | `1px` |
+
+**Interaktion mit System-Einstellungen:**
+- Android/iOS-Schriftgröße wirkt auf WebView-Text (multiplikativ). Wenn System "groß" + App "groß" → wird sehr groß. Das ist erwartetes Verhalten, kein Bug.
+- Android-Anzeigegröße beeinflusst WebView-Layout proportional.
+- SVG/Image-Icons werden von System-Schriftgrößeneinstellungen NICHT beeinflusst. Emoji-Icons als Text-Glyphen dagegen schon.
+- UI-Skalierung in der App kompensiert oder verstärkt System-Einstellungen — der User hat die Kontrolle.
+
+**Caps & Schutz:**
+- Bei jedem Skalierungsschritt prüfen: überlappen UI-Elemente? Falls ja → Schritt wird nicht ausgeführt, visuelles Feedback.
+- Min/Max-Werte sind so gewählt, dass kein Layout bricht, aber ein großer Bereich abgedeckt wird.
+- Testbar per Loki/Vidar: Extreme-Skalierung als Testfall.
 
 ---
 
@@ -186,10 +208,20 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Basis | `--z-base` | `[WERT]` | Normaler Content |
 | Sticky | `--z-sticky` | `[WERT]` | Sticky Header, Tab-Leisten |
 | Dropdown | `--z-dropdown` | `[WERT]` | Dropdowns, Autocomplete |
+| Scroll-Nav | `--z-scroll-nav` | `[WERT]` | Scroll-Navigationsleiste (über Content, unter Modal) |
 | Modal-Backdrop | `--z-backdrop` | `[WERT]` | Overlay hinter Modal |
 | Modal | `--z-modal` | `[WERT]` | Modals, Dialoge |
 | Toast | `--z-toast` | `[WERT]` | Benachrichtigungen, Toasts |
 | Tooltip | `--z-tooltip` | `[WERT]` | Tooltips, immer oben |
+
+### 3.5 Layout-Grundregel
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| LLM-Ausgabe Breite | `100%` | LLM-Antworten nutzen die volle Bildschirmbreite. Kein Avatar-Einzug, kein verschenkter Platz |
+| User-Bubble Breite | `100%` | User-Eingaben ebenfalls volle Breite |
+| Content Max-Width | `[WERT]` | Optional: Max-Width auf Desktop um Lesebreite zu begrenzen. Mobile: immer 100% |
+| Höheneinheit | `dvh` | `dvh` statt `vh` — respektiert dynamische Viewport-Höhe (Mobile-Keyboard) |
 
 ---
 
@@ -227,11 +259,20 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Border-Radius | `--radius-sm` | Ecken |
 | Min-Höhe | `[WERT]` | Desktop |
 | Min-Höhe Touch | `44px` | Mobile |
-| Textarea Expand | `[WERT]` | Auto-Expand-Verhalten (min/max Höhe) |
-| Textarea Vollbild | ja | Vollbild-Modal für lange Texte (`#fullscreen-modal`) |
-| Autocomplete | `off` / `new-password` | Browser-Autofill unterdrücken (Firefox-Fix Patch 101) |
+| Autocomplete | `off` / `new-password` | Browser-Autofill unterdrücken |
 
-### 4.3 Dropdowns & Selects
+### 4.3 Chat-Eingabefeld (Textarea)
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Breite | `100%` | Volle Breite, kein verschenkter Platz |
+| Höhe inaktiv | `44px` (eine Zeile) | Kollabiert wenn Fokus verloren. Zeigt letzte eingegebene Zeile |
+| Höhe aktiv | `~33dvh` (~1/3 Bildschirm) | Expandiert bei Fokus. Ergibt zusammen mit Tastatur (~1/3) noch ~1/3 sichtbaren Chat |
+| Expansion | Sanfte CSS-Transition | Kein harter Sprung, smooth expand/collapse |
+| Overflow | `auto` (scroll) | Bei sehr langen Eingaben innerhalb der 1/3-Höhe scrollen |
+| Vollbild-Modal | ja | Optionaler Vollbild-Modus für sehr lange Texte (`#fullscreen-modal`) |
+
+### 4.4 Dropdowns & Selects
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
@@ -242,124 +283,7 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Border | `[WERT]` | Rand des Dropdown-Containers |
 | Box-Shadow | `[WERT]` | Elevation/Schatten |
 | Z-Index | `--z-dropdown` | Über dem Content |
-| Animation | `[WERT]` | Öffnen/Schließen (z.B. slideDown, fade) |
-
-### 4.4 Modals & Dialoge
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Hintergrund | `--bg-surface-raised` | Modal-Fläche |
-| Overlay | `--color-overlay` | Hintergrund-Abdunklung |
-| Max-Breite | `[WERT]` | Desktop |
-| Max-Breite Mobile | `95vw` | Mobile |
-| Max-Höhe | `[WERT]` | Scroll bei langem Inhalt |
-| Border-Radius | `--radius-lg` | Ecken |
-| Box-Shadow | `[WERT]` | Elevation |
-| Z-Index | `--z-modal` | Über Backdrop |
 | Animation | `[WERT]` | Öffnen/Schließen |
-| Schließen-Button | `[WERT]` | X-Button oben rechts |
-| Landscape-Anpassung | Max-Höhe reduziert bei `max-height: 500px` | Höhenanpassung bei flachen Viewports |
-| Backdrop-Close | Zentraler IIFE-Handler am Script-Ende | Klick neben Modal schließt es (`#settings-modal`, `#export-modal`, `#fullscreen-modal`, `#pw-modal`). `#ee-modal` hat eigenen Handler |
-
-### 4.5 Cards & Panels
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Hintergrund | `--bg-surface` | Card-Fläche |
-| Border | `[WERT]` | Rand |
-| Border-Radius | `--radius-md` | Ecken |
-| Padding | `[WERT]` | Innenabstand |
-| Box-Shadow | `[WERT]` | Elevation |
-| Hover-Effekt | `[WERT]` | Falls klickbar |
-
-### 4.6 Tabs & Navigation
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Tab-Hintergrund | `[WERT]` | Inaktiver Tab |
-| Tab-Hintergrund Aktiv | `[WERT]` | Aktiver Tab |
-| Tab-Textfarbe | `[WERT]` | Inaktiv |
-| Tab-Textfarbe Aktiv | `[WERT]` | Aktiv |
-| Unterstrich/Highlight | `[WERT]` | Aktiver-Tab-Indikator (Farbe, Dicke) |
-| Sticky | `[WERT]` | Fixiert beim Scrollen |
-| Scroll Horizontal | `overflow-x: auto` + `scrollbar-width: none` | Bei vielen Tabs auf Mobile |
-| Touch-Target | `44px` | Minimum Höhe |
-| Persistenz | `[WERT]` | Aktiver Tab über Reload merken |
-
-### 4.7 Sidebar / Hamburger-Menü
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Breite | `[WERT]` | Sidebar-Breite |
-| Hintergrund | `--bg-sidebar` | Sidebar-Fläche |
-| Overlay | ja | Abdunklung des Hauptinhalts |
-| Animation | `[WERT]` | Öffnen/Schließen (slide, fade) |
-| Trigger | Hamburger-Icon (☰) in Top-Bar | Wie wird die Sidebar geöffnet |
-| Breakpoint | `[WERT]` | Ab wann permanent sichtbar (Desktop) |
-| Inhalt | Sessions-Liste (📌 Angepinnt oben, 📋 Letzte Chats unten) + Abmelden | Pinned Sessions via `localStorage` (Migration aus sessionStorage in Patch 101) |
-
-### 4.8 Toast-Benachrichtigungen
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Position | `[WERT]` | Wo erscheinen Toasts |
-| Dauer | `[WERT]` | Auto-Dismiss in ms |
-| Hintergrund Erfolg | `--color-success-bg` | Erfolgs-Toast |
-| Hintergrund Fehler | `--color-error-bg` | Fehler-Toast |
-| Hintergrund Info | `--color-info-bg` | Info-Toast |
-| Animation | `[WERT]` | Ein-/Ausblenden |
-| Z-Index | `--z-toast` | Immer sichtbar |
-| Max-Breite | `[WERT]` | Begrenzung auf Mobile |
-
-### 4.9 Tooltips
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Hintergrund | `[WERT]` | Tooltip-Blase |
-| Textfarbe | `[WERT]` | Tooltip-Text |
-| Border-Radius | `[WERT]` | Ecken |
-| Padding | `[WERT]` | Innenabstand |
-| Max-Breite | `[WERT]` | Zeilenumbruch |
-| Pfeil | `[WERT]` | Dreieck-Pfeil zum Trigger |
-| Trigger | Touch: immer click | Auslöser (Touch: immer click, kein Hover) |
-| Delay | `[WERT]` | Verzögerung vor Anzeige |
-| Z-Index | `--z-tooltip` | Ganz oben |
-
-### 4.10 Scrollbars
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Breite | `[WERT]` | Scrollbar-Breite (webkit) |
-| Track | `--scrollbar-track` | Hintergrund |
-| Thumb | `--scrollbar-thumb` | Griff |
-| Thumb Hover | `[WERT]` | Griff bei Hover |
-| Border-Radius | `[WERT]` | Abrundung des Griffs |
-| Verstecken Mobile | ja | `scrollbar-width: none` auf Touch |
-
-### 4.11 Ladeindikator / Spinner
-
-| Eigenschaft | Wert | Beschreibung |
-|-------------|------|--------------|
-| Typ | `spinner` | Spinner-Rad (Patch 102: von springenden Punkten auf Spinner umgestellt) |
-| Farbe | `[WERT]` | Spinner-Farbe |
-| Größe | `[WERT]` | Durchmesser |
-| Typing-Bubble | ja, Spinner-Rad + `@keyframes spin` | Zustandsanzeige bei Chat/LLM-Antwort |
-| Zustandsmaschine | `setTypingState('running' \| 'timeout' \| 'error')` | Visuelles Feedback: normal / 45s-Timeout / Fehler mit Retry-Button |
-| Skeleton Screens | nein | Kein Platzhalter-Block-System |
-
-### 4.12 Chat-Bubbles
-
-| Eigenschaft | User | Bot/LLM |
-|-------------|------|---------|
-| Hintergrund | `--bubble-user-bg` = `rgba(236, 64, 122, 0.88)` | `--bubble-llm-bg` = `rgba(26, 47, 78, 0.85)` |
-| Textfarbe | `--bubble-user-text` | `--bubble-bot-text` |
-| Border-Radius | `[WERT]` | `[WERT]` |
-| Max-Breite | `[WERT]` | `[WERT]` |
-| Padding | `[WERT]` | `[WERT]` |
-| Toolbar | Copy, Retry, Timestamp | Copy, Retry, Timestamp |
-| Toolbar Sichtbarkeit | Touch: always (leicht opak) | Touch: always (leicht opak) |
-| Code-Blöcke | `[WERT]` | `[WERT]` |
-| Error-Bubble | — | `showErrorBubble()` bei NetworkError + Retry-Button. SSE-Fallback prüft `/archive/session/{id}` vor echtem Retry (Patch 109) |
 
 ---
 
@@ -382,9 +306,10 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Schnell | `--transition-fast` | `[WERT]` | Hover, Fokus, kleine Zustandswechsel |
 | Normal | `--transition-base` | `all 0.3s ease` | Modals, Dropdowns, Panels |
 | Langsam | `--transition-slow` | `[WERT]` | Seitenübergänge, große Animationen |
+| Sehr langsam | `--transition-ambient` | `all 12s ease-in-out` | Sentiment-Ambient-Farbwechsel (10–15s Fade) |
 | Easing | `--easing-default` | `ease` | Standard-Easing |
 | Reduce-Motion | — | `@media (prefers-reduced-motion: reduce)` | Animationen respektieren, auf Minimum reduzieren |
-| Spinner | — | `@keyframes spin` | Typing-Indicator Spinner-Rad (Patch 102) |
+| Spinner | — | `@keyframes spin` | Typing-Indicator Spinner-Rad |
 
 ---
 
@@ -397,61 +322,232 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Mittel | `--shadow-md` | `[WERT]` | Dropdowns, erhöhte Panels |
 | Hoch | `--shadow-lg` | `[WERT]` | Modals, Toasts |
 | Innen | `--shadow-inset` | `[WERT]` | Eingedrückte Inputs, Toggle-Tracks |
+| Sentiment | `--shadow-sentiment` | `none` (default) | Dynamisch: wird bei Sentiment-Stufe 2 auf aktuelle Sentiment-Farbe gesetzt |
 
 ---
 
-## 8. Mobile-spezifische Regeln
+## 8. Chat-Nachrichten — Collapse-System
 
-### 8.1 Touch-Grundregeln
-- Minimum Touch-Target: `44px` × `44px` — kleinere Buttons werden verfehlt
-- `:hover` funktioniert auf Touch nicht → IMMER `:active` als Alternative (Sweep seit Patch 85)
-- Toolbar-Sichtbarkeit: auf Touch-Geräten immer sichtbar (leicht opak), nicht nur bei Hover
-- `backdrop-filter: blur()` braucht Fallback für ältere Browser
-- `-webkit-overflow-scrolling: touch` für flüssiges Scroll-Verhalten
-- `scrollbar-width: none` für cleane horizontal-scrollbare Bereiche (Tabs)
-- Primäre Nutzer: Jojo (iPhone via Tailscale), Chris (Android) — Mobile-First ist Pflicht
+### 8.1 User-Bubbles
 
-### 8.2 Viewport-Handling
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Höheneinheit | `dvh` | Dynamische Viewport-Höhe gegen Keyboard-Overlap |
-| Keyboard-Anpassung | `[WERT]` | Verhalten wenn Soft-Keyboard aufgeht |
-| Safe-Areas | `env(safe-area-inset-*)` | iPhone-Notch/Dynamic-Island |
+| Auto-Collapse | ja, bei > 2 Zeilen | Nachrichten mit mehr als 2 Zeilen werden automatisch eingeklappt |
+| Collapse-Default | eingeklappt | User-Nachrichten sind standardmäßig eingeklappt (sobald gesendet) |
+| Preview bei Collapse | letzte Zeile | Zeigt die letzte Zeile des Textes — User weiß wo er zuletzt war |
+| Aufklappen | Tap auf Bubble | Tap klappt auf/zu |
+| Animation | `--transition-base` | Sanftes Expand/Collapse |
 
-### 8.3 Landscape-Modus
+### 8.2 LLM-Ausgaben
+
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Breakpoint | `@media (orientation: landscape) and (max-height: 500px)` | Wann greifen Landscape-Regeln (Patch 86, N-F10) |
-| Header | Kompaktierung: reduzierte Höhe + Padding | Header schrumpfen |
-| Modals | Max-Höhe anpassen | Modals kleiner |
-| Input-Bar | Kompaktierung | Chat-Eingabe flacher |
+| Einklappbar | ja, per Toggle | Dreieck-Icon (▶ eingeklappt / ▼ aufgeklappt) |
+| Collapse-Default | aufgeklappt | LLM-Antworten sind standardmäßig sichtbar |
+| Preview bei Collapse | erste Zeile | Zeigt den Anfang der Antwort als Orientierung |
+| Toggle-Position | links oben an der Nachricht | Dreieck + erste Zeile als Überschrift |
+| Breite | `100%` | Volle Bildschirmbreite, kein Avatar-Einzug |
 
-### 8.4 Offline / Shop-Floor
+### 8.3 Reasoning-Block
+
+Wird angezeigt wenn das LLM Reasoning/Thinking-Output liefert (z.B. `<think>`-Tags, `thinking`-Parameter).
+
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Externe Abhängigkeiten | CDN erlaubt (jsPDF, Chart.js, chartjs-plugin-zoom, Hammer.js) | Nala lädt CDN-Ressourcen |
-| Fonts | `[WERT]` | Font-Ladestrategie |
-| Single-File | ja | Nala-HTML wird als Python-String in nala.py inline ausgeliefert |
+| Position | über der eigentlichen Antwort | Reasoning kommt zuerst, Antwort folgt darunter |
+| Default-Zustand | eingeklappt | User sieht primär die Antwort, kann Reasoning aufklappen |
+| Toggle | Dreieck-Icon + Label "Reasoning" / "Gedankengang" | Klickbar zum Auf-/Zuklappen |
+| Einrückung | `--space-md` nach rechts | Leicht nach rechts verschoben gegenüber der Antwort |
+| Linke Begrenzung | halbtransparenter vertikaler Strich (`--border-color-light`, `opacity: 0.4`) | Visuell eingefasst, "Gedanke, nicht Sprache" |
+| Opacity | `0.7–0.8` | Reduzierte Deckkraft — wirkt wie ein Gedanke, nicht ganz stofflich |
+| Saturation | reduziert (`filter: saturate(0.7)`) | Dezenter als die eigentliche Antwort |
+| Antwort-Reset | Antwort setzt am linken Rand an, volle Opacity | Klarer visueller Bruch: Reasoning → Antwort |
 
 ---
 
-## 9. Theme-System
+## 9. LLM-Icon-Anzeige
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Position | oben links an der LLM-Nachricht, neben dem Collapse-Toggle | Klein, nicht dominant |
+| Quelle | OpenRouter Modell-API (`icon`-Feld) oder Provider-Logo | Wird automatisch geladen |
+| Fallback | Erster Buchstabe des Modellnamens als Badge | Wenn kein Icon verfügbar |
+| Größe | `20–24px` | Klein genug um nicht zu stören, groß genug um erkennbar zu sein |
+| Wechsel bei Reasoning | Zeigt das tatsächlich verwendete Modell | Wenn Intent-Router auf Reasoning-Modell switcht → anderes Icon sichtbar |
+
+---
+
+## 10. Sentiment-Ambient-Lighting
+
+Sanfter Farbschimmer der gesamten Oberfläche basierend auf der Stimmung des Users.
+
+### 10.1 Trigger & Datenquelle
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Quelle | nur User-Stimmung | LLM-Ausgaben werden NICHT ausgewertet |
+| Bedingung | BERT + Prosodie müssen übereinstimmen (Konsens) | Nur BERT allein → kein Effekt (zu wackelig). Nur bei Prosodie+BERT-Konsens |
+| Auswertungsfenster | alle 2 Nachrichten | Gemittelt über die letzten 2–3 User-Nachrichten |
+| Abschaltbar | ja | Komplett deaktivierbar in den Einstellungen |
+
+### 10.2 Farbmapping
+
+| Stimmung | CSS-Variable | Farbrichtung | Beschreibung |
+|----------|-------------|-------------|--------------|
+| Neutral/Ausgeglichen | `--sentiment-neutral` | keiner oder hauchzartes Blau | Kein merklicher Effekt |
+| Wut/Frustration | `--sentiment-anger` | Rot-Schimmer | `[WERT]` — z.B. `rgba(220, 40, 40, ...)` |
+| Freude/Begeisterung | `--sentiment-joy` | Warmes Gold/Gelb | `[WERT]` — z.B. `rgba(255, 200, 50, ...)` |
+| Nachdenklich/Philosophisch | `--sentiment-contemplative` | Violett/Indigo | `[WERT]` — z.B. `rgba(100, 60, 180, ...)` |
+| Technisch/Sachlich | `--sentiment-technical` | Kühles Blau | `[WERT]` — z.B. `rgba(40, 100, 200, ...)` |
+
+### 10.3 Stufen & Verstärkung
+
+| Stufe | Opacity-Bereich | Effekt | Beschreibung |
+|-------|----------------|--------|--------------|
+| 0 — Neutral | `0%` | Kein Schimmer | Ausgangszustand |
+| 1 — Zart | `3–6%` | Hintergrund-Schimmer | Kaum merklich, fällt erst nach 2–3 Prompts auf |
+| 2 — Erkennbar | `6–9%` | Hintergrund + Bubble-Schatten nehmen Farbe an | Stimmung hält an → Schimmer verstärkt sich |
+| 3 — Deutlich | `9–12%` | Wie Stufe 2, intensiver | Lange konsistente Stimmung (6+ Nachrichten) |
+| Max | `15%` | Maximale Intensität, nie überschritten | Deckel. Auch bei 100 konsistenten Nachrichten nie mehr als 15% |
+
+**Verstärkung:** +3% Opacity pro konsistentem Auswertungsfenster (alle 2 Nachrichten). Bei Stimmungswechsel: Abbau über dieselbe Zeitkonstante (10–15s Fade) auf den neuen Wert.
+
+### 10.4 Timing
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Fade-In | `10–15s` (`--transition-ambient`) | So langsam, dass man den Wechsel nicht bewusst wahrnimmt |
+| Fade-Out | `10–15s` | Symmetrisch zum Fade-In |
+| Kein harter Sprung | CSS-Transition, kein Step-Wechsel | Immer fließend, nie "klack" |
+| Effekt-Ort | `--bg-app` bekommt halbtransparentes Overlay in Sentiment-Farbe | Gesamte Chat-Fläche |
+| Stufe-2-Zusatz | `--shadow-sentiment` auf Bubble-Shadows | Schatten nehmen Sentiment-Farbe an |
+
+---
+
+## 11. Scroll-Navigationsleiste
+
+Vertikale Navigationsleiste am linken Bildschirmrand mit Ankerpunkten für jede LLM-Antwort.
+
+### 11.1 Aussehen
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Position | linker Bildschirmrand | Außerhalb der Swipe-Back-Zone (iOS) und Daumen-Scroll-Zone (rechts) |
+| Opacity | `0.25` (75% transparent) | Dezent, stört den Chat-Content nicht |
+| Design | Vertikaler Strich mit Gabelungs-Punkten | Der Strich gabelt sich zu einem kleinen Oval pro LLM-Antwort und führt wieder zusammen — organisch, wie Nervenbahnen |
+| Punkt-Abstand | fester Abstand (`[WERT]`px) | Immer gleiche Abstände, keine Kompression |
+| Scrollbar der Leiste | ja, eigenständig scrollbar | Bei vielen Antworten: Touch auf der Leiste scrollt nur die Leiste, nicht den Chat |
+| Farbe | `--text-secondary` oder `--border-color-light` | Passt sich dem Theme an |
+
+### 11.2 Verhalten
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Sichtbarkeit | versteckt (default) | Nicht permanent sichtbar |
+| Erscheinen | nach ~1s aktivem Scrollen | Bildschirm muss "wackeln" — erst dann Fade-In |
+| Fade-In | `--transition-base` (0.3s) | Sanftes Einblenden |
+| Fade-Out | nach 2–3s Scroll-Stillstand | Verschwindet wieder wenn nicht gebraucht |
+| Klick-Delay | `300ms` | Punkte werden erst nach 300ms Stillstand klickbar — verhindert versehentliche Sprünge |
+| Klick-Aktion | Scrollt Chat zu der entsprechenden LLM-Antwort | Smooth-Scroll zum Ankerpunkt |
+
+---
+
+## 12. Sidebar / Hamburger-Menü
+
+### 12.1 Verhalten
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Öffnungs-Methode | Content schiebt zur Seite | KEIN Overlay/Überklappen — der Chat-Content rutscht nach rechts, Sidebar schiebt sich von links rein |
+| Animation | `--transition-base` | Sanftes Slide |
+| Schließen | Tap außerhalb oder Hamburger-Icon erneut | Standard-Pattern |
+
+### 12.2 Aufbau (von oben nach unten)
+
+| Position | Element | Beschreibung |
+|----------|---------|--------------|
+| Ganz oben | 🔍 Lupe / Suchfeld | Durchsucht Chat-Historie |
+| Darunter | "Neuer Chat" Button | Startet neue Session |
+| Darunter | "Projekte" Button | Navigiert zur Projektseite (eigene View) |
+| Mitte | Chat-Historie | Liste der bisherigen Chats, scrollbar |
+| Unten (fixiert) | Einstellungen + Abmelden | Immer sichtbar, kein Scrollen nötig. 44px Touch-Targets |
+
+---
+
+## 13. Projektseite
+
+Eigene View, erreichbar über Sidebar → "Projekte". NICHT in den Einstellungen.
+
+### 13.1 Projektübersicht
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Suchleiste | oben | Durchsucht Projektnamen |
+| Sortierung | wählbar: "Letzter Zugriff" oder "Name" | Toggle oder Dropdown |
+| Favoriten | eigene Sektion oben, angepinnt | Folgen derselben Sortierlogik (Zugriff oder Name) untereinander |
+| Trennung | Visueller Separator zwischen angepinnten und normalen Projekten | Klar erkennbar |
+| "Neues Projekt" | versteckt, Pull-Gesture ganz oben | Nur sichtbar wenn man am oberen Rand nochmal nach unten zieht. Bewusst versteckt (Anti-Clutter) |
+
+### 13.2 Projekt-Detailansicht
+
+| Eigenschaft | Beschreibung |
+|-------------|--------------|
+| Anweisungen | Projektanweisungen / System-Prompt für das Projekt |
+| Ressourcen | Projektdateien, hochgeladene Dokumente |
+| Chat-Liste | Alle Chats innerhalb dieses Projekts |
+| "Neuer Chat" Button | Startet neuen Chat in diesem Projekt |
+
+---
+
+## 14. UX-Prinzipien
+
+### 14.1 Automatisierung über manuelle Kontrolle
+
+| Prinzip | Beschreibung |
+|---------|--------------|
+| Kein manueller Reasoning-Toggle | Intent-Router entscheidet automatisch per effort_score ob ein Reasoning-Modell verwendet wird. User spürt keine Reibung |
+| Show, don't tell | Modell-Wechsel wird über LLM-Icon sichtbar gemacht, aber nicht per Text/Toast angekündigt |
+| Sentiment passiv | Ambient-Lighting reagiert auf den User, ohne dass er es aktivieren muss |
+
+### 14.2 Intent-Router → Reasoning-Mapping (UX-Seite)
+
+| Eigenschaft | Wert | Beschreibung |
+|-------------|------|--------------|
+| Trigger | `effort_score > [SCHWELLWERT]` | Ab einem bestimmten Effort-Score switcht der Router auf das Reasoning-Modell |
+| Modell-Mapping | Config pro Modell | Jedes Modell hat eine optionale `reasoning_variant` — entweder ein separates Modell oder ein API-Parameter |
+| Kein Reasoning verfügbar | Standardmodell bleibt | Wenn `reasoning_variant: null` → kein Switch, kein Fehler |
+| UI-Feedback | LLM-Icon wechselt | Einziges sichtbares Zeichen des Switches |
+
+### 14.3 Mobile-First-Regeln
+
+| Regel | Beschreibung |
+|-------|--------------|
+| Touch-Targets | Minimum `44px` auf allen interaktiven Elementen |
+| `:active` statt `:hover` | Für alle Touch-Interaktionen. `:hover` nur als Enhancement auf Desktop |
+| `dvh` statt `vh` | Dynamische Viewport-Höhe respektiert Mobile-Keyboard |
+| Daumen-Zone | Wichtige Aktionen im unteren Bildschirmbereich |
+| Swipe-Konflikte vermeiden | Rechter Rand = iOS Swipe-Back. Linker Rand = Sidebar-Swipe. Interaktive Elemente nicht an den äußersten Rändern |
+
+---
+
+## 15. Theme-System
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
 | Themes | Dark (Standard), weitere via Color-Picker | Verfügbare Themes |
 | Standard-Theme | Dark | Default beim ersten Besuch |
-| Speicherung | `localStorage` Keys: `nala_theme`, `nala_last_active_favorite` | Persistenz |
+| Speicherung | `localStorage` Keys: `nala_theme`, `nala_last_active_favorite`, `nala_fav_1`…`nala_fav_3` (v2-Schema) | Persistenz über Browser-Neustart |
 | FOUC-Vermeidung | Early-Load-IIFE im `<head>` | Prüft `nala_last_active_favorite` zuerst, liest v2-Slot, wendet CSS-Props an bevor Body rendert |
 | CSS-Variablen-Root | `:root` | Wo werden Variablen gesetzt |
 | User-Customization | Color-Picker + Presets | User darf Farben anpassen (Theme-Farben + Bubble-Farben separat) |
 | Favoriten-Slots | 3 | Speicherbare Theme-Presets |
-| Was wird gespeichert | Theme + Bubble-Farben + Schriftgröße (v2-Schema seit Patch 86) | Umfang eines Favoriten-Slots |
-| Reset | `resetTheme()` → ruft `resetAllBubbles()` + `resetFontSize()` mit auf | Vollständiger Reset aller Overrides (Patch 109) |
+| Was wird gespeichert | Theme + Bubble-Farben + Schriftgröße + UI-Skalierung (v2-Schema) | Umfang eines Favoriten-Slots |
+| Hintergrundbild | im Favoriten-Slot mitgespeichert | URL + Opacity + Skalierung |
+| Reset | `resetTheme()` → ruft `resetAllBubbles()` + `resetFontSize()` + `resetUiScale()` mit auf | Vollständiger Reset aller Overrides |
 
 ---
 
-## 10. Accessibility
+## 16. Accessibility
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
@@ -459,13 +555,13 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 | Fokus-Indikator | `[WERT]` | Sichtbarer Fokus-Ring (Farbe, Breite, Offset) |
 | Skip-Link | nein | Noch nicht implementiert |
 | Aria-Labels | Pflicht auf allen interaktiven Elementen | Screenreader-Support |
-| Reduce-Motion | respektieren | Animationen auf Minimum bei User-Präferenz |
-| Schriftgrößen-Wahl | ja, 4 Presets (13/15/17/19px) | User kann Schriftgröße anpassen |
-| Farbblindheit | Farbe nie als einziger Informationsträger | Immer zusätzlich Icon/Text |
+| Reduce-Motion | respektieren | Animationen auf Minimum bei User-Präferenz. Sentiment-Fade → sofortiger Wechsel |
+| Skalierung | 2-Achsen-System (siehe 2.5) | User kann UI und Schrift unabhängig anpassen |
+| Farbblindheit | Farbe nie als einziger Informationsträger | Immer zusätzlich Icon/Text. Gilt auch für Sentiment-Schimmer — rein dekorativ, transportiert keine kritische Information |
 
 ---
 
-## 11. Dokumentations-Stil (für Schulungen / Shop-Floor)
+## 17. Dokumentations-Stil (für Schulungen / Shop-Floor)
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
@@ -479,7 +575,7 @@ Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier ei
 
 ## Offene Werte — Nächster UI-Patch ausfüllen
 
-Die folgenden Werte müssen beim nächsten UI-Patch direkt aus dem `:root`-Block in `nala.py` extrahiert werden:
+Die folgenden Werte müssen beim nächsten UI-Patch direkt aus dem `:root`-Block extrahiert werden:
 
 - **1.1 Kernfarben:** Alle Hex-Werte für Primary, Secondary, Accent und deren Hover/Muted-Varianten
 - **1.2 Hintergründe:** `--bg-app`, `--bg-surface`, `--bg-surface-raised`, `--bg-sidebar`, `--bg-input`
@@ -492,8 +588,7 @@ Die folgenden Werte müssen beim nächsten UI-Patch direkt aus dem `:root`-Block
 - **3.4 Z-Index:** Alle Z-Index-Stufen
 - **4.x Komponenten:** Padding-Werte, Min-Höhen, Box-Shadows
 - **7. Schatten:** Alle `--shadow-*` Werte
-
-**Methode:** Claude Code Patch-Block mit `grep -n 'root\|--color\|--bg-\|--text-\|--border\|--radius\|--shadow\|--font\|--space\|--z-' zerberus/app/routers/nala.py | head -80` → Werte hierher übertragen.
+- **11.1 Scroll-Nav:** Punkt-Abstand in Pixel
 
 ---
 
@@ -502,4 +597,5 @@ Die folgenden Werte müssen beim nächsten UI-Patch direkt aus dem `:root`-Block
 | Datum | Beschreibung |
 |-------|--------------|
 | 2026-04-24 | Initiale Struktur angelegt (alle Werte als Platzhalter) |
-| 2026-04-24 | Erste Befüllung aus Lessons/SUPERVISOR: Bubble-Defaults, Font-Presets, Theme-System, Touch-Regeln, Spinner-Typ, Sidebar-Inhalt, Landscape, Modal-Handling, CDN-Deps, Anti-Invariante dokumentiert. ~40% der Werte befüllt, Hex-Werte aus `:root` stehen aus |
+| 2026-04-24 | Erste Befüllung aus Lessons/SUPERVISOR: Bubble-Defaults, Font-Presets, Theme-System, Touch-Regeln, Spinner-Typ, Sidebar-Inhalt, Landscape, Modal-Handling, CDN-Deps, Anti-Invariante dokumentiert. ~40% der Werte befüllt |
+| 2026-05-07 | Große Erweiterung: Sentiment-Ambient-Lighting (Sek. 10), Scroll-Nav (11), Sidebar-Aufbau (12), Projektseite (13), UX-Prinzipien (14), Chat-Collapse-System (8), Reasoning-Block-Styling (8.3), LLM-Icon (9), 2-Achsen-Skalierung (2.5), Hintergrundbild (1.8), Chat-Eingabefeld-Verhalten (4.3), Layout-Grundregel (3.5). Font-Presets durch Stepper-System ersetzt. Theme-System um Hintergrundbild + UI-Scale erweitert |
