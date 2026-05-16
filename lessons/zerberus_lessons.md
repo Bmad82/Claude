@@ -1,7 +1,25 @@
-# lessons.md – Zerberus Pro 4.0 (projektspezifisch)
+# lessons_ZERBERUS.md – Zerberus Pro 4.0 (projektspezifisch)
 *Gelernte Lektionen. Nach jeder Korrektur ergänzen.*
 
 Universelle Erkenntnisse: https://github.com/Bmad82/Claude/lessons/
+
+## OBERSTES GEBOT (P-umzug, 2026-05-16)
+Chris terminalisiert NICHTS was Coda kann|NIEMALS git/pytest/pip/robocopy-Befehle an Chris delegieren|Coda merged Branches SELBST auf main + pusht SELBST vor Session-Ende|mjolnir.md enthält NUR was physisch unmöglich ist (Touch-Test, echtes Gerät, Docker Desktop UI)|Verstoß = Session-Abbruch + Korrektur
+
+## mjolnir.md-Round-Trip-Pflicht (B-mjolnir-fix, 2026-05-16)
+mjolnir.md wird am Ende JEDER Session überschrieben|Alte Version wird IMMER ersetzt|Ohne mjolnir.md-Update ist der Mjölnir-Round-Trip kaputt|Chris kann sonst nicht erkennen ob ein Auftrag abgeschlossen ist
+
+**Anlass:** B-072 (Huginn Voice, 2026-05-16) hat Code + Tests + Commit + `FEATURE_REQUEST_ZERBERUS_ERLEDIGT.md`-Audit geschrieben — aber `mjolnir.md` nicht überschrieben. Chris hat über den ZUSAMMENFASSUNG-Button die alte P-umzug-Datei gefetcht und konnte nicht erkennen ob B-072 durch ist. Die Audit-Spur im _ERLEDIGT-File ersetzt mjolnir.md NICHT — _ERLEDIGT akkumuliert (bleibt liegen bis Chris es löscht), mjolnir.md ist die EINE aktuelle Session-Zusammenfassung die Mjölnir genau einmal fetcht und die der nächste Coda-Start einliest+löscht.
+
+**Backstop:** Session-Zyklus Schritt 10 in MARATHON_WORKFLOW_ZERBERUS.md sagt jetzt explizit "AUSNAHMSLOS, AM ENDE JEDER SESSION" plus Anti-Pattern-Block. Mjölnir-Konventionen-Sektion zeigt das B-072-Anti-Pattern als Negativ-Beispiel. Doku-Pflicht-Tabelle markiert mjolnir.md mit "PFLICHT, AUSNAHMSLOS".
+
+**Lesson generalisierbar:** Wenn ein Workflow-Schritt nur EINEN Eintrag pro Iteration produzieren darf (Single-Slot-State statt akkumulierender Audit-Log), muss der Schritt im Workflow als unbedingt+ausnahmslos markiert sein und ein konkretes Anti-Pattern dokumentieren — sonst wird er von Sessions übersprungen die "nur einen kleinen Patch" machen. Audit-Logs (`_ERLEDIGT.md`, `code_executions`, `secret_redactions`) sind die andere Seite: sie akkumulieren bewusst und brauchen keine Single-Slot-Pflicht.
+
+## Datei-Konvention (projektübergreifend, Konsolidierung 2026-05-15)
+
+- **Alle projektspezifischen Doku-Dateien tragen Suffix `_ZERBERUS`.** Umbenannt: `HANDOVER.md → HANDOVER_ZERBERUS.md`, `lessons.md → lessons_ZERBERUS.md`, `ZERBERUS_MARATHON_WORKFLOW.md → MARATHON_WORKFLOW_ZERBERUS.md` (Suffix-Position vereinheitlicht: PROJEKTNAME steht hinten, nicht vorne). Ausnahmen: `mjolnir.md` (ephemere Übergabe), `FEATURE_REQUEST_ZERBERUS.md` (Suffix bereits im Namen), `README.md`, `CHANGELOG.md`, `PROJEKTDOKUMENTATION.md`, `docs/DESIGN.md` (Sub-Doku in docs/ — Test-Suite + ein knappes Dutzend Module pinnen den Pfad, Umbenennung wäre invasiv und die Konvention zielt auf Root-Doku). Grund: Mehrere Projekte (Zerberus, Mjolnir, Rosa, Kintsugi) halten parallel ähnliche Dateien — Suffix verhindert Verwechslung in Mjolnir-Default-Prompts und cross-projekt-Suchen. Session-Start-Pflicht in `CLAUDE_ZERBERUS.md` und Session-Zyklus in `MARATHON_WORKFLOW_ZERBERUS.md` zeigen explizit auf die suffixierten Namen. Historische Patch-Notes in `MARATHON_WORKFLOW_ZERBERUS.md` und `SUPERVISOR_ZERBERUS.md` referenzieren weiterhin die alten Dateinamen — bewusst nicht angefasst, sonst werden Geschichts-Logs verfälscht.
+- **`sync_repos.ps1` musste mitgezogen werden.** Die Datei pinnt `lessons.md` als Quelle für Ratatoskr- und Claude-Repo-Sync. Nach der Umbenennung zeigt sie auf `lessons_ZERBERUS.md`. Folgewirkung: das Ziel im Ratatoskr-Repo bleibt aus historischen Gründen `lessons.md` (kein Rename dort, sonst zerschießt es die Ratatoskr-Sync-History) — die neue Quell-Datei wird auf den alten Zielpfad gemappt. Bei nächster sync_repos-Iteration könnte man auch das Ziel umstellen, aber das geht über die Konsolidierung hinaus.
+- **`docs/DESIGN.md` bleibt absichtlich ohne Suffix.** Tests in `test_design_system.py` und Code in `scripts/feature_audit.py`/`zerberus/core/reasoning_router.py` hartcodieren den Pfad. Eine Umbenennung würde mehrere Test-Files brechen + erfordert eine Lawine an Such-und-Ersetz-Edits. Da DESIGN.md im `docs/`-Subordner liegt (nicht im Root) und die Konsolidierungs-Konvention auf Root-Doku zielt, wird `docs/DESIGN.md` als Ausnahme dokumentiert.
 
 ## Remote-Control via Dateikonventionen statt API-Endpoints (P-mjolnir-workflow)
 - **Mjoelnir (Hammerfall) muss Coda-Sessions remote steuern koennen: Sessions starten, Feature-Requests einreichen, Session-Zusammenfassungen abrufen.** Naheliegender Ansatz: API-Endpoints im Coda-Agent. Tatsaechliche Loesung in P-mjolnir-workflow (2026-05-15): **Dateikonventionen im Repo-Root**, der Marathon-Workflow prueft sie im Session-Zyklus.
