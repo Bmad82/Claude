@@ -22,3 +22,10 @@
 - Git-Credential-Prüfung: vor erstem Push in einer Session `git config credential.helper` checken
 - PowerShell kennt kein `&&` — Befehle mit `;` trennen oder einzeln ausführen
 - OneDrive NIEMALS als Arbeitsverzeichnis für aktive Projekte — lockt Dateien (SQLite, Logs, Python-Prozesse)
+
+## Marathon-Workflow (Coda + Supervisor + Mjölnir)
+Volltext-Sektionen mit Pipe-Format in `GLOBAL_LESSONS.md` im Repo-Root. Kurzform:
+- **OBERSTES GEBOT (2026-05-16, Zerberus P-umzug):** Coda terminalisiert NICHTS was Coda selbst kann — keine git/pytest/pip/robocopy/npm-Befehle an Chris delegieren. Worktree-Merges + Push macht Coda selbst vor Session-Ende. `mjolnir.md` enthält NUR physisch unmögliche Tests (Touch, echtes Gerät, Mikrofon). Auch der Supervisor (Chat) gibt KEINE Terminal-Befehle, sondern baut Coda-Prompts. Verstoß = Korrektur. Backstop pro Projekt: Regel 0 in `CLAUDE_<PROJEKT>.md`.
+- **mjolnir.md ist PFLICHT am Session-Ende (2026-05-16, Zerberus B-072):** wird am Ende JEDER Session überschrieben, ausnahmslos. Single-Slot-State (genau eine aktuelle Zusammenfassung), nicht zu verwechseln mit `_ERLEDIGT.md` (Audit-Log, akkumuliert). Ohne mjolnir.md-Update bricht der Mjölnir-Round-Trip — Chris kann nicht erkennen ob ein Auftrag durch ist.
+- **Worktree-Branches selbst auf main mergen (2026-05-16, Zerberus B-061):** Coda merged + pusht eigene Worktree-Branches vor Session-Ende. Pattern: `git stash push` für lokale Edits → `git merge --ff-only` → `stash pop` → eigenen Branch per `rebase main` aktualisieren → ff-merge → push. Ungemergte Branches NICHT als „Schritt 0" in `mjolnir.md` an Chris delegieren.
+- **Supervisor baut Coda-Prompts statt Terminal-Befehle (2026-05-16, Zerberus):** Wenn Chris ein Problem schildert das Coda lösen kann → Supervisor schreibt `.md`-Prompt (FEATURE_REQUEST oder Mjölnir-Auftrag) statt PowerShell-Snippet im Chat. „Nur ein Befehl" ist einer zu viel. Trennung Supervisor=plant/prüft/promptet vs Coda=implementiert/testet gilt auch hier.
