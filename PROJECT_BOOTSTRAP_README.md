@@ -11,7 +11,7 @@ Dieses README sagt dir, wie du eine neue Coda-Session in einem frischen Marathon
 1. **`PROJEKT_ANFRAGE.md` lesen** — das ist der Auftrag des Architekten. Wenn die Datei nicht existiert: Architekt fragen, nicht raten.
 2. **`C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` lesen** — die 6 Faulheits-Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet. PFLICHT.
 3. **`C:\Users\chris\Python\Claude\SUPERVISOR_KODEX.md` lesen** — was der Supervisor (und damit indirekt du) NIE/IMMER macht. PFLICHT.
-4. **Templates aus `C:\Users\chris\Python\Claude\_templates\` kopieren:**
+4. **Templates aus `C:\Users\chris\Python\Claude\templates\` kopieren:**
    - `CLAUDE_PROJEKT_TEMPLATE.md` → `CLAUDE_{PROJEKT}.md` ins neue Projekt-Root
    - `SUPERVISOR_PROJEKT_TEMPLATE.md` → `SUPERVISOR_{PROJEKT}.md` ins neue Projekt-Root
    - `mjolnir_TEMPLATE.md` → wird am Session-Ende als `mjolnir.md` geschrieben (nicht beim Bootstrap)
@@ -58,8 +58,7 @@ Wenn der Architekt KEINE `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist der Bootstra
 |---|---|---|
 | Faulheits-Catches | `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` | 6 Regeln + Selbsttest-Pattern + Bibel-Cheat-Sheet |
 | Supervisor-Kodex | `C:\Users\chris\Python\Claude\SUPERVISOR_KODEX.md` | NIE/IMMER für Chat-Fenster |
-| Templates | `C:\Users\chris\Python\Claude\_templates\` | mjolnir, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT |
-| Projekt-Lessons (alt) | `C:\Users\chris\Python\Claude\templates\` | älteres Template-Set (CLAUDE_TEMPLATE, SUPERVISOR_TEMPLATE, MARATHON_WORKFLOW_TEMPLATE u.a.) — bei Bedarf nachziehen |
+| Templates | `C:\Users\chris\Python\Claude\templates\` | mjolnir, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT, HANDOVER, MARATHON_WORKFLOW, DECISIONS, DESIGN_PROJEKT, ROADMAP, lessons |
 | Globale Lessons-Library | `C:\Users\chris\Python\Claude\lessons\` | Technologie-spezifische Lessons (python-fastapi, sqlite-db, ...) |
 | Pending Decisions | `C:\Users\chris\Python\Claude\DECISIONS_PENDING.md` | Konflikte/offene Fragen für den Meta-Layer |
 
@@ -90,3 +89,35 @@ Wenn du an einer Stelle nicht weiterkommst:
 4. Wenn immer noch nichts: Architekt fragen, NICHT raten.
 
 Hoffnung ≠ Verifikation. Faulheits-Catch #6.
+
+---
+
+## Beispiel-Walkthrough
+
+**Szenario:** Chris hat einem Kumpel das Projekt-Anfrage-Template gegeben. Der Kumpel hat es ausgefüllt für „Weinkeller-Manager — App die mir sagt welcher Wein zu welchem Essen passt". Datei wird in neuen Ordner `weinkeller-manager/` gelegt zusammen mit Kopie dieser README.
+
+### Was Coda dann tut
+
+1. Liest `PROJEKT_ANFRAGE.md` — versteht: Solo-User, mobil + Browser, ~50 Weine, kein Login.
+2. Liest `GLOBAL_LESSONS.md` — versteht: kein Terminal für Chris, mjolnir.md Pflicht, Selbsttest bei Workflow-Themen.
+3. Liest `SUPERVISOR_KODEX.md` — bestätigt: Chat-Instanz wird Prompts liefern, keine Befehle.
+4. Zieht aus `templates/`: `CLAUDE_PROJEKT_TEMPLATE.md`, `SUPERVISOR_PROJEKT_TEMPLATE.md`, `mjolnir_TEMPLATE.md`, `FEATURE_REQUEST_TEMPLATE.md`, `MARATHON_WORKFLOW_TEMPLATE.md`, `HANDOVER_TEMPLATE.md`, `lessons_TEMPLATE.md`.
+5. Ersetzt `{PROJEKT}` durch `weinkeller-manager` überall (verifiziert per `grep -r "{PROJEKT}"` → 0 Treffer).
+6. Erzeugt Skelettstruktur: `src/`, `tests/`, `docs/`, `.gitignore` (mind. `.env`, `*.log`, `__pycache__/`, `node_modules/`), `README.md` (1 Absatz), `CHANGELOG.md` (Bootstrap-Eintrag).
+7. Erzeugt `CLAUDE_weinkeller-manager.md` mit absoluten Pfaden zu globalen Files.
+8. Fragt Chris die 3-5 Architektur-Fragen die Coda NICHT selbst entscheiden kann:
+   - Tech-Stack: Python+FastAPI Backend, React Frontend? (Standardvorschlag)
+   - Datenspeicherung: SQLite (lokal) oder Server-DB?
+   - Bildupload für Etiketten ja/nein?
+   - LLM-Integration für Wein-Empfehlungen jetzt oder Phase 2?
+9. Wartet auf Antworten in `mjolnir.md` (Chris notiert auf dem Handy per Whisper).
+10. Geht dann mit Patch 001 los — Implementierung, Tests, Commit+Push, mjolnir.md am Session-Ende.
+
+### Was Coda dabei NIE tut
+
+- Chris bitten `pip install` oder `npm init` selbst auszuführen (Faulheits-Catch #1).
+- Templates raten statt aus `templates/` zu ziehen (Hoffnung ≠ Verifikation, Catch #6).
+- `mjolnir.md` am Session-Ende vergessen (Catch #2).
+- Tech-Stack-Defaults annehmen wenn der Architekt nichts gesagt hat — lieber fragen.
+- Bootstrap-Scope sprengen mit „ich mach gleich noch X mit" (Catch — kein opportunistisches Refactoring).
+
