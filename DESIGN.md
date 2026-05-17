@@ -1,12 +1,30 @@
-# DESIGN.md — Globale Design-Referenz
+# DESIGN.md — Globale Design-Referenz (UI-Layer)
 
 ⚠️ **DIESES REPO IST PUBLIC.** Keine Secrets, Keys, IPs, interne URLs.
 
-Diese Datei ist die zentrale Design-Referenz für alle Projekte.
+Diese Datei ist die zentrale UI-/Look-and-Feel-Referenz für alle Projekte (Farben, Typography, Komponenten, Mobile-Regeln, Animationen).
 Sie wird NICHT kopiert — Projekte referenzieren sie direkt aus dem Repo.
 Werte die noch nicht festgelegt sind, stehen als `[WERT]`.
 
 Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier eintragen.
+
+## Geltungsbereich
+
+Diese DESIGN.md dokumentiert ausschließlich den **UI-Layer** (Visuelles Design, Komponenten, Mobile-Verhalten, UX-Prinzipien für Endnutzer-Oberflächen).
+
+Der **Marathon-Workflow** (Drei-Rollen-Modell Architekt/Supervisor/Coda, File-Hierarchie, Bibel-Format vs Prosa-Trennung, Mjölnir-Round-Trip, Faulheits-Catches, 5h-Fenster-Constraint, Bootstrap-Prinzip) ist KEIN UI-Thema und wird an anderen Stellen dokumentiert:
+
+| Aspekt | Quelle |
+|---|---|
+| Drei-Rollen-Modell + Projekte-Liste | [README.md](README.md) |
+| Die 6 Faulheits-Catches + Bibel-Format + Selbsttest-Pattern + Mjölnir-Round-Trip | [GLOBAL_LESSONS.md](GLOBAL_LESSONS.md) |
+| NIE/IMMER-Listen für Chat-Fenster (Supervisor-Rolle) | [SUPERVISOR_KODEX.md](SUPERVISOR_KODEX.md) |
+| Bootstrap-Prinzip + Walkthrough für neue Projekte | [PROJECT_BOOTSTRAP_README.md](PROJECT_BOOTSTRAP_README.md) |
+| Templates für neue Projekte (CLAUDE_/SUPERVISOR_/mjolnir_/FEATURE_REQUEST_ u.a.) | [templates/](templates/) |
+| Konzept-Ursprünge (Faulheits-Catches, etc.) | [concepts/](concepts/) |
+| Offene Architektur-Fragen + dokumentierte Konflikte | [DECISIONS_PENDING.md](DECISIONS_PENDING.md) |
+
+Diese Trennung ist bewusst: UI-Design und Workflow-Architektur sind unterschiedliche Layer mit unterschiedlichen Update-Zyklen und Adressaten. UI-Design ändert sich pro Frontend-Patch — Workflow-Architektur ändert sich nach Faulheits-Catches und Multi-Session-Erfahrung. Diese DESIGN.md bleibt deshalb fokussiert auf das, was zum nächsten UI-Patch gehört.
 
 ---
 
@@ -599,3 +617,4 @@ Die folgenden Werte müssen beim nächsten UI-Patch direkt aus dem `:root`-Block
 | 2026-04-24 | Initiale Struktur angelegt (alle Werte als Platzhalter) |
 | 2026-04-24 | Erste Befüllung aus Lessons/SUPERVISOR: Bubble-Defaults, Font-Presets, Theme-System, Touch-Regeln, Spinner-Typ, Sidebar-Inhalt, Landscape, Modal-Handling, CDN-Deps, Anti-Invariante dokumentiert. ~40% der Werte befüllt |
 | 2026-05-07 | Große Erweiterung: Sentiment-Ambient-Lighting (Sek. 10), Scroll-Nav (11), Sidebar-Aufbau (12), Projektseite (13), UX-Prinzipien (14), Chat-Collapse-System (8), Reasoning-Block-Styling (8.3), LLM-Icon (9), 2-Achsen-Skalierung (2.5), Hintergrundbild (1.8), Chat-Eingabefeld-Verhalten (4.3), Layout-Grundregel (3.5). Font-Presets durch Stepper-System ersetzt. Theme-System um Hintergrundbild + UI-Scale erweitert |
+| 2026-05-17 | Geltungsbereich-Sektion am Anfang ergänzt: DESIGN.md ist UI-Layer, Marathon-Workflow (Rollen, Faulheits-Catches, Mjölnir-Round-Trip, Bibel-Format, Bootstrap) ist explizit in README/GLOBAL_LESSONS/SUPERVISOR_KODEX/PROJECT_BOOTSTRAP_README dokumentiert, nicht hier. Werte unverändert |
