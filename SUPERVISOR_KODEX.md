@@ -25,7 +25,7 @@ NIE|Auf Coda-Erfolg hoffen statt mit Selbsttest verifizieren|Workflow-Änderung 
 
 - **Chris ist nicht der Mensch-im-Loop für Routine-Arbeit.** Mensch-im-Loop gilt NUR für: Touch-Tests auf echten Geräten, Mikrofon-Tests, externe App-UIs (Docker Desktop, RustDesk), App-Store-Push. Alles andere — auch wenn es nur 30 Sekunden dauert — ist Coda-Arbeit.
 
-- **Ein .md pro Coda-Input.** Wenn der Supervisor sowohl Auftrag als auch Vorlage hat: entweder beides in einer Datei mit klaren Sektionen + Verweis auf bestehende Vorlagen-Files, oder Auftrag ist die Hauptdatei und die Vorlagen liegen unter `_templates/` im Repo. Niemals Chris vor zwei .md-Files setzen und „welche ist welche?" als seine Aufgabe.
+- **Ein .md pro Coda-Input.** Wenn der Supervisor sowohl Auftrag als auch Vorlage hat: entweder beides in einer Datei mit klaren Sektionen + Verweis auf bestehende Vorlagen-Files, oder Auftrag ist die Hauptdatei und die Vorlagen liegen unter `templates/` im Repo. Niemals Chris vor zwei .md-Files setzen und „welche ist welche?" als seine Aufgabe.
 
 - **Hoffnung ≠ Verifikation.** Workflow-Änderungen brauchen den dreiphasigen Selbsttest (Phase A Setup, B Replay, C Adversarial, D Cleanup). Wenn der Supervisor einen Workflow-Auftrag schreibt, gehört „Selbsttest-Pflicht" als eigener Schritt in den Prompt — ohne ist der Auftrag unvollständig.
 
@@ -39,6 +39,7 @@ IMMER|Akzeptanzkriterien als Checkliste am Ende|jedes Kriterium binär abprüfba
 IMMER|Bei Workflow-Themen: Selbsttest-Pflicht in den Prompt schreiben|Phase A-D oder explizit dokumentiertes Surrogat
 IMMER|Bei Unsicherheit: lieber zu paranoid spezifizieren als zu locker|Coda raten zu lassen ist Faulheits-Falle
 IMMER|Coda-Faulheits-Catches im Auftrag erwähnen|wenn relevant|Verweis auf GLOBAL_LESSONS.md
+IMMER|FEATURE_REQUEST-Filename = FEATURE_REQUEST_{kurzname}.md|kurzname aus Frontmatter, kebab-case|NIE Projektname im Filename
 ```
 
 **Prosa-Ausformulierung:**
@@ -68,7 +69,7 @@ Wenn der Supervisor einen Auftrag baut, folgt das `.md`-File diesem Skelett:
 7. **mjolnir.md schreiben** — STATUS-Header + Was-Chris-physisch-tun-muss + Auftragshistorie.
 8. **Wichtige Hinweise** — Konflikt-Behandlung (→ DECISIONS_PENDING.md), Quellen-Files (nicht verschieben/löschen).
 
-Skelett-Vorlage liegt in `_templates/FEATURE_REQUEST_TEMPLATE.md`. Bei jedem neuen Auftrag dort starten, nicht von Null.
+Skelett-Vorlage liegt in `templates/FEATURE_REQUEST_TEMPLATE.md`. Bei jedem neuen Auftrag dort starten, nicht von Null.
 
 ---
 
@@ -83,6 +84,6 @@ Wenn der Supervisor merkt: „dieser Auftrag braucht eine Architektur-Entscheidu
 ## Quellen + Verweise
 
 - `GLOBAL_LESSONS.md` — die 6 Faulheits-Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet
-- `_templates/` — Vorlagen für Coda-Aufträge (mjolnir, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT)
+- `templates/` — Vorlagen für Coda-Aufträge (mjolnir, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT, HANDOVER, MARATHON_WORKFLOW, DECISIONS, DESIGN_PROJEKT, ROADMAP, lessons)
 - `PROJECT_BOOTSTRAP_README.md` — kommt in jeden neuen Projektordner mit, sagt Coda was zu tun ist
 - `DECISIONS_PENDING.md` — offene Fragen + dokumentierte Konflikte

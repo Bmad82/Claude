@@ -28,7 +28,7 @@ Kurzform:
 Repo: https://github.com/Bmad82/Claude | PUBLIC | keine Secrets/Keys/Tokens/IPs/interne URLs in Lessons/Templates
 GLOBAL_LESSONS: C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md
 SUPERVISOR_KODEX: C:\Users\chris\Python\Claude\SUPERVISOR_KODEX.md
-Templates (global): C:\Users\chris\Python\Claude\_templates\
+Templates (global): C:\Users\chris\Python\Claude\templates\
 Bootstrap-Anleitung: C:\Users\chris\Python\Claude\PROJECT_BOOTSTRAP_README.md
 Lessons-Verzeichnis: C:\Users\chris\Python\Claude\lessons\
 Bug-Tracker: C:\Users\chris\Python\Claude\bugs\{PROJEKT}\
@@ -94,7 +94,7 @@ Startskript|{...}
 
 ## mjolnir.md-Konvention
 Coda schreibt am Session-Ende `mjolnir.md` ins Projekt-Root | STATUS-Header als erster Block PFLICHT | 5-10 Zeilen + Status-Header | wird beim nächsten Session-Start eingelesen+gelöscht (Single-Slot, nicht Audit).
-Vorlage: `C:\Users\chris\Python\Claude\_templates\mjolnir_TEMPLATE.md`
+Vorlage: `C:\Users\chris\Python\Claude\templates\mjolnir_TEMPLATE.md`
 
 ## Ausgabe-Regeln
 - Prompts + strukturierte Ausgaben als .md-Datei | kein Inline-Text

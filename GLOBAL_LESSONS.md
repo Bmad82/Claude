@@ -71,6 +71,20 @@ Workflow-Änderungen brauchen dreiphasigen Selbsttest VOR Push|Phase A: Pattern 
 
 ---
 
+## Naming-Konvention für FEATURE_REQUEST-Dateien (2026-05-17, aufraeumarbeiten-post-catch)
+
+```
+NAMING|FEATURE_REQUEST_{kurzname}.md|kurzname = kebab-case-aus-FEATURE_REQUEST-Frontmatter|niemals Projektname als Filename|bei Umbenennung Lifecycle: kurzname-suffix bleibt erhalten (*_ERLEDIGT.md, *_QUEUED.md)
+```
+
+**Anlass:** Die faulheits-catch-integration-Session legte ihren Auftrag als `FEATURE_REQUEST_CLAUDE.md` ab — also Projektname statt Kurzname. Bei mehreren parallelen Aufträgen in einem Projekt (insbesondere bei QUEUED-Pattern, wenn ein zweiter Request während IN_ARBEIT eintrifft) wäre die Datei nicht eindeutig identifizierbar. Der Frontmatter-Kurzname (z.B. `faulheits-catch-integration`, `aufraeumarbeiten-post-catch`) ist die kanonische Quelle.
+
+**Regel:** Filename folgt strikt dem Pattern `FEATURE_REQUEST_{kurzname}.md` (kebab-case, kein Leerzeichen, keine Großbuchstaben). Beim Lifecycle-Übergang bleibt der Kurzname-Teil erhalten: `FEATURE_REQUEST_{kurzname}_ERLEDIGT.md` bei STATUS=FERTIG, `FEATURE_REQUEST_{kurzname}_QUEUED.md` bei Konflikt mit laufendem IN_ARBEIT-Auftrag. Projektname (`CLAUDE`, `ZERBERUS`, ...) gehört NIEMALS in den Filename — das Verzeichnis sagt das Projekt, der Filename sagt den Auftrag.
+
+**Backstop:** Kommentar-Header im `templates/FEATURE_REQUEST_TEMPLATE.md` und Hinweis in `SUPERVISOR_KODEX.md` Sektion „Was Supervisor IMMER muss". Bestehende Files mit alter Konvention (z.B. `FEATURE_REQUEST_CLAUDE_ERLEDIGT.md`) bleiben unangetastet — Historie wahren, nicht rückwirkend umbenennen.
+
+---
+
 ## Die 6 Faulheits-Catches — Quick Reference
 
 Kanonische Liste (Stand 2026-05-17, faulheits-catch-integration). Jeder Catch verweist zurück auf die ausführliche Sektion oben.

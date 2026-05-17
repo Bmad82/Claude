@@ -1,7 +1,12 @@
-<!-- TEMPLATE | Kopie als DECISIONS_{PROJEKTNAME}.md | Architektur-Entscheidungen + offene Fragen -->
+<!-- TEMPLATE | Kopie als DECISIONS_{PROJEKT}.md ins Projekt-Root | Architektur-Entscheidungen + offene Fragen | ergänzt globales DECISIONS_PENDING.md (Meta-Layer) -->
 
-# DECISIONS_{PROJEKTNAME}.md | Bibel-Format
-Architektur-Entscheidungen {PROJEKTNAME} | jede Entscheidung mit Datum+Begründung | offene Fragen separat
+# DECISIONS_{PROJEKT}.md | Bibel-Format
+Architektur-Entscheidungen {PROJEKT} | jede Entscheidung mit Datum+Begründung | offene Fragen separat
+
+## Verhältnis zu DECISIONS_PENDING.md (global)
+- `C:\Users\chris\Python\Claude\DECISIONS_PENDING.md` = Meta-Layer (Workflow/Marathon/Tooling)
+- `DECISIONS_{PROJEKT}.md` = Projekt-Layer (Tech-Stack, Datenmodell, Auth, Port)
+Bei Unsicherheit Meta-Layer prüfen, dann hier.
 
 ## Getroffene Entscheidungen
 

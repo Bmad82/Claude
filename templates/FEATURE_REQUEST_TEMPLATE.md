@@ -1,4 +1,4 @@
-<!-- TEMPLATE | Kopie als FEATURE_REQUEST_{PROJEKT}.md ins Projekt-Root | Coda arbeitet diese Datei beim Session-Start als Priorität ab -->
+<!-- TEMPLATE | Dateiname: FEATURE_REQUEST_{kurzname}.md (kebab-case aus Frontmatter) - NIE Projektname als Filename | Kopie ins Projekt-Root | Coda arbeitet diese Datei beim Session-Start als Priorität ab -->
 
 # FEATURE_REQUEST: {Auftrags-Titel}
 
@@ -73,7 +73,7 @@ Bei Fehler: in mjolnir.md unter BLOCKIERT dokumentieren, auf Deutsch.
 
 Überschreibe `{Projekt-Root}/mjolnir.md` mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) + Fortschritt + Was-Chris-physisch-tun-muss + Auftragshistorie.
 
-Vorlage: `C:\Users\chris\Python\Claude\_templates\mjolnir_TEMPLATE.md`
+Vorlage: `C:\Users\chris\Python\Claude\templates\mjolnir_TEMPLATE.md`
 
 ---
 
@@ -81,7 +81,7 @@ Vorlage: `C:\Users\chris\Python\Claude\_templates\mjolnir_TEMPLATE.md`
 
 - **Bibel-Format nutzen** für alle Maschinen-Files. **Prosa nutzen** für alle Menschen-Files. **Niemals mischen** innerhalb einer Datei.
 - **Bei Konflikten oder Unklarheiten:** Nicht raten. In `DECISIONS_PENDING.md` festhalten und in mjolnir.md unter BLOCKIERT verweisen.
-- **Quellen-Files** bleiben unverändert liegen. Verteilung geschieht über GLOBAL_LESSONS.md, SUPERVISOR_KODEX.md, _templates/ — nicht durch Verschieben der Ursprungsdatei.
+- **Quellen-Files** bleiben unverändert liegen. Verteilung geschieht über GLOBAL_LESSONS.md, SUPERVISOR_KODEX.md, templates/ — nicht durch Verschieben der Ursprungsdatei.
 
 ---
 

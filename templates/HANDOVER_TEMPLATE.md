@@ -1,7 +1,11 @@
-<!-- TEMPLATE | Kopie als HANDOVER_{PROJEKTNAME}.md | Übergabe zwischen Sessions/Kontextfenstern -->
+<!-- TEMPLATE | Kopie als HANDOVER_{PROJEKT}.md ins Projekt-Root | Detail-Übergabe zwischen Sessions | ergänzt mjolnir.md (Status-Layer), nicht ersetzt -->
 
-# HANDOVER_{PROJEKTNAME}.md | Bibel-Format
-Letzte Session: Patch {N} ({DATUM}) | Nächste Session liest dies ZUERST
+# HANDOVER_{PROJEKT}.md | Bibel-Format
+Letzte Session: Patch {N} ({DATUM}) | Nächste Session liest dies NACH mjolnir.md, VOR MARATHON_WORKFLOW
+
+## Verhältnis zu mjolnir.md
+mjolnir.md = Single-Slot-Status (STATUS-Header + was-Chris-physisch-tun-muss, ephemer)
+HANDOVER.md = Detail-Layer (technische Stände, Test-Status, nächste Schritte — bleibt zwischen Sessions)
 
 ## Stand
 Patch|{N}

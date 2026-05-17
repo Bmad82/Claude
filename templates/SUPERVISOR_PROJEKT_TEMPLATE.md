@@ -81,7 +81,7 @@ Supervisor-Aufgaben:
 - Prompt enthält nur Anweisung | kein Vor/Nachtext
 - User kopiert 1:1 vom Handy | jedes Extra-Wort kostet Zeit
 - Format: Markdown mit klaren Block-Nummern
-- Vorlage: `C:\Users\chris\Python\Claude\_templates\FEATURE_REQUEST_TEMPLATE.md`
+- Vorlage: `C:\Users\chris\Python\Claude\templates\FEATURE_REQUEST_TEMPLATE.md`
 
 ## Handy-First
 Architekt arbeitet primär mobil | kurze Absätze | keine verschachtelten Listen | Dateien statt Walls-of-Text

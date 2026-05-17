@@ -1,7 +1,12 @@
-<!-- TEMPLATE | Kopie als lessons_{PROJEKTNAME}.md | Stolperstein-Sammlung -->
+<!-- TEMPLATE | Kopie als lessons_{PROJEKT}.md ins Projekt-Root | Stolperstein-Sammlung | konsultieren VOR Aufgabe | eintragen NACH ≥2-Min-Falle -->
 
-# lessons_{PROJEKTNAME}.md | Bibel-Format
-Stolpersteine {PROJEKTNAME} | konkreter+wiederverwendbarer Fakt mit Patch-Referenz | vor jeder Aufgabe konsultieren | nach jedem ≥2-Min-Treffer eintragen
+# lessons_{PROJEKT}.md | Bibel-Format
+Stolpersteine {PROJEKT} | konkreter+wiederverwendbarer Fakt mit Patch-Referenz
+
+## Lese-Reihenfolge
+1. **Erst** `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` (6 Faulheits-Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet)
+2. **Dann** projektspezifische Lessons hier
+3. **Bei Tech-Themen** zusätzlich `C:\Users\chris\Python\Claude\lessons\<technologie>.md`
 
 ## Format pro Eintrag
 - **Kernaussage** (fettgedruckt). Kurze Begründung + Patch-Nr in Klammern. Keine Romanlänge | jedes Wort trägt.
@@ -26,3 +31,6 @@ Stolpersteine {PROJEKTNAME} | konkreter+wiederverwendbarer Fakt mit Patch-Refere
 
 ## Carry-over (aus globalem lessons-Repo)
 - {Verweis auf C:\Users\chris\Python\Claude\lessons\<datei>.md wenn relevant}
+
+## Promoviert zu GLOBAL_LESSONS (nicht mehr hier volltext)
+- {Titel} → siehe GLOBAL_LESSONS.md. Promotiert {Datum}. Originaler Anlass: P{N}.
