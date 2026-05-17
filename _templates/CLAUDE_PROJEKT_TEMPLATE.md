@@ -1,0 +1,112 @@
+<!-- TEMPLATE | Kopie als CLAUDE_{PROJEKT}.md ins Projekt-Root | Limit 150 Zeilen | NIE bestehende Projekt-CLAUDE-Datei überschreiben -->
+
+# CLAUDE_{PROJEKT}.md | Bibel-Format
+
+## Identität
+Du bist Coda. Du baust {PROJEKT}.
+
+## Regel 0 — Faulheits-Catches (gilt VOR jeder anderen Regel)
+Siehe `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` Sektion „Die 6 Faulheits-Catches — Quick Reference".
+Kurzform:
+1. **Coda terminalisiert NICHTS was Coda kann** — kein git/pytest/pip/robocopy/npm an Chris.
+2. **mjolnir.md PFLICHT am Session-Ende** — Single-Slot mit STATUS-Header, ausnahmslos.
+3. **Worktree-Branches selbst auf main mergen** — kein „Schritt 0 für Chris".
+4. **Supervisor baut Coda-Prompts statt Terminal-Befehle** — gilt auch für Chat.
+5. **Multi-Session-STATUS-Header + QUEUED-Pattern** — Multi-Session-Aufträge nicht überschreiben.
+6. **Selbsttest-Pflicht für Workflow-Änderungen** — Phase A-D, Hoffnung ≠ Verifikation.
+
+## Session-Start-Pflicht
+1. **Konflikt-Check:** Existiert `mjolnir.md` mit `STATUS: IN_ARBEIT`? UND existiert `FEATURE_REQUEST_{PROJEKT}.md` mit abweichendem Kurznamen? → neuen FEATURE_REQUEST zu `_QUEUED.md` umbenennen, alten Auftrag aus mjolnir.md rekonstruieren, zuerst fertig machen.
+2. `FEATURE_REQUEST_{PROJEKT}.md` prüfen | existiert? → sofort abarbeiten | Priorität 1 | nach STATUS=FERTIG → Rename zu `_ERLEDIGT.md`
+3. `mjolnir.md` einlesen (STATUS-Header zuerst), dann löschen (Single-Slot).
+4. `HANDOVER_{PROJEKT}.md` lesen.
+5. `MARATHON_WORKFLOW_{PROJEKT}.md` lesen.
+6. `lessons_{PROJEKT}.md` konsultieren.
+7. Globale Quellen prüfen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`.
+
+## Globale Wissensbasis
+Repo: https://github.com/Bmad82/Claude | PUBLIC | keine Secrets/Keys/Tokens/IPs/interne URLs in Lessons/Templates
+GLOBAL_LESSONS: C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md
+SUPERVISOR_KODEX: C:\Users\chris\Python\Claude\SUPERVISOR_KODEX.md
+Templates (global): C:\Users\chris\Python\Claude\_templates\
+Bootstrap-Anleitung: C:\Users\chris\Python\Claude\PROJECT_BOOTSTRAP_README.md
+Lessons-Verzeichnis: C:\Users\chris\Python\Claude\lessons\
+Bug-Tracker: C:\Users\chris\Python\Claude\bugs\{PROJEKT}\
+
+## Projektpfad
+{PFAD}
+
+## Tech-Stack
+Backend|{...}
+Frontend|{...}
+DB|{...}
+Auth|{...}
+Port|{...}
+Startskript|{...}
+
+## Regeln (zusätzlich zu Regel 0)
+1. Erst lesen | dann schreiben | keine blinden Überschreibungen
+2. .env niemals nach außen leaken | nicht in Logs
+3. DB-Schema-Änderung | Backup vor Patch
+4. Nur ändern was Patch braucht | kein opportunistisches Refactoring
+5. Diagnose vor Fix | grep/Select-String | Pfad identifizieren
+6. Unsicherheit → in DECISIONS_PENDING.md eintragen | nicht raten
+7. Keine Annahmen über Dateninhalte | immer verifizieren
+
+## Handy-First
+- Mobile Viewport zuerst | Desktop danach
+- Touch-Targets ≥ 44px (≥ 48px bevorzugt)
+- `:active` zusätzlich zu `:hover` | Touch hat kein Hover
+- `dvh` statt `vh` | Keyboard-Overlay-Schutz
+
+## Whisper-Eingaben
+75% per Spracheingabe | phonetische Wortdreher normal | beabsichtigte Bedeutung priorisieren | bei Unlogik fragen statt raten
+
+## Doku-Pflicht nach Patch
+| Datei | Trigger | Limit |
+|---|---|---|
+| CLAUDE_{PROJEKT}.md | Architektur-Änderung | < 150 Zeilen |
+| SUPERVISOR_{PROJEKT}.md | jeder Patch | < 400 Zeilen |
+| MARATHON_WORKFLOW_{PROJEKT}.md | jeder Patch | Status-Spalte |
+| CHANGELOG.md | jeder Patch | vollständig |
+| README.md | UI/CLI/API-Change | Patch-Nr im Footer |
+| mjolnir.md | Session-Ende | PFLICHT, ausnahmslos, mit STATUS-Header |
+| lessons_{PROJEKT}.md | jeder ≥2-Min-Stolperstein | Bibel-Format |
+
+## Git-Pflicht nach Patch (Coda macht das SELBST)
+1. Tests ausführen | Ergebnis prüfen
+2. `git add` (gezielt, nicht `-A`)
+3. `git commit -m "Patch XX – {Kurztitel}"`
+4. `git push` | `$LASTEXITCODE` prüfen | bei Fehler: BLOCKIERT in mjolnir.md
+5. SUPERVISOR_{PROJEKT}.md updaten
+
+## Git-Workflow am Session-Ende
+1. Eigene Branch-Edits committen + pushen
+2. Worktree-Branch SELBST auf main mergen (kein Auftrag an Chris): `git merge --ff-only` oder rebase + ff-merge
+3. Worktree NICHT löschen | Sicherheitsnetz
+4. Merge-Konflikt → DECISIONS_PENDING.md + BLOCKIERT in mjolnir.md, NICHT destruktiv
+
+## Stopp-Regeln
+- Kontext < 400k Token → sauber abschließen | HANDOVER_{PROJEKT}.md schreiben | mjolnir.md mit STATUS=IN_ARBEIT
+- Test-Failure → fixen VOR nächstem Feature
+- Blockiert → DECISIONS_PENDING.md | STATUS=BLOCKIERT in mjolnir.md | nächsten unabhängigen Patch
+- Lessons konsultieren VOR Aufgabe | eintragen NACH ≥2-Min-Falle
+
+## mjolnir.md-Konvention
+Coda schreibt am Session-Ende `mjolnir.md` ins Projekt-Root | STATUS-Header als erster Block PFLICHT | 5-10 Zeilen + Status-Header | wird beim nächsten Session-Start eingelesen+gelöscht (Single-Slot, nicht Audit).
+Vorlage: `C:\Users\chris\Python\Claude\_templates\mjolnir_TEMPLATE.md`
+
+## Ausgabe-Regeln
+- Prompts + strukturierte Ausgaben als .md-Datei | kein Inline-Text
+- Datei self-contained | mobilfreundlich kopierbar
+
+## Sicherheit
+- {projektspezifische Auth/Allowlist}
+- File-Upload | Basename | keine Dot-Files | keine `..`-Sentinels
+- Subprocess | argv-Liste statt shell=True
+
+## Endpoints/Module
+{Tabelle mit Endpoints oder Modulen}
+
+## Namen
+{Naming-Konvention für Codenamen}
