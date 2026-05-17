@@ -5,21 +5,56 @@ Offene Entscheidungen + Konflikte für `Claude/`-Meta-Layer | jede Frage mit Dat
 
 ## Offene Entscheidungen (Pending)
 
-### 2026-05-17 | Quelle Try_Faulheits_catch.md fehlt
-Frage|Wo liegt `Try_Faulheits_catch.md` aus dem die 6 Faulheits-Catches stammen sollen?
-Hintergrund|FEATURE_REQUEST_CLAUDE.md verweist als Quelle auf `C:\Users\chris\Python\Claude\Try_Faulheits_catch.md`. Datei existiert weder im Working Directory noch in Git-History (`git log --all -- "*Faulheit*"` liefert null Treffer). Coda hat die 6 Catches aus existierenden Quellen rekonstruiert: 4 aus `GLOBAL_LESSONS.md` (OBERSTES GEBOT, mjolnir-Round-Trip, Worktree-Self-Merge, Supervisor-Prompts), 1 aus `lessons/zerberus_lessons.md` Commit `08c7e9e` (Multi-Session-Status-Header + QUEUED-Pattern), 1 aus Supervisor-Don'ts der FEATURE_REQUEST selbst (Selbsttest-Pflicht für Workflow-Änderungen).
-Optionen|A) Bestätigen dass die rekonstruierten 6 Catches korrekt sind | B) Original `Try_Faulheits_catch.md` nachliefern damit Coda 1:1 abgleichen kann | C) Liste der 6 Catches im Chat bestätigen lassen
-Blockiert|nichts mehr — Implementierung ist mit rekonstruierter Liste durchgelaufen. Bei Abweichung: `GLOBAL_LESSONS.md` Sektion "Die 6 Faulheits-Catches" anpassen.
-Eingetragen|2026-05-17
-
-### 2026-05-17 | Dual-Templates-Folder (templates/ + _templates/)
-Frage|Soll `templates/` (alt, 8 Files) parallel zu `_templates/` (neu, 4 Files) bestehen bleiben oder konsolidiert werden?
-Hintergrund|FEATURE_REQUEST_CLAUDE.md fordert explizit `Claude/_templates/` als Ziel. Bestehender `Claude/templates/`-Ordner (commit 31b32f5, 2026-05-15) enthält bereits 8 Projekt-Templates (CLAUDE_, SUPERVISOR_, MARATHON_WORKFLOW_, HANDOVER_, DECISIONS_, DESIGN_, ROADMAP_, lessons_). Coda hat strikt nach FEATURE_REQUEST `_templates/` neu angelegt mit den 4 dort spezifizierten Files. `CLAUDE_PROJEKT_TEMPLATE.md` und `SUPERVISOR_PROJEKT_TEMPLATE.md` in `_templates/` sind Teildoppelung der bestehenden `CLAUDE_TEMPLATE.md` und `SUPERVISOR_TEMPLATE.md` in `templates/`.
-Optionen|A) Beide Ordner behalten — `_templates/` als globaler Marathon-Workflow-Bootstrap, `templates/` als ältere Projekt-Skelette | B) `templates/` in `_templates/` mergen (Inhalte übernehmen, Namen konsolidieren) | C) `templates/` löschen, `_templates/` als alleinige Quelle
-Blockiert|nichts — `PROJECT_BOOTSTRAP_README.md` verweist auf `_templates/` wie im FEATURE_REQUEST gefordert. Bestehende `CLAUDE_TEMPLATE.md`-Verweise auf `templates/` bleiben gültig.
-Eingetragen|2026-05-17
+### 2026-05-17 | Zerberus-Lessons-Konsolidierung in eigene Session ausgelagert
+Frage|Zerberus-Lessons gegen GLOBAL_LESSONS abgleichen — welche der ~1017 Zeilen in `lessons_ZERBERUS.md` sind bereits in `GLOBAL_LESSONS.md` promoviert und sollten dort auf Verweis reduziert werden?
+Hintergrund|Schritt 08 aus `aufraeumarbeiten-post-catch` adressiert das. Quick-Scan zeigt mind. 3 klare Dubletten in den ersten 100 Zeilen: „OBERSTES GEBOT (P-umzug, 2026-05-16)", „Multi-Session-Status-Header (B-mjolnir-multisession)", „mjolnir.md-Round-Trip-Pflicht (B-mjolnir-fix/B-mjolnir-fix-2)". Master liegt in `C:\Users\chris\Python\Zerberus\lessons_ZERBERUS.md`, Sync-Kopie in `C:\Users\chris\Python\Claude\lessons\zerberus_lessons.md` (1017 Zeilen). Sync via `sync_repos.ps1` aus Zerberus-Repo. Bearbeitung bräuchte Cross-Repo-Commits + Selbsttest A-D + Wachsamkeit gegen Sync-Drift.
+Optionen|A) Eigener FEATURE_REQUEST `lessons-konsolidierung` mit Phase A-D Selbsttest (vollständig) | B) Inline-Quick-Win nur die 3 offensichtlichen Dubletten ersetzen, ohne kompletten Scan | C) Master in Zerberus-Repo unverändert lassen, nur Sync-Kopie in Claude/lessons als „kanonischer Snapshot bei Repo-Move" behandeln
+Blockiert|nichts unmittelbar — die Dubletten sind nicht schädlich, nur redundant. Eskalation wenn das Volumen weiter wächst.
+Eingetragen|2026-05-17 (aufraeumarbeiten-post-catch verschoben)
 
 ## Getroffene Entscheidungen
+
+### 2026-05-17 | Quelle Try_Faulheits_catch.md als Konzept-Ursprung in concepts/ verankert
+Entscheidung|Rekonstruierte Fassung als `concepts/Try_Faulheits_catch.md` mit Status-Header „Historisches Dokument. Operative Version siehe GLOBAL_LESSONS.md".
+Begründung|Original existiert nur im Anthropic-Chat-Projekt-Speicher, nicht im Git. Damit die Konzept-Wurzel dauerhaft auf der Platte verankert ist (nicht nur in flüchtigen Chat-Sessions), wird die rekonstruierte Liste der 6 Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet als kanonische Konzept-Datei archiviert.
+Alternativen|A) Datei nicht anlegen — Inhalte sind ja in GLOBAL_LESSONS migriert | B) Chris bitten Original nachzureichen — bisher keine Reaktion
+Konsequenz|Wenn Chris das Original-Volltext nachliefert, kann diese Datei mit dem Original abgeglichen werden. Bis dahin ist `concepts/Try_Faulheits_catch.md` die kanonische rekonstruierte Fassung.
+Patch-Referenz|aufraeumarbeiten-post-catch (Schritt 04)
+
+### 2026-05-17 | Dual-Templates-Folder konsolidiert zu templates/
+Entscheidung|Option C+B-Hybrid: alte `templates/` gelöscht, `_templates/` umbenannt zu `templates/`. Vorher 6 alte Templates (MARATHON_WORKFLOW, HANDOVER, DECISIONS, DESIGN, ROADMAP, lessons) auf neuen Bibel-Format-Standard aktualisiert + nach _templates/ migriert (mit Verweis auf Regel 0/KODEX/GLOBAL_LESSONS wo passend). 2 alte (CLAUDE_TEMPLATE, SUPERVISOR_TEMPLATE) durch ihre _PROJEKT-Pendants ersetzt — als obsolet markiert.
+Begründung|Parallele Existenz war Provisorium der vorigen Session. Konsolidierter Stand: 10 Files in `templates/`, alle mit konsistenten Headern + Regel-0-Verweisen. Pfade in PROJECT_BOOTSTRAP_README.md, SUPERVISOR_KODEX.md, CLAUDE_PROJEKT_TEMPLATE.md, FEATURE_REQUEST_TEMPLATE.md, SUPERVISOR_PROJEKT_TEMPLATE.md, GLOBAL_LESSONS.md angepasst.
+Alternativen|A) Beide Ordner behalten — verwirrender Doppelpfad | B) Nur Migration ohne Umbenennung — `_templates/` als endgültiger Name war hässlich (Unterstrich war Provisorium)
+Konsequenz|Selbsttest A-D durchgelaufen, alle Phasen grün. Sub-Agent erkennt korrekten Pfad, listet alle 10 Templates. Historische Verweise in `FEATURE_REQUEST_CLAUDE_ERLEDIGT.md` und im aktuellen `FEATURE_REQUEST_CLAUDE.md` (vor Rename) bleiben unangetastet — Geschichts-Logs nicht verfälschen.
+Patch-Referenz|aufraeumarbeiten-post-catch (Schritt 03)
+
+### 2026-05-17 | Naming-Konvention FEATURE_REQUEST_{kurzname}.md durchgesetzt
+Entscheidung|FEATURE_REQUEST-Dateien heißen `FEATURE_REQUEST_{kurzname}.md` (kebab-case aus Frontmatter), niemals `FEATURE_REQUEST_{PROJEKT}.md`. Bei Lifecycle-Übergang bleibt der Kurzname-Teil erhalten (`*_ERLEDIGT.md`, `*_QUEUED.md`).
+Begründung|Anlass: die vorige `faulheits-catch-integration`-Session legte ihre Auftrags-Datei als `FEATURE_REQUEST_CLAUDE.md` ab. Bei mehreren parallelen Aufträgen in einem Projekt (QUEUED-Pattern) wäre die Datei nicht eindeutig identifizierbar.
+Alternativen|A) Konvention nicht festklopfen — nächste Session macht denselben Fehler | B) Projektname als Filename behalten — bricht QUEUED-Pattern
+Konsequenz|Lesson in GLOBAL_LESSONS.md verankert (eigene Sektion „Naming-Konvention für FEATURE_REQUEST-Dateien"). Backstop-Kommentar im `templates/FEATURE_REQUEST_TEMPLATE.md`. Bestehende `FEATURE_REQUEST_CLAUDE_ERLEDIGT.md` bleibt unangetastet (historisch). Aktueller `FEATURE_REQUEST_CLAUDE.md` wird bei STATUS=FERTIG zu `_ERLEDIGT.md` umbenannt — Filename bleibt mit alter Konvention erhalten weil Historie. Künftige Files folgen der neuen Konvention.
+Patch-Referenz|aufraeumarbeiten-post-catch (Schritt 02)
+
+### 2026-05-17 | DESIGN.md als UI-Layer abgegrenzt (nicht Workflow-Layer)
+Entscheidung|DESIGN.md bekommt eine „Geltungsbereich"-Sektion direkt nach der Einleitung, die klarstellt dass die Datei den UI-/Look-and-Feel-Layer dokumentiert. Marathon-Workflow-Themen (Drei-Rollen-Modell, File-Hierarchie, Bibel-Format, Mjölnir-Round-Trip, Faulheits-Catches, Bootstrap-Prinzip) sind explizit in README/GLOBAL_LESSONS/SUPERVISOR_KODEX/PROJECT_BOOTSTRAP_README dokumentiert, nicht hier.
+Begründung|Auftrag erwartete Marathon-Workflow-Sektionen in DESIGN.md (Schritt 07). Existierende DESIGN.md ist aber klar UI-Design-Referenz mit 17 Sektionen zu Farben/Komponenten/Mobile. Themen-Mix in einer Datei hätte UI-Fokus + Workflow-Architektur kontaminiert.
+Alternativen|A) Marathon-Workflow-Sektionen direkt in DESIGN.md einbauen — Themen-Mix, schlecht für Update-Zyklen | B) Eigene MARATHON_DESIGN.md anlegen — würde README.md+GLOBAL_LESSONS.md-Doppelung erzeugen
+Konsequenz|Update-Datum 2026-05-17 in Änderungshistorie ergänzt. Tabelle in Geltungsbereich-Sektion verweist auf die kanonischen Quellen pro Aspekt. UI-Werte unverändert.
+Patch-Referenz|aufraeumarbeiten-post-catch (Schritt 07)
+
+### 2026-05-17 | _drafts_gist/ Vorbereitungsordner für Phase 3 angelegt
+Entscheidung|Neuer Ordner `_drafts_gist/` mit `INDEX_GIST_DRAFT.md` + `ZERBERUS_GIST_DRAFT.md`. Beide Files sind reine Konzept-Entwürfe, werden NICHT zu echten Gists in dieser Session.
+Begründung|Phase 3 der Roadmap (Gist-Migration) soll bei Aktivierung keine Konzept-Arbeit mehr brauchen, nur noch Migration und Push.
+Alternativen|A) Erst bei Phase-3-Start anlegen — verschleppt Konzept-Klärung | B) Direkt echte Gists anlegen — verfrüht, Format könnte noch driften
+Konsequenz|Bei Phase-3-Aktivierung: `gh gist create` der beiden Entwurfs-Files + URL in Supervisor-Memories + Repo-Verweis ergänzen.
+Patch-Referenz|aufraeumarbeiten-post-catch (Schritt 09)
+
+### 2026-05-17 | Auftrag aufraeumarbeiten-post-catch auf main statt im Worktree
+Entscheidung|Direktes Arbeiten auf `main` ohne Worktree-Branch
+Begründung|FEATURE_REQUEST sagt explizit „Branch: direkt auf `main` (kein Worktree für Strukturarbeit nötig)."
+Alternativen|Worktree-Branch wäre Overkill für Dateierstellung/Umbenennung ohne Code-Risiko
+Konsequenz|Mehrere thematische Commits direkt auf main, Push danach
+Patch-Referenz|aufraeumarbeiten-post-catch (2026-05-17)
 
 ### 2026-05-17 | Auftrag faulheits-catch-integration auf main statt im Worktree
 Entscheidung|Direktes Arbeiten auf `main` ohne Worktree-Branch
