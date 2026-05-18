@@ -1,11 +1,11 @@
 # mjolnir.md — Claude (Meta-Layer)
 
 ```
-STATUS|FERTIG|AUFTRAG: repo-inventur|FORTSCHRITT: 1/1 Schritt (Inventur komplett) / 1 Session|NÄCHSTE SESSION: entfällt (FERTIG)
+STATUS|FERTIG|AUFTRAG: supervisor-briefing|FORTSCHRITT: 1/1 Schritt (Briefing erstellt) / 1 Session|NÄCHSTE SESSION: entfällt (FERTIG)
 ```
 
 **STATUS:** FERTIG
-**AUFTRAG:** repo-inventur
+**AUFTRAG:** supervisor-briefing
 **FORTSCHRITT:** 1 Session | 1/1 Schritt durch
 **NÄCHSTE SESSION:** entfällt
 
@@ -14,11 +14,11 @@ STATUS|FERTIG|AUFTRAG: repo-inventur|FORTSCHRITT: 1/1 Schritt (Inventur komplett
 ## Was Chris physisch tun muss
 
 - Auf dem Handy nach Push prüfen ob Repo grün ist (1 Klick auf GitHub: https://github.com/Bmad82/Claude)
-- `REPO_INVENTORY.md` im Repo-Root prüfen — 4 Sektionen: Directory-Tree, Datei-Inventar (40+ Dateien), Ordner-Beschreibungen, 7 Auffälligkeiten
-- Entscheiden welche der 7 Auffälligkeiten als nächste angegangen werden (Vorschlag: A1 Worktree bereinigen, A2 zerberus_lessons.md Konsolidierung aus DECISIONS_PENDING)
+- `SUPERVISOR_BRIEFING.md` im Repo-Root an Supervisor weiterleiten — 6 Sektionen (Directory-Tree, REPO_INVENTORY-Volltext, Sprach-Audit, Duplikat-Check, F1-F10, Coda-Einschätzung)
+- Supervisor entscheidet als Nächstes welche Restrukturierungs-Schritte angegangen werden (Vorschläge aus Sektion 6: Worktree-Cleanup + `_erledigt/`-Ordner + Lessons-Hierarchie)
 
 ---
 
 ## Auftragshistorie
 
-- **Schritt 01 (Inventur):** `find . -not -path './.git/*' | sort` → 60 Dateien/Ordner gesamt. Davon 40 aktive Dateien im Main-Tree + 20 Dateien im nicht bereinigten Worktree `.claude/worktrees/focused-payne-b38e6a/`. Für jede Datei: Typ, Sprache, Größe, Datum, Kurzbeschreibung, Status (AKTUELL/VERALTET/UNKLAR). 7 Auffälligkeiten dokumentiert (A1: nicht bereinigter Worktree, A2: zerberus_lessons.md Dominanz 300KB, A3: LESSONS_KONSOLIDIERT vs GLOBAL_LESSONS, A4: _ERLEDIGT-Dateien ohne Ordner, A5: _drafts_gist Platzhalter, A6: DESIGN.md [WERT]-Platzhalter, A7: bugs/lessons nur Zerberus). `FEATURE_REQUEST_CLAUDE.md` → `FEATURE_REQUEST_repo-inventur_ERLEDIGT.md` umbenannt.
+- **Schritt 01 (Briefing):** `SUPERVISOR_BRIEFING.md` erstellt — 725 Zeilen, 51 KB. Sektionen: (1) Directory-Tree Main + Worktree, (2) REPO_INVENTORY.md Volltext eingebettet, (3) Sprach-Audit aller 40 Main-MDs + 18 Worktree-MDs (100% DE, keine HTMLs), (4) Duplikat-Check mit 6 Gruppen (D1 Lessons-Konsolidierungen, D2 Zerberus-Sync, D3 Bibel-Cheat-Sheet, D4 Selbsttest-Pattern, D5 Bug-Tracker-Worktree, D6 Templates-Worktree), (5) Antworten auf F1-F10 (zerberus_lessons-Master in Zerberus-Repo, _drafts_gist nur Konzept, 3 _ERLEDIGT-Files im Root, DESIGN.md echt aber mit [WERT]-Platzhaltern, bugs/ nur Zerberus, keine .claude/CLAUDE.md, keine HTMLs/Showcase, nur Worktree bedenkenlos löschbar, README-Volltext), (6) Einschätzung: größter Pain-Point = drei Lessons-Quellen ohne Hierarchie + Worktree-Cleanup-Versäumnis; Vorschlag: Phase 1 Worktree+_erledigt/-Ordner, Phase 2 lessons/INDEX.md + DESIGN.md-Werte, Phase 3 Zerberus-Lessons-Konsolidierung. `FEATURE_REQUEST_CLAUDE.md` → `FEATURE_REQUEST_supervisor-briefing_ERLEDIGT.md` umbenannt (Naming-Konvention: Kurzname, kein Projektname). Push verifiziert via `$LASTEXITCODE`.
