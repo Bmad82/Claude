@@ -5,29 +5,39 @@ Architekt: Chris (@Bmad82)
 
 ⚠️ **DIESES REPO IST PUBLIC.** Niemals Passwörter, API-Keys, Tokens, persönliche Daten, IP-Adressen, interne URLs, Hostnamen oder projektspezifische Secrets reinschreiben. Im Zweifel: nicht committen und nachfragen.
 
-## Was ist das?
+## Was ist der Marathon-Workflow?
 
-Der Marathon-Workflow ist ein Drei-Rollen-System zur Software-Entwicklung, ohne dass der Architekt selbst Code anfasst:
+Drei-Rollen-System zur Software-Entwicklung, bei dem der Architekt selbst kein Terminal anfasst:
 
-- **Architekt** (Mensch) — gibt Ziele vor, arbeitet primär mobil per Whisper
-- **Supervisor** (Claude im Chat-Fenster) — plant, prüft, schreibt Coda-Prompts als `.md`-Files
+- **Architekt** (Mensch) — gibt Ziele vor, arbeitet primär mobil per Spracheingabe (Whisper)
+- **Supervisor** (Claude im Chat-Fenster) — plant, prüft, schreibt Coda-Prompts als `.md`-Dateien
 - **Coda** (Claude Code im Terminal) — implementiert, testet, committet, merged, pusht
 
-Architekt fasst kein Terminal an. Supervisor schickt keinen Inline-Befehl. Coda macht die Hände-schmutzig-Arbeit.
+Architekt fasst kein Terminal an. Supervisor schickt keinen Inline-Befehl. Coda macht die Hände-schmutzig-Arbeit. Ausführliche Beschreibung: [`workflow/MARATHON_WORKFLOW.md`](workflow/MARATHON_WORKFLOW.md).
 
-## Kernfiles
+## Navigations-Einstieg
 
-| Datei | Zweck |
+[`REPO_INDEX.md`](REPO_INDEX.md) ist die kanonische Liste aller Dateien im Repo mit Raw-Links. Der Supervisor fetcht diese Datei und leitet daraus Links für beliebige andere Dateien ab — kein manuelles Link-Relaying.
+
+## Ordnerstruktur
+
+| Pfad | Zweck |
 |---|---|
-| [GLOBAL_LESSONS.md](GLOBAL_LESSONS.md) | 6 Faulheits-Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet + Naming-Konvention |
-| [SUPERVISOR_KODEX.md](SUPERVISOR_KODEX.md) | NIE/IMMER-Listen für Chat-Fenster (gilt projektübergreifend) |
-| [PROJECT_BOOTSTRAP_README.md](PROJECT_BOOTSTRAP_README.md) | Anleitung wie eine frische Coda-Session ein neues Projekt aufsetzt |
-| [DECISIONS_PENDING.md](DECISIONS_PENDING.md) | Offene Architektur-Fragen + dokumentierte Konflikte (Meta-Layer) |
-| [DESIGN.md](DESIGN.md) | Globale UI-/Look-Referenz (Farben, Typography, Mobile-Regeln) |
-| [templates/](templates/) | Bootstrap-Templates für neue Projekte (10 Files) |
-| [concepts/](concepts/) | Konzept-Dokumente, Ursprünge, Architektur-Skizzen |
-| [lessons/](lessons/) | Technologie-spezifische Lessons (FastAPI, SQLite, Whisper, ...) |
-| [bugs/](bugs/) | Projekt-spezifische Bug-Tracker |
+| [`README.md`](README.md) | Diese Datei — Einstieg, Drei-Rollen-Modell, Verzeichniserklärung |
+| [`REPO_INDEX.md`](REPO_INDEX.md) | Auto-gepflegtes Verzeichnis mit Raw-Links für Supervisor-Navigation |
+| [`DESIGN.md`](DESIGN.md) | Globale UI-Layer-Referenz (Farben, Typografie, Komponenten, Mobile-Regeln) |
+| [`GLOBAL_LESSONS.md`](GLOBAL_LESSONS.md) | Universelle Lessons: 6 Faulheits-Catches, Selbsttest-Pattern, Bibel-Format |
+| [`SUPERVISOR_KODEX.md`](SUPERVISOR_KODEX.md) | NIE/IMMER-Listen für Chat-Supervisor (gilt projektübergreifend) |
+| [`PROJECT_BOOTSTRAP_README.md`](PROJECT_BOOTSTRAP_README.md) | Anleitung: frische Coda-Session setzt neues Projekt auf |
+| [`DECISIONS_PENDING.md`](DECISIONS_PENDING.md) | Offene Meta-Layer-Architektur-Fragen + getroffene Entscheidungen |
+| [`mjolnir.md`](mjolnir.md) | Session-Abschluss-State (Single-Slot, STATUS-Header) |
+| [`workflow/`](workflow/) | Marathon-Workflow-Dokumentation (Rollen, Datei-Hierarchie, Session-Zyklus, Catches) |
+| [`templates/`](templates/) | Bootstrap-Vorlagen für neue Projekte (CLAUDE, SUPERVISOR, mjolnir, FEATURE_REQUEST u.a.) |
+| [`lessons/`](lessons/) | Technologie-spezifische Lessons (siehe [`lessons/INDEX.md`](lessons/INDEX.md) für Hierarchie) |
+| [`bugs/`](bugs/) | Projektspezifische Bug-Tracker (pro Projekt ein Unterordner) |
+| [`concepts/`](concepts/) | Historische Konzept-Dokumente (Ursprünge, Architektur-Skizzen) |
+| [`_erledigt/`](_erledigt/) | Archiv erledigter FEATURE_REQUEST-Aufträge (Audit-Historie, nicht löschen) |
+| [`_drafts_gist/`](_drafts_gist/) | Konzept-Entwürfe für Phase-3-Gist-Migration (nicht aktiv) |
 
 ## Einbindung in Projekte
 
@@ -42,7 +52,7 @@ Projekte referenzieren diese Knowledge-Base direkt aus dem Repo — nicht kopier
 Projektspezifische Files tragen IMMER den Projektnamen als Suffix:
 - `CLAUDE_{PROJEKT}.md`, `SUPERVISOR_{PROJEKT}.md`, `MARATHON_WORKFLOW_{PROJEKT}.md`, `lessons_{PROJEKT}.md`
 - `FEATURE_REQUEST_{kurzname}.md` (kebab-case aus Auftrag-Frontmatter, NIE Projektname)
-- Ausnahme: `mjolnir.md` und `PROJECT_BOOTSTRAP_README.md` heißen immer so.
+- Ausnahmen: `mjolnir.md`, `PROJECT_BOOTSTRAP_README.md`, `REPO_INDEX.md` heißen immer so.
 
 `templates/` enthält Schablonen für Tag 1 eines neuen Projekts. `lessons/` ist hingegen lebendig — wird bei jedem Patch konsultiert.
 

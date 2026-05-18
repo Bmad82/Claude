@@ -87,9 +87,16 @@ Supervisor-Aufgaben:
 Architekt arbeitet primär mobil | kurze Absätze | keine verschachtelten Listen | Dateien statt Walls-of-Text
 
 ## Feature-Request-Mechanik
-Chris/Supervisor trägt Wünsche in `FEATURE_REQUEST_{PROJEKT}.md` ein.
+Chris/Supervisor trägt Wünsche in `FEATURE_REQUEST_{kurzname}.md` ein (Kurzname aus Frontmatter, kebab-case, NIE Projektname).
 Lifecycle:
-- STATUS=FERTIG → Coda renamed zu `FEATURE_REQUEST_{PROJEKT}_ERLEDIGT.md`
+- STATUS=FERTIG → Coda renamed zu `FEATURE_REQUEST_{kurzname}_ERLEDIGT.md`
 - STATUS=IN_ARBEIT → Datei bleibt, mjolnir.md trägt Status
 - STATUS=BLOCKIERT → Datei bleibt + Grund in `DECISIONS_PENDING.md`
-- QUEUED-Fall → neuer Request während IN_ARBEIT wird zu `FEATURE_REQUEST_{PROJEKT}_QUEUED.md`
+- QUEUED-Fall → neuer Request während IN_ARBEIT wird zu `FEATURE_REQUEST_{kurzname}_QUEUED.md`
+
+## Repo-Navigation via REPO_INDEX
+- Der Supervisor kann `REPO_INDEX.md` via Raw-Link fetchen: `https://raw.githubusercontent.com/{user}/{repo}/main/REPO_INDEX.md`
+- Daraus leitet der Supervisor Raw-Links für beliebige Dateien im Repo ab.
+- Bei Session-Start: REPO_INDEX fetchen, um den aktuellen Repo-Stand zu kennen.
+- Kein manuelles Link-Relaying durch den Architekten nötig.
+- REPO_INDEX wird von Coda VOR dem finalen Push aktualisiert, wenn Verzeichnisänderungen passiert sind — d.h. der Stand auf main ist konsistent mit dem letzten Push.

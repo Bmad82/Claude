@@ -1,24 +1,40 @@
 # mjolnir.md — Claude (Meta-Layer)
 
 ```
-STATUS|FERTIG|AUFTRAG: supervisor-briefing|FORTSCHRITT: 1/1 Schritt (Briefing erstellt) / 1 Session|NÄCHSTE SESSION: entfällt (FERTIG)
+STATUS|FERTIG|AUFTRAG: repo-restrukturierung|FORTSCHRITT: 5/5 Phasen / 1 Session|NÄCHSTE SESSION: entfällt (FERTIG)
 ```
 
 **STATUS:** FERTIG
-**AUFTRAG:** supervisor-briefing
-**FORTSCHRITT:** 1 Session | 1/1 Schritt durch
+**AUFTRAG:** repo-restrukturierung
+**FORTSCHRITT:** 1 Session | Phase 1-5 durch (Cleanup, Ordnerstruktur, REPO_INDEX, Templates, README)
 **NÄCHSTE SESSION:** entfällt
 
 ---
 
 ## Was Chris physisch tun muss
 
-- Auf dem Handy nach Push prüfen ob Repo grün ist (1 Klick auf GitHub: https://github.com/Bmad82/Claude)
-- `SUPERVISOR_BRIEFING.md` im Repo-Root an Supervisor weiterleiten — 6 Sektionen (Directory-Tree, REPO_INVENTORY-Volltext, Sprach-Audit, Duplikat-Check, F1-F10, Coda-Einschätzung)
-- Supervisor entscheidet als Nächstes welche Restrukturierungs-Schritte angegangen werden (Vorschläge aus Sektion 6: Worktree-Cleanup + `_erledigt/`-Ordner + Lessons-Hierarchie)
+- Auf Handy nach Push prüfen ob Repo grün ist (https://github.com/Bmad82/Claude)
+- **Restschuld Worktree-Lock:** `.claude/worktrees/focused-payne-b38e6a/` (leer, nicht versioniert) ließ sich aus laufender Claude-Code-Session nicht löschen — Filesystem-Lock. Bei Gelegenheit aus geschlossener Session oder nach Reboot manuell entfernen: `Remove-Item -Recurse -Force "C:\Users\chris\Python\Claude\.claude\worktrees"`. Beeinflusst Repo nicht (kein Tracking).
 
 ---
 
 ## Auftragshistorie
 
-- **Schritt 01 (Briefing):** `SUPERVISOR_BRIEFING.md` erstellt — 725 Zeilen, 51 KB. Sektionen: (1) Directory-Tree Main + Worktree, (2) REPO_INVENTORY.md Volltext eingebettet, (3) Sprach-Audit aller 40 Main-MDs + 18 Worktree-MDs (100% DE, keine HTMLs), (4) Duplikat-Check mit 6 Gruppen (D1 Lessons-Konsolidierungen, D2 Zerberus-Sync, D3 Bibel-Cheat-Sheet, D4 Selbsttest-Pattern, D5 Bug-Tracker-Worktree, D6 Templates-Worktree), (5) Antworten auf F1-F10 (zerberus_lessons-Master in Zerberus-Repo, _drafts_gist nur Konzept, 3 _ERLEDIGT-Files im Root, DESIGN.md echt aber mit [WERT]-Platzhaltern, bugs/ nur Zerberus, keine .claude/CLAUDE.md, keine HTMLs/Showcase, nur Worktree bedenkenlos löschbar, README-Volltext), (6) Einschätzung: größter Pain-Point = drei Lessons-Quellen ohne Hierarchie + Worktree-Cleanup-Versäumnis; Vorschlag: Phase 1 Worktree+_erledigt/-Ordner, Phase 2 lessons/INDEX.md + DESIGN.md-Werte, Phase 3 Zerberus-Lessons-Konsolidierung. `FEATURE_REQUEST_CLAUDE.md` → `FEATURE_REQUEST_supervisor-briefing_ERLEDIGT.md` umbenannt (Naming-Konvention: Kurzname, kein Projektname). Push verifiziert via `$LASTEXITCODE`.
+- **Phase 1 (Cleanup):** `_erledigt/`-Ordner angelegt, 4 `_ERLEDIGT`-Files verschoben. `bugs/README.md` mit Scope-Erklärung erstellt. `DESIGN.md`-Platzhalter zu `[TODO: aus Projekt-:root]` umbenannt (Konvention klargemacht: Werte kommen aus projektspezifischer `:root`, globale DESIGN bleibt leer).
+- **Phase 2 (Struktur):** `workflow/MARATHON_WORKFLOW.md` angelegt. `lessons/INDEX.md` mit 3-Ebenen-Hierarchie (Workflow/Technologie/Projekt) geschrieben.
+- **Phase 3 (REPO_INDEX):** `REPO_INDEX.md` im Root mit Verzeichnisbaum + Raw-Link-Tabelle (46 Dateien). Format autoritativ dokumentiert.
+- **Phase 4 (Templates):** `CLAUDE_PROJEKT_TEMPLATE.md` um REPO_INDEX-Pflicht ergänzt. `SUPERVISOR_PROJEKT_TEMPLATE.md` um Repo-Navigation-Sektion ergänzt.
+- **Phase 5 (README):** `README.md` neu — "Claude — Marathon Workflow Knowledge Base", Drei-Rollen-Modell, Ordnerstruktur-Tabelle, Public-Repo-Warnung erhalten.
+- **Abschluss:** `FEATURE_REQUEST_CLAUDE.md` (Root-Übergabe-Variante) entfernt — Inhalt ist bereits konventionskonform unter `_erledigt/FEATURE_REQUEST_repo-restrukturierung_ERLEDIGT.md` archiviert (kebab-case Kurzname-Konvention). Push verifiziert via `$LASTEXITCODE`.
+
+---
+
+<!--
+LIFECYCLE-Notiz für Coda:
+
+- STATUS=FERTIG  →  beim nächsten Session-Start: mjolnir.md einlesen, dann löschen. FEATURE_REQUEST_{PROJEKT}.md zu _ERLEDIGT.md umbenennen.
+- STATUS=IN_ARBEIT  →  beim nächsten Session-Start: mjolnir.md einlesen, FORTSCHRITT-Block prüfen, laufenden Auftrag fortsetzen. FEATURE_REQUEST NICHT umbenennen.
+- STATUS=BLOCKIERT  →  beim nächsten Session-Start: mjolnir.md einlesen, DECISIONS_PENDING.md prüfen, BLOCKER auflösen oder eskalieren.
+
+mjolnir.md ist Single-Slot — genau EINE Datei zur Zeit, wird beim nächsten Session-Start gelöscht. _ERLEDIGT.md ist Audit-Log (akkumuliert).
+-->

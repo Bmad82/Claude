@@ -4,7 +4,8 @@
 
 Diese Datei ist die zentrale UI-/Look-and-Feel-Referenz für alle Projekte (Farben, Typography, Komponenten, Mobile-Regeln, Animationen).
 Sie wird NICHT kopiert — Projekte referenzieren sie direkt aus dem Repo.
-Werte die noch nicht festgelegt sind, stehen als `[WERT]`.
+
+**Platzhalter-Konvention:** Konkrete Werte (Hex-Codes, Pixel, Schriftgrößen) stehen als `[TODO: aus Projekt-:root]`. Diese Werte sind projektspezifisch und werden beim nächsten UI-Patch direkt aus dem `:root`-CSS-Block des jeweiligen Projekts in DESIGN_{PROJEKT}.md übertragen — diese globale DESIGN.md bleibt selbst leer in den Slots. Die Sektion „Offene Werte" am Ende dieser Datei fasst zusammen, welche Slots beim nächsten UI-Patch zu befüllen sind.
 
 Bei jedem UI-Patch: Diese Datei konsultieren. Neue Design-Entscheidungen hier eintragen.
 
@@ -34,71 +35,71 @@ Diese Trennung ist bewusst: UI-Design und Workflow-Architektur sind unterschiedl
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Primär | `--color-primary` | `[WERT]` | Hauptfarbe, Buttons, aktive Elemente, Highlights |
-| Primär Hover | `--color-primary-hover` | `[WERT]` | Hover/Active-Zustand der Primärfarbe |
-| Primär gedämpft | `--color-primary-muted` | `[WERT]` | Dezente Variante für Hintergründe, Badges |
-| Primär Mittel | `--color-primary-mid` | `[WERT]` | Basis für LLM-Bubble-Background (rgba-Ableitung) |
-| Sekundär | `--color-secondary` | `[WERT]` | Ergänzungsfarbe, sekundäre Buttons |
-| Sekundär Hover | `--color-secondary-hover` | `[WERT]` | Hover/Active-Zustand der Sekundärfarbe |
-| Akzent | `--color-accent` | `[WERT]` | Eyecatcher, sparsam einsetzen (Sterne, Badges, Highlights). Basis für User-Bubble-Background |
+| Primär | `--color-primary` | `[TODO: aus Projekt-:root]` | Hauptfarbe, Buttons, aktive Elemente, Highlights |
+| Primär Hover | `--color-primary-hover` | `[TODO: aus Projekt-:root]` | Hover/Active-Zustand der Primärfarbe |
+| Primär gedämpft | `--color-primary-muted` | `[TODO: aus Projekt-:root]` | Dezente Variante für Hintergründe, Badges |
+| Primär Mittel | `--color-primary-mid` | `[TODO: aus Projekt-:root]` | Basis für LLM-Bubble-Background (rgba-Ableitung) |
+| Sekundär | `--color-secondary` | `[TODO: aus Projekt-:root]` | Ergänzungsfarbe, sekundäre Buttons |
+| Sekundär Hover | `--color-secondary-hover` | `[TODO: aus Projekt-:root]` | Hover/Active-Zustand der Sekundärfarbe |
+| Akzent | `--color-accent` | `[TODO: aus Projekt-:root]` | Eyecatcher, sparsam einsetzen (Sterne, Badges, Highlights). Basis für User-Bubble-Background |
 
 ### 1.2 Hintergrundfarben
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| App-Hintergrund | `--bg-app` | `[WERT]` | Gesamter Seitenhintergrund (Dark-First) |
-| Flächen-Hintergrund | `--bg-surface` | `[WERT]` | Cards, Panels, Container |
-| Flächen-Hintergrund erhöht | `--bg-surface-raised` | `[WERT]` | Modals, Dropdowns, Overlays |
-| Sidebar-Hintergrund | `--bg-sidebar` | `[WERT]` | Navigation, Seitenleisten |
-| Input-Hintergrund | `--bg-input` | `[WERT]` | Eingabefelder, Textareas |
-| Input-Hintergrund Fokus | `--bg-input-focus` | `[WERT]` | Eingabefeld bei Fokus |
+| App-Hintergrund | `--bg-app` | `[TODO: aus Projekt-:root]` | Gesamter Seitenhintergrund (Dark-First) |
+| Flächen-Hintergrund | `--bg-surface` | `[TODO: aus Projekt-:root]` | Cards, Panels, Container |
+| Flächen-Hintergrund erhöht | `--bg-surface-raised` | `[TODO: aus Projekt-:root]` | Modals, Dropdowns, Overlays |
+| Sidebar-Hintergrund | `--bg-sidebar` | `[TODO: aus Projekt-:root]` | Navigation, Seitenleisten |
+| Input-Hintergrund | `--bg-input` | `[TODO: aus Projekt-:root]` | Eingabefelder, Textareas |
+| Input-Hintergrund Fokus | `--bg-input-focus` | `[TODO: aus Projekt-:root]` | Eingabefeld bei Fokus |
 
 ### 1.3 Textfarben
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Text primär | `--text-primary` | `[WERT]` | Haupttextfarbe, Fließtext |
-| Text sekundär | `--text-secondary` | `[WERT]` | Weniger wichtiger Text, Labels, Timestamps |
-| Text deaktiviert | `--text-disabled` | `[WERT]` | Inaktive Elemente, Placeholder |
-| Text invertiert | `--text-inverted` | `[WERT]` | Text auf dunklem/hellem Gegenhintergrund |
-| Text auf Primärfarbe | `--text-on-primary` | `[WERT]` | Text auf primärfarbigem Hintergrund (Buttons) |
-| Link | `--text-link` | `[WERT]` | Hyperlinks, klickbare Textelemente |
-| Link besucht | `--text-link-visited` | `[WERT]` | Bereits besuchte Links |
+| Text primär | `--text-primary` | `[TODO: aus Projekt-:root]` | Haupttextfarbe, Fließtext |
+| Text sekundär | `--text-secondary` | `[TODO: aus Projekt-:root]` | Weniger wichtiger Text, Labels, Timestamps |
+| Text deaktiviert | `--text-disabled` | `[TODO: aus Projekt-:root]` | Inaktive Elemente, Placeholder |
+| Text invertiert | `--text-inverted` | `[TODO: aus Projekt-:root]` | Text auf dunklem/hellem Gegenhintergrund |
+| Text auf Primärfarbe | `--text-on-primary` | `[TODO: aus Projekt-:root]` | Text auf primärfarbigem Hintergrund (Buttons) |
+| Link | `--text-link` | `[TODO: aus Projekt-:root]` | Hyperlinks, klickbare Textelemente |
+| Link besucht | `--text-link-visited` | `[TODO: aus Projekt-:root]` | Bereits besuchte Links |
 
 ### 1.4 Statusfarben
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Erfolg | `--color-success` | `[WERT]` | Bestätigungen, "gespeichert", grüne Häkchen |
-| Erfolg Hintergrund | `--color-success-bg` | `[WERT]` | Hintergrund für Erfolgs-Banner/Badges |
-| Warnung | `--color-warning` | `[WERT]` | Hinweise, "Achtung", noch kein Fehler |
-| Warnung Hintergrund | `--color-warning-bg` | `[WERT]` | Hintergrund für Warn-Banner |
-| Fehler | `--color-error` | `[WERT]` | Fehlermeldungen, Validierung fehlgeschlagen |
-| Fehler Hintergrund | `--color-error-bg` | `[WERT]` | Hintergrund für Fehler-Banner |
-| Info | `--color-info` | `[WERT]` | Neutrale Hinweise, Tooltips, Erklärungen |
-| Info Hintergrund | `--color-info-bg` | `[WERT]` | Hintergrund für Info-Banner |
+| Erfolg | `--color-success` | `[TODO: aus Projekt-:root]` | Bestätigungen, "gespeichert", grüne Häkchen |
+| Erfolg Hintergrund | `--color-success-bg` | `[TODO: aus Projekt-:root]` | Hintergrund für Erfolgs-Banner/Badges |
+| Warnung | `--color-warning` | `[TODO: aus Projekt-:root]` | Hinweise, "Achtung", noch kein Fehler |
+| Warnung Hintergrund | `--color-warning-bg` | `[TODO: aus Projekt-:root]` | Hintergrund für Warn-Banner |
+| Fehler | `--color-error` | `[TODO: aus Projekt-:root]` | Fehlermeldungen, Validierung fehlgeschlagen |
+| Fehler Hintergrund | `--color-error-bg` | `[TODO: aus Projekt-:root]` | Hintergrund für Fehler-Banner |
+| Info | `--color-info` | `[TODO: aus Projekt-:root]` | Neutrale Hinweise, Tooltips, Erklärungen |
+| Info Hintergrund | `--color-info-bg` | `[TODO: aus Projekt-:root]` | Hintergrund für Info-Banner |
 
 ### 1.5 Randfarben
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Rand Standard | `--border-color` | `[WERT]` | Normale Trennlinien, Card-Rahmen |
-| Rand leicht | `--border-color-light` | `[WERT]` | Subtile Trenner, Tabellenlinien |
-| Rand Fokus | `--border-color-focus` | `[WERT]` | Eingabefelder bei Fokus, aktive Tabs |
-| Rand Fehler | `--border-color-error` | `[WERT]` | Validierungsfehler an Eingabefeldern |
+| Rand Standard | `--border-color` | `[TODO: aus Projekt-:root]` | Normale Trennlinien, Card-Rahmen |
+| Rand leicht | `--border-color-light` | `[TODO: aus Projekt-:root]` | Subtile Trenner, Tabellenlinien |
+| Rand Fokus | `--border-color-focus` | `[TODO: aus Projekt-:root]` | Eingabefelder bei Fokus, aktive Tabs |
+| Rand Fehler | `--border-color-error` | `[TODO: aus Projekt-:root]` | Validierungsfehler an Eingabefeldern |
 
 ### 1.6 Spezialfarben
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
 | User-Bubble Hintergrund | `--bubble-user-bg` | `rgba(236, 64, 122, 0.88)` | Chat: Hintergrund der User-Nachrichten (Akzent-Ableitung mit Alpha) |
-| User-Bubble Text | `--bubble-user-text` | `[WERT]` | Chat: Textfarbe in User-Nachrichten |
+| User-Bubble Text | `--bubble-user-text` | `[TODO: aus Projekt-:root]` | Chat: Textfarbe in User-Nachrichten |
 | Bot-Bubble Hintergrund | `--bubble-llm-bg` | `rgba(26, 47, 78, 0.85)` | Chat: Hintergrund der Bot-Nachrichten (Primary-Mid-Ableitung mit Alpha) |
-| Bot-Bubble Text | `--bubble-bot-text` | `[WERT]` | Chat: Textfarbe in Bot-Nachrichten |
-| Overlay/Backdrop | `--color-overlay` | `[WERT]` | Halbdurchsichtiger Hintergrund hinter Modals |
-| Schatten | `--color-shadow` | `[WERT]` | Box-Shadow-Farbe für Elevation |
-| Scrollbar Track | `--scrollbar-track` | `[WERT]` | Scrollbar-Hintergrund |
-| Scrollbar Thumb | `--scrollbar-thumb` | `[WERT]` | Scrollbar-Griff |
+| Bot-Bubble Text | `--bubble-bot-text` | `[TODO: aus Projekt-:root]` | Chat: Textfarbe in Bot-Nachrichten |
+| Overlay/Backdrop | `--color-overlay` | `[TODO: aus Projekt-:root]` | Halbdurchsichtiger Hintergrund hinter Modals |
+| Schatten | `--color-shadow` | `[TODO: aus Projekt-:root]` | Box-Shadow-Farbe für Elevation |
+| Scrollbar Track | `--scrollbar-track` | `[TODO: aus Projekt-:root]` | Scrollbar-Hintergrund |
+| Scrollbar Thumb | `--scrollbar-thumb` | `[TODO: aus Projekt-:root]` | Scrollbar-Griff |
 
 **Anti-Invariante:** Bubble-Backgrounds dürfen NIE `#000000` oder `transparent` als Default haben — "nie schwarz auf schwarz".
 Immer rgba-Werte mit Alpha 0.85–0.88 als Basis verwenden. `resetTheme()` muss `resetAllBubbles()` + `resetFontSize()` mitrufen.
@@ -130,38 +131,38 @@ Immer rgba-Werte mit Alpha 0.85–0.88 als Basis verwenden. `resetTheme()` muss 
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Hauptschrift | `--font-family-base` | `[WERT]` | Fließtext, UI-Elemente |
-| Monospace | `--font-family-mono` | `[WERT]` | Code, Klickpfade, technische Werte |
-| Display/Headline | `--font-family-display` | `[WERT]` | Große Überschriften, Titel (optional, kann gleich wie Base sein) |
-| Quelle | — | `[WERT]` | Wie werden Fonts geladen |
+| Hauptschrift | `--font-family-base` | `[TODO: aus Projekt-:root]` | Fließtext, UI-Elemente |
+| Monospace | `--font-family-mono` | `[TODO: aus Projekt-:root]` | Code, Klickpfade, technische Werte |
+| Display/Headline | `--font-family-display` | `[TODO: aus Projekt-:root]` | Große Überschriften, Titel (optional, kann gleich wie Base sein) |
+| Quelle | — | `[TODO: aus Projekt-:root]` | Wie werden Fonts geladen |
 
 ### 2.2 Größen-Skala
 
 | Stufe | CSS-Variable | Wert | Einsatz |
 |-------|-------------|------|---------|
-| XS | `--font-size-xs` | `[WERT]` | Timestamps, Badges, Footnotes |
-| SM | `--font-size-sm` | `[WERT]` | Labels, Hilfstexte, Captions |
+| XS | `--font-size-xs` | `[TODO: aus Projekt-:root]` | Timestamps, Badges, Footnotes |
+| SM | `--font-size-sm` | `[TODO: aus Projekt-:root]` | Labels, Hilfstexte, Captions |
 | Base | `--font-size-base` | `15px` (Default) | Fließtext, Inputs, Buttons |
-| MD | `--font-size-md` | `[WERT]` | Hervorgehobener Text, Card-Titel |
-| LG | `--font-size-lg` | `[WERT]` | Abschnitts-Überschriften (H3) |
-| XL | `--font-size-xl` | `[WERT]` | Seitenüberschriften (H2) |
-| XXL | `--font-size-xxl` | `[WERT]` | Haupttitel (H1), Hero-Text |
+| MD | `--font-size-md` | `[TODO: aus Projekt-:root]` | Hervorgehobener Text, Card-Titel |
+| LG | `--font-size-lg` | `[TODO: aus Projekt-:root]` | Abschnitts-Überschriften (H3) |
+| XL | `--font-size-xl` | `[TODO: aus Projekt-:root]` | Seitenüberschriften (H2) |
+| XXL | `--font-size-xxl` | `[TODO: aus Projekt-:root]` | Haupttitel (H1), Hero-Text |
 
 ### 2.3 Zeilenhöhen
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Eng | `--line-height-tight` | `[WERT]` | Überschriften, Buttons |
-| Normal | `--line-height-base` | `[WERT]` | Fließtext |
-| Weit | `--line-height-relaxed` | `[WERT]` | Lesestoff, lange Absätze |
+| Eng | `--line-height-tight` | `[TODO: aus Projekt-:root]` | Überschriften, Buttons |
+| Normal | `--line-height-base` | `[TODO: aus Projekt-:root]` | Fließtext |
+| Weit | `--line-height-relaxed` | `[TODO: aus Projekt-:root]` | Lesestoff, lange Absätze |
 
 ### 2.4 Schriftgewichte
 
 | Rolle | CSS-Variable | Wert | Beschreibung |
 |-------|-------------|------|--------------|
-| Normal | `--font-weight-normal` | `[WERT]` | Fließtext |
-| Medium | `--font-weight-medium` | `[WERT]` | Labels, leichte Hervorhebung |
-| Bold | `--font-weight-bold` | `[WERT]` | Überschriften, starke Hervorhebung |
+| Normal | `--font-weight-normal` | `[TODO: aus Projekt-:root]` | Fließtext |
+| Medium | `--font-weight-medium` | `[TODO: aus Projekt-:root]` | Labels, leichte Hervorhebung |
+| Bold | `--font-weight-bold` | `[TODO: aus Projekt-:root]` | Überschriften, starke Hervorhebung |
 
 ### 2.5 Skalierungssystem (2-Achsen)
 
@@ -191,46 +192,46 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 
 | Stufe | CSS-Variable | Wert | Typischer Einsatz |
 |-------|-------------|------|-------------------|
-| 2XS | `--space-2xs` | `[WERT]` | Inline-Abstände, Icon-Gaps |
-| XS | `--space-xs` | `[WERT]` | Enge Abstände innerhalb von Gruppen |
-| SM | `--space-sm` | `[WERT]` | Padding in kleinen Elementen |
-| MD | `--space-md` | `[WERT]` | Standard-Padding, Card-Innenabstand |
-| LG | `--space-lg` | `[WERT]` | Abstand zwischen Sektionen |
-| XL | `--space-xl` | `[WERT]` | Große Sektionsabstände |
-| 2XL | `--space-2xl` | `[WERT]` | Seitenränder, Hero-Abstände |
+| 2XS | `--space-2xs` | `[TODO: aus Projekt-:root]` | Inline-Abstände, Icon-Gaps |
+| XS | `--space-xs` | `[TODO: aus Projekt-:root]` | Enge Abstände innerhalb von Gruppen |
+| SM | `--space-sm` | `[TODO: aus Projekt-:root]` | Padding in kleinen Elementen |
+| MD | `--space-md` | `[TODO: aus Projekt-:root]` | Standard-Padding, Card-Innenabstand |
+| LG | `--space-lg` | `[TODO: aus Projekt-:root]` | Abstand zwischen Sektionen |
+| XL | `--space-xl` | `[TODO: aus Projekt-:root]` | Große Sektionsabstände |
+| 2XL | `--space-2xl` | `[TODO: aus Projekt-:root]` | Seitenränder, Hero-Abstände |
 
 ### 3.2 Border-Radius
 
 | Stufe | CSS-Variable | Wert | Einsatz |
 |-------|-------------|------|---------|
 | Keiner | `--radius-none` | `0` | Scharfe Kanten (bewusst eckig) |
-| Klein | `--radius-sm` | `[WERT]` | Buttons, Inputs, Badges |
-| Standard | `--radius-md` | `[WERT]` | Cards, Panels |
-| Groß | `--radius-lg` | `[WERT]` | Modals, große Container |
+| Klein | `--radius-sm` | `[TODO: aus Projekt-:root]` | Buttons, Inputs, Badges |
+| Standard | `--radius-md` | `[TODO: aus Projekt-:root]` | Cards, Panels |
+| Groß | `--radius-lg` | `[TODO: aus Projekt-:root]` | Modals, große Container |
 | Rund | `--radius-full` | `9999px` | Avatare, runde Buttons, Pills |
 
 ### 3.3 Breakpoints
 
 | Name | CSS-Variable | Wert | Beschreibung |
 |------|-------------|------|--------------|
-| Mobile S | `--bp-mobile-s` | `[WERT]` | Kleine Smartphones (SE, Mini) |
-| Mobile | `--bp-mobile` | `[WERT]` | Standard-Smartphones |
-| Tablet | `--bp-tablet` | `[WERT]` | Tablets, große Phones im Landscape |
-| Desktop | `--bp-desktop` | `[WERT]` | Laptops, Desktops |
-| Wide | `--bp-wide` | `[WERT]` | Große Monitore |
+| Mobile S | `--bp-mobile-s` | `[TODO: aus Projekt-:root]` | Kleine Smartphones (SE, Mini) |
+| Mobile | `--bp-mobile` | `[TODO: aus Projekt-:root]` | Standard-Smartphones |
+| Tablet | `--bp-tablet` | `[TODO: aus Projekt-:root]` | Tablets, große Phones im Landscape |
+| Desktop | `--bp-desktop` | `[TODO: aus Projekt-:root]` | Laptops, Desktops |
+| Wide | `--bp-wide` | `[TODO: aus Projekt-:root]` | Große Monitore |
 
 ### 3.4 Z-Index-Skala
 
 | Ebene | CSS-Variable | Wert | Einsatz |
 |-------|-------------|------|---------|
-| Basis | `--z-base` | `[WERT]` | Normaler Content |
-| Sticky | `--z-sticky` | `[WERT]` | Sticky Header, Tab-Leisten |
-| Dropdown | `--z-dropdown` | `[WERT]` | Dropdowns, Autocomplete |
-| Scroll-Nav | `--z-scroll-nav` | `[WERT]` | Scroll-Navigationsleiste (über Content, unter Modal) |
-| Modal-Backdrop | `--z-backdrop` | `[WERT]` | Overlay hinter Modal |
-| Modal | `--z-modal` | `[WERT]` | Modals, Dialoge |
-| Toast | `--z-toast` | `[WERT]` | Benachrichtigungen, Toasts |
-| Tooltip | `--z-tooltip` | `[WERT]` | Tooltips, immer oben |
+| Basis | `--z-base` | `[TODO: aus Projekt-:root]` | Normaler Content |
+| Sticky | `--z-sticky` | `[TODO: aus Projekt-:root]` | Sticky Header, Tab-Leisten |
+| Dropdown | `--z-dropdown` | `[TODO: aus Projekt-:root]` | Dropdowns, Autocomplete |
+| Scroll-Nav | `--z-scroll-nav` | `[TODO: aus Projekt-:root]` | Scroll-Navigationsleiste (über Content, unter Modal) |
+| Modal-Backdrop | `--z-backdrop` | `[TODO: aus Projekt-:root]` | Overlay hinter Modal |
+| Modal | `--z-modal` | `[TODO: aus Projekt-:root]` | Modals, Dialoge |
+| Toast | `--z-toast` | `[TODO: aus Projekt-:root]` | Benachrichtigungen, Toasts |
+| Tooltip | `--z-tooltip` | `[TODO: aus Projekt-:root]` | Tooltips, immer oben |
 
 ### 3.5 Layout-Grundregel
 
@@ -238,7 +239,7 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 |-------------|------|--------------|
 | LLM-Ausgabe Breite | `100%` | LLM-Antworten nutzen die volle Bildschirmbreite. Kein Avatar-Einzug, kein verschenkter Platz |
 | User-Bubble Breite | `100%` | User-Eingaben ebenfalls volle Breite |
-| Content Max-Width | `[WERT]` | Optional: Max-Width auf Desktop um Lesebreite zu begrenzen. Mobile: immer 100% |
+| Content Max-Width | `[TODO: aus Projekt-:root]` | Optional: Max-Width auf Desktop um Lesebreite zu begrenzen. Mobile: immer 100% |
 | Höheneinheit | `dvh` | `dvh` statt `vh` — respektiert dynamische Viewport-Höhe (Mobile-Keyboard) |
 
 ---
@@ -253,13 +254,13 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 | Textfarbe | `--text-on-primary` | `--text-primary` | `#ffffff` | `--text-primary` |
 | Border | `none` | `1px solid --border-color` | `none` | `none` |
 | Border-Radius | `--radius-sm` | `--radius-sm` | `--radius-sm` | `--radius-sm` |
-| Padding | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
-| Min-Höhe | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
+| Padding | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` |
+| Min-Höhe | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` |
 | Min-Höhe Touch | `44px` | `44px` | `44px` | `44px` |
-| Hover-Effekt | `--color-primary-hover` | `[WERT]` | `[WERT]` | `[WERT]` |
-| Active-Effekt | `[WERT]` | `[WERT]` | `[WERT]` | `[WERT]` |
+| Hover-Effekt | `--color-primary-hover` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` |
+| Active-Effekt | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` |
 | Disabled | `opacity: 0.5` | `opacity: 0.5` | `opacity: 0.5` | `opacity: 0.5` |
-| Box-Shadow | `[WERT]` | `[WERT]` | `[WERT]` | `none` |
+| Box-Shadow | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `[TODO: aus Projekt-:root]` | `none` |
 | Übergang | `all 0.3s ease` | `all 0.3s ease` | `all 0.3s ease` | `all 0.3s ease` |
 
 ### 4.2 Eingabefelder
@@ -268,14 +269,14 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 |-------------|---------------------|--------------|
 | Hintergrund | `--bg-input` | Normaler Zustand |
 | Hintergrund Fokus | `--bg-input-focus` | Bei Fokus |
-| Border | `[WERT]` | Normaler Rand |
-| Border Fokus | `[WERT]` | Rand bei Fokus (z.B. Glow, Farbwechsel) |
+| Border | `[TODO: aus Projekt-:root]` | Normaler Rand |
+| Border Fokus | `[TODO: aus Projekt-:root]` | Rand bei Fokus (z.B. Glow, Farbwechsel) |
 | Border Fehler | `--border-color-error` | Validierungsfehler |
 | Textfarbe | `--text-primary` | Eingegebener Text |
 | Placeholder-Farbe | `--text-disabled` | Placeholder-Text |
-| Padding | `[WERT]` | Innenabstand |
+| Padding | `[TODO: aus Projekt-:root]` | Innenabstand |
 | Border-Radius | `--radius-sm` | Ecken |
-| Min-Höhe | `[WERT]` | Desktop |
+| Min-Höhe | `[TODO: aus Projekt-:root]` | Desktop |
 | Min-Höhe Touch | `44px` | Mobile |
 | Autocomplete | `off` / `new-password` | Browser-Autofill unterdrücken |
 
@@ -294,14 +295,14 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
-| Hintergrund | `[WERT]` | Dropdown-Container |
-| Hintergrund Option Hover | `[WERT]` | Hovered Option |
-| Hintergrund Option Aktiv | `[WERT]` | Ausgewählte Option |
-| Max-Höhe | `[WERT]` | Scroll bei vielen Optionen |
-| Border | `[WERT]` | Rand des Dropdown-Containers |
-| Box-Shadow | `[WERT]` | Elevation/Schatten |
+| Hintergrund | `[TODO: aus Projekt-:root]` | Dropdown-Container |
+| Hintergrund Option Hover | `[TODO: aus Projekt-:root]` | Hovered Option |
+| Hintergrund Option Aktiv | `[TODO: aus Projekt-:root]` | Ausgewählte Option |
+| Max-Höhe | `[TODO: aus Projekt-:root]` | Scroll bei vielen Optionen |
+| Border | `[TODO: aus Projekt-:root]` | Rand des Dropdown-Containers |
+| Box-Shadow | `[TODO: aus Projekt-:root]` | Elevation/Schatten |
 | Z-Index | `--z-dropdown` | Über dem Content |
-| Animation | `[WERT]` | Öffnen/Schließen |
+| Animation | `[TODO: aus Projekt-:root]` | Öffnen/Schließen |
 
 ---
 
@@ -310,8 +311,8 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
 | Icon-Set | Emoji | Unicode-Emojis als Icon-System (☰ Navigation, 🔧 Settings, 💾 Export, 📌 Pinned, 📋 Sessions) |
-| Standardgröße | `[WERT]` | Normale Icons in Text/Buttons |
-| Große Icons | `[WERT]` | Tab-Icons, Nav-Icons |
+| Standardgröße | `[TODO: aus Projekt-:root]` | Normale Icons in Text/Buttons |
+| Große Icons | `[TODO: aus Projekt-:root]` | Tab-Icons, Nav-Icons |
 | Farbe | `inherit` | Standard-Icon-Farbe |
 | Touch-Target | `44px` | Klickbereich um Icons herum (unabhängig von Icon-Größe) |
 
@@ -321,9 +322,9 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 
 | Eigenschaft | CSS-Variable | Wert | Beschreibung |
 |-------------|-------------|------|--------------|
-| Schnell | `--transition-fast` | `[WERT]` | Hover, Fokus, kleine Zustandswechsel |
+| Schnell | `--transition-fast` | `[TODO: aus Projekt-:root]` | Hover, Fokus, kleine Zustandswechsel |
 | Normal | `--transition-base` | `all 0.3s ease` | Modals, Dropdowns, Panels |
-| Langsam | `--transition-slow` | `[WERT]` | Seitenübergänge, große Animationen |
+| Langsam | `--transition-slow` | `[TODO: aus Projekt-:root]` | Seitenübergänge, große Animationen |
 | Sehr langsam | `--transition-ambient` | `all 12s ease-in-out` | Sentiment-Ambient-Farbwechsel (10–15s Fade) |
 | Easing | `--easing-default` | `ease` | Standard-Easing |
 | Reduce-Motion | — | `@media (prefers-reduced-motion: reduce)` | Animationen respektieren, auf Minimum reduzieren |
@@ -336,10 +337,10 @@ Ersetzt feste Font-Presets. Zwei unabhängige Achsen, gesteuert per Stepper (+ /
 | Stufe | CSS-Variable | Wert | Einsatz |
 |-------|-------------|------|---------|
 | Keiner | `--shadow-none` | `none` | Flache Elemente |
-| Niedrig | `--shadow-sm` | `[WERT]` | Cards, Buttons mit Tiefe |
-| Mittel | `--shadow-md` | `[WERT]` | Dropdowns, erhöhte Panels |
-| Hoch | `--shadow-lg` | `[WERT]` | Modals, Toasts |
-| Innen | `--shadow-inset` | `[WERT]` | Eingedrückte Inputs, Toggle-Tracks |
+| Niedrig | `--shadow-sm` | `[TODO: aus Projekt-:root]` | Cards, Buttons mit Tiefe |
+| Mittel | `--shadow-md` | `[TODO: aus Projekt-:root]` | Dropdowns, erhöhte Panels |
+| Hoch | `--shadow-lg` | `[TODO: aus Projekt-:root]` | Modals, Toasts |
+| Innen | `--shadow-inset` | `[TODO: aus Projekt-:root]` | Eingedrückte Inputs, Toggle-Tracks |
 | Sentiment | `--shadow-sentiment` | `none` (default) | Dynamisch: wird bei Sentiment-Stufe 2 auf aktuelle Sentiment-Farbe gesetzt |
 
 ---
@@ -413,10 +414,10 @@ Sanfter Farbschimmer der gesamten Oberfläche basierend auf der Stimmung des Use
 | Stimmung | CSS-Variable | Farbrichtung | Beschreibung |
 |----------|-------------|-------------|--------------|
 | Neutral/Ausgeglichen | `--sentiment-neutral` | keiner oder hauchzartes Blau | Kein merklicher Effekt |
-| Wut/Frustration | `--sentiment-anger` | Rot-Schimmer | `[WERT]` — z.B. `rgba(220, 40, 40, ...)` |
-| Freude/Begeisterung | `--sentiment-joy` | Warmes Gold/Gelb | `[WERT]` — z.B. `rgba(255, 200, 50, ...)` |
-| Nachdenklich/Philosophisch | `--sentiment-contemplative` | Violett/Indigo | `[WERT]` — z.B. `rgba(100, 60, 180, ...)` |
-| Technisch/Sachlich | `--sentiment-technical` | Kühles Blau | `[WERT]` — z.B. `rgba(40, 100, 200, ...)` |
+| Wut/Frustration | `--sentiment-anger` | Rot-Schimmer | `[TODO: aus Projekt-:root]` — z.B. `rgba(220, 40, 40, ...)` |
+| Freude/Begeisterung | `--sentiment-joy` | Warmes Gold/Gelb | `[TODO: aus Projekt-:root]` — z.B. `rgba(255, 200, 50, ...)` |
+| Nachdenklich/Philosophisch | `--sentiment-contemplative` | Violett/Indigo | `[TODO: aus Projekt-:root]` — z.B. `rgba(100, 60, 180, ...)` |
+| Technisch/Sachlich | `--sentiment-technical` | Kühles Blau | `[TODO: aus Projekt-:root]` — z.B. `rgba(40, 100, 200, ...)` |
 
 ### 10.3 Stufen & Verstärkung
 
@@ -453,7 +454,7 @@ Vertikale Navigationsleiste am linken Bildschirmrand mit Ankerpunkten für jede 
 | Position | linker Bildschirmrand | Außerhalb der Swipe-Back-Zone (iOS) und Daumen-Scroll-Zone (rechts) |
 | Opacity | `0.25` (75% transparent) | Dezent, stört den Chat-Content nicht |
 | Design | Vertikaler Strich mit Gabelungs-Punkten | Der Strich gabelt sich zu einem kleinen Oval pro LLM-Antwort und führt wieder zusammen — organisch, wie Nervenbahnen |
-| Punkt-Abstand | fester Abstand (`[WERT]`px) | Immer gleiche Abstände, keine Kompression |
+| Punkt-Abstand | fester Abstand (`[TODO: aus Projekt-:root]`px) | Immer gleiche Abstände, keine Kompression |
 | Scrollbar der Leiste | ja, eigenständig scrollbar | Bei vielen Antworten: Touch auf der Leiste scrollt nur die Leiste, nicht den Chat |
 | Farbe | `--text-secondary` oder `--border-color-light` | Passt sich dem Theme an |
 
@@ -570,7 +571,7 @@ Eigene View, erreichbar über Sidebar → "Projekte". NICHT in den Einstellungen
 | Eigenschaft | Wert | Beschreibung |
 |-------------|------|--------------|
 | Kontrast-Ziel | WCAG AA | Mindest-Kontrastverhältnis |
-| Fokus-Indikator | `[WERT]` | Sichtbarer Fokus-Ring (Farbe, Breite, Offset) |
+| Fokus-Indikator | `[TODO: aus Projekt-:root]` | Sichtbarer Fokus-Ring (Farbe, Breite, Offset) |
 | Skip-Link | nein | Noch nicht implementiert |
 | Aria-Labels | Pflicht auf allen interaktiven Elementen | Screenreader-Support |
 | Reduce-Motion | respektieren | Animationen auf Minimum bei User-Präferenz. Sentiment-Fade → sofortiger Wechsel |

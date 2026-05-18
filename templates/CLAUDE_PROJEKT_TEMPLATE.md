@@ -72,13 +72,23 @@ Startskript|{...}
 | README.md | UI/CLI/API-Change | Patch-Nr im Footer |
 | mjolnir.md | Session-Ende | PFLICHT, ausnahmslos, mit STATUS-Header |
 | lessons_{PROJEKT}.md | jeder ≥2-Min-Stolperstein | Bibel-Format |
+| REPO_INDEX.md | Verzeichnisänderung in Session | Verzeichnisbaum + Raw-Link-Tabelle, vor finalem Push |
+
+## REPO_INDEX-Pflicht
+- `REPO_INDEX.md` im Repo-Root ist Pflicht für jedes Projekt.
+- Wird bei Verzeichnisänderungen (Dateien erstellt/gelöscht/verschoben/umbenannt) am Session-Ende aktualisiert.
+- Format: Verzeichnisbaum + Tabelle mit Raw-Links (`https://raw.githubusercontent.com/{user}/{repo}/main/{pfad}`).
+- Aktualisierung passiert VOR dem finalen Push.
+- Wenn keine Verzeichnisänderungen stattfanden: REPO_INDEX nicht anfassen (kein Diff-Noise).
+- Zweck: Supervisor (Chat-Instanz) fetcht REPO_INDEX.md und leitet daraus Raw-Links für beliebige Dateien ab — kein manuelles Link-Relaying nötig.
 
 ## Git-Pflicht nach Patch (Coda macht das SELBST)
 1. Tests ausführen | Ergebnis prüfen
-2. `git add` (gezielt, nicht `-A`)
-3. `git commit -m "Patch XX – {Kurztitel}"`
-4. `git push` | `$LASTEXITCODE` prüfen | bei Fehler: BLOCKIERT in mjolnir.md
-5. SUPERVISOR_{PROJEKT}.md updaten
+2. Verzeichnisänderungen in dieser Session? → `REPO_INDEX.md` aktualisieren
+3. `git add` (gezielt, nicht `-A`)
+4. `git commit -m "Patch XX – {Kurztitel}"`
+5. `git push` | `$LASTEXITCODE` prüfen | bei Fehler: BLOCKIERT in mjolnir.md
+6. SUPERVISOR_{PROJEKT}.md updaten
 
 ## Git-Workflow am Session-Ende
 1. Eigene Branch-Edits committen + pushen

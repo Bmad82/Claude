@@ -1,0 +1,86 @@
+# Marathon-Workflow — Architektur und Ablauf
+
+Drei-Rollen-System zur Software-Entwicklung, bei dem der Architekt selbst kein Terminal anfasst und keinen Code schreibt. Optimiert für mobiles Arbeiten via Spracheingabe (Whisper).
+
+## Die drei Rollen
+
+| Rolle | Person/Instanz | Aufgabe |
+|---|---|---|
+| **Architekt** | Chris (Mensch) | Ideen, Richtung, Whisper-Eingaben — kein Code, kein Terminal |
+| **Supervisor** | Claude im Chat-Fenster (claude.ai) | plant, prüft, schreibt Coda-Prompts als `.md`-Dateien |
+| **Coda** | Claude Code (Terminal/CLI) | implementiert, testet, committet, merged, pusht — folgt dem Prompt |
+
+**Trennung:** Architekt fasst kein Terminal an. Supervisor schickt keinen Inline-Befehl. Coda macht die Hände-schmutzig-Arbeit. Verstöße gegen diese Trennung sind als „Faulheits-Catches" katalogisiert (siehe [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md)).
+
+## Datei-Hierarchie pro Projekt
+
+Jedes Projekt, das den Marathon-Workflow nutzt, hat folgende Pflicht-Dateien (Vorlagen in [`templates/`](../templates/)):
+
+| Datei | Zweck | Lifecycle |
+|---|---|---|
+| `CLAUDE_{PROJEKT}.md` | Betriebsanleitung für Coda | wächst mit Patches, < 150 Zeilen |
+| `SUPERVISOR_{PROJEKT}.md` | Strategischer Stand für Chat-Supervisor | jeder Patch aktualisiert, < 400 Zeilen |
+| `MARATHON_WORKFLOW_{PROJEKT}.md` | Aufgabenliste mit Status | jeder Patch aktualisiert Status-Spalte |
+| `mjolnir.md` | Session-Abschluss-State (Single-Slot) | wird beim nächsten Session-Start gelesen + überschrieben |
+| `FEATURE_REQUEST_{kurzname}.md` | aktive Aufträge an Coda | bei STATUS=FERTIG → Rename zu `_ERLEDIGT.md` |
+| `HANDOVER_{PROJEKT}.md` | Detail-Übergabe zwischen Sessions | bei Session-Ende mit ausstehender Arbeit |
+| `lessons_{PROJEKT}.md` | projektspezifische Stolperstein-Sammlung | nach ≥2-Min-Falle eintragen |
+| `DECISIONS_{PROJEKT}.md` | offene Architektur-Fragen + Entscheidungen | bei Unsicherheit eintragen |
+| `DESIGN_{PROJEKT}.md` | projektspezifische Design-Entscheidungen | bei UI-Patch |
+| `ROADMAP_{PROJEKT}.md` | Phasen-Roadmap (Prosa erlaubt) | bei Phasen-Wechsel |
+| `REPO_INDEX.md` | automatisch gepflegtes Verzeichnis mit Raw-Links | bei Verzeichnisänderungen |
+
+## Session-Zyklus (Coda)
+
+1. **Konflikt-Check**: existiert `mjolnir.md` mit STATUS=IN_ARBEIT UND `FEATURE_REQUEST_{kurzname}.md` mit anderem Kurznamen? → neuer Request wird zu `_QUEUED.md`, alter zuerst fertig machen.
+2. `FEATURE_REQUEST_{kurzname}.md` lesen — falls vorhanden, Priorität 1. Bei STATUS=FERTIG am Ende → Rename zu `_ERLEDIGT.md`.
+3. `mjolnir.md` lesen (STATUS-Header zuerst), dann löschen (Single-Slot).
+4. `HANDOVER_{PROJEKT}.md` lesen, falls vorhanden.
+5. `MARATHON_WORKFLOW_{PROJEKT}.md` lesen.
+6. `lessons_{PROJEKT}.md` konsultieren.
+7. Globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`.
+8. Arbeit ausführen — Tests, Commit, Push selbst (`$LASTEXITCODE` verifizieren).
+9. Worktree-Branches selbst auf main mergen (kein „Schritt 0 für Chris").
+10. `mjolnir.md` neu schreiben mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) — Pflicht, ausnahmslos.
+11. Bei Verzeichnisänderungen: `REPO_INDEX.md` aktualisieren VOR dem finalen Push.
+
+## Die 6 Faulheits-Catches (Quick Reference)
+
+Kanonische Liste der Anti-Patterns, die den Workflow brechen würden. Vollständig dokumentiert in [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md):
+
+1. **OBERSTES GEBOT** — Coda terminalisiert nichts, was Coda kann.
+2. **mjolnir.md PFLICHT am Session-Ende** — Single-Slot-Round-Trip, ausnahmslos.
+3. **Worktree-Branches selbst auf main mergen** — kein „Schritt 0 für Chris".
+4. **Supervisor baut Coda-Prompts statt Terminal-Befehle** — auch „nur ein Befehl" ist einer zu viel.
+5. **Multi-Session-STATUS-Header + QUEUED-Pattern** — mjolnir.md mit Status-Block als erster Zeile.
+6. **Selbsttest-Pflicht für Workflow-Änderungen** — dreiphasig (A Setup, B Replay, C Adversarial, D Cleanup).
+
+## Mjölnir-Round-Trip
+
+`mjolnir.md` ist der Single-Slot-Übergabepunkt zwischen Sessions. Inhalt: STATUS-Header (Pipe-Format) + 5-10 Zeilen Prosa über den letzten Stand.
+
+- **STATUS=FERTIG**: Auftrag durch, `FEATURE_REQUEST` ist umbenannt zu `_ERLEDIGT.md`, mjolnir.md wird beim nächsten Session-Start gelesen + gelöscht.
+- **STATUS=IN_ARBEIT**: Auftrag läuft über mehrere Sessions, `FEATURE_REQUEST` bleibt unverändert, mjolnir.md trägt Fortschritt + nächsten Schritt.
+- **STATUS=BLOCKIERT**: Blocker dokumentiert in `DECISIONS_PENDING.md`, mjolnir.md trägt BLOCKIERT-Header.
+
+Chris fetcht über den ZUSAMMENFASSUNG-Button die mjolnir.md vom Handy und sieht sofort, ob Aktion nötig ist.
+
+## Bibel-Format
+
+Maschinenlesbares Pipe-Format für Lessons, Templates, Status-Header. Eine Zeile pro Lesson, Felder mit `|` getrennt. Anlass + Begründung + Generalisierung in fett-prosaischen Folge-Absätzen darunter. Maschine ignoriert Prosa, Mensch findet Kontext.
+
+Status-Header-Beispiel (`mjolnir.md` Zeile 1):
+```
+STATUS|FERTIG|AUFTRAG: kurzname|FORTSCHRITT: X/Y Schritte / N Sessions|NÄCHSTE SESSION: ...
+```
+
+Vollständige Cheat-Sheet-Sektion in [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md).
+
+## Weitere Workflow-Dokumente
+
+- [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md) — universelle Lessons, Faulheits-Catches, Selbsttest-Pattern, Bibel-Format
+- [SUPERVISOR_KODEX.md](../SUPERVISOR_KODEX.md) — NIE/IMMER-Listen für Chat-Supervisor
+- [PROJECT_BOOTSTRAP_README.md](../PROJECT_BOOTSTRAP_README.md) — Schritt-für-Schritt für neues Projekt
+- [DECISIONS_PENDING.md](../DECISIONS_PENDING.md) — offene Meta-Layer-Architektur-Fragen
+- [concepts/Try_Faulheits_catch.md](../concepts/Try_Faulheits_catch.md) — historischer Konzept-Ursprung der Faulheits-Catches
+- [templates/](../templates/) — Bootstrap-Vorlagen für neue Projekte
