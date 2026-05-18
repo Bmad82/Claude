@@ -2,11 +2,13 @@
 
 <!-- AUTO-GENERATED — Wird von Claude Code bei Verzeichnisänderungen aktualisiert -->
 <!-- Letzte Aktualisierung: 2026-05-18 -->
-<!-- Generator: Claude Code Session — repo-restrukturierung -->
+<!-- Generator: Claude Code Session — gist-infrastruktur -->
 
 Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschieben/Umbenennen von Dateien) am Session-Ende aktualisiert. Der Supervisor (Chat-Instanz) fetcht sie via Raw-Link und leitet daraus Raw-Links für alle anderen Dateien ab — kein manuelles Link-Relaying durch Chris.
 
 **Repo-Basis-URL (Raw):** `https://raw.githubusercontent.com/Bmad82/Claude/main/`
+
+**Gist-Brücke:** Für Supervisor-Instanzen, die GitHub-Raw-Links nicht fetchen können, existiert ein paralleles Gist-System. Siehe [`GIST_LINK.md`](GIST_LINK.md) für URLs.
 
 ---
 
@@ -17,6 +19,8 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 ├── .gitignore
 ├── DECISIONS_PENDING.md
 ├── DESIGN.md
+├── GIST_LINK.md
+├── GIT_DIAGNOSE.md
 ├── GLOBAL_LESSONS.md
 ├── LESSONS_KONSOLIDIERT.md
 ├── PROJECT_BOOTSTRAP_README.md
@@ -26,12 +30,14 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 ├── SUPERVISOR_BRIEFING.md
 ├── SUPERVISOR_KODEX.md
 ├── mjolnir.md
-├── _drafts_gist/
+├── _drafts_gist/             (Konzept realisiert in B-gist-infrastruktur, 2026-05-18)
 │   ├── INDEX_GIST_DRAFT.md
 │   └── ZERBERUS_GIST_DRAFT.md
 ├── _erledigt/
 │   ├── FEATURE_REQUEST_CLAUDE_ERLEDIGT.md
 │   ├── FEATURE_REQUEST_aufraeumarbeiten-post-catch_ERLEDIGT.md
+│   ├── FEATURE_REQUEST_gist-infrastruktur_ERLEDIGT.md
+│   ├── FEATURE_REQUEST_git-push-diagnose_ERLEDIGT.md
 │   ├── FEATURE_REQUEST_repo-inventur_ERLEDIGT.md
 │   ├── FEATURE_REQUEST_repo-restrukturierung_ERLEDIGT.md
 │   └── FEATURE_REQUEST_supervisor-briefing_ERLEDIGT.md
@@ -69,7 +75,8 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 │   ├── lessons_TEMPLATE.md
 │   └── mjolnir_TEMPLATE.md
 └── workflow/
-    └── MARATHON_WORKFLOW.md
+    ├── MARATHON_WORKFLOW.md
+    └── gist_publisher.py
 ```
 
 ---
@@ -88,9 +95,11 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 | SUPERVISOR_KODEX.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/SUPERVISOR_KODEX.md) | md | NIE/IMMER-Listen für Chat-Supervisor (Rolle Supervisor) |
 | PROJECT_BOOTSTRAP_README.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/PROJECT_BOOTSTRAP_README.md) | md | Anleitung: frische Coda-Session setzt neues Projekt auf |
 | DECISIONS_PENDING.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/DECISIONS_PENDING.md) | md | Offene Meta-Layer-Architektur-Fragen + getroffene Entscheidungen |
+| GIST_LINK.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/GIST_LINK.md) | md | Gist-Brücke: Index-Gist + Claude-KB-Gist URLs (Supervisor-Lesezugang ohne GitHub-Auth) |
 | mjolnir.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/mjolnir.md) | md | Session-Abschluss-State (Single-Slot), STATUS-Header |
 | REPO_INVENTORY.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/REPO_INVENTORY.md) | md | Bestandsaufnahme des Repos (Stand 2026-05-18) — Audit-Artefakt |
 | SUPERVISOR_BRIEFING.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/SUPERVISOR_BRIEFING.md) | md | Supervisor-Briefing für Restrukturierungs-Planung (Stand 2026-05-18) — Audit-Artefakt |
+| GIT_DIAGNOSE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/GIT_DIAGNOSE.md) | md | Diagnose-Output git-push-diagnose (Stand 2026-05-18) — Audit-Artefakt |
 | .gitignore | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/.gitignore) | config | Git-Ignore-Regeln |
 
 ### `workflow/`
@@ -98,6 +107,7 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 | Pfad | Raw-Link | Typ | Beschreibung |
 |------|----------|-----|-------------|
 | workflow/MARATHON_WORKFLOW.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/workflow/MARATHON_WORKFLOW.md) | md | Marathon-Workflow-Beschreibung: 3 Rollen, Datei-Hierarchie, Session-Zyklus, Faulheits-Catches |
+| workflow/gist_publisher.py | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/workflow/gist_publisher.py) | py | Helfer-Skript: GitHub-Gist erstellen/updaten via REST-API (Token aus git credential, für Lessons-Cron + Projekt-Gist-Updates) |
 
 ### `lessons/`
 
@@ -147,12 +157,14 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 |------|----------|-----|-------------|
 | concepts/Try_Faulheits_catch.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/concepts/Try_Faulheits_catch.md) | md | Historisches Konzept-Dokument: Ursprung der 6 Faulheits-Catches |
 
-### `_drafts_gist/`
+### `_drafts_gist/` (Konzept realisiert, historisch)
+
+Die ursprünglichen Konzept-Entwürfe für die Gist-Brücke. Die Umsetzung ist in B-gist-infrastruktur (2026-05-18) erfolgt — produktive URLs stehen in `GIST_LINK.md`.
 
 | Pfad | Raw-Link | Typ | Beschreibung |
 |------|----------|-----|-------------|
-| _drafts_gist/INDEX_GIST_DRAFT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_drafts_gist/INDEX_GIST_DRAFT.md) | md | Konzept-Entwurf für Phase-3-Gist (nicht aktiv) |
-| _drafts_gist/ZERBERUS_GIST_DRAFT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_drafts_gist/ZERBERUS_GIST_DRAFT.md) | md | Konzept-Entwurf für Zerberus-Gist (nicht aktiv) |
+| _drafts_gist/INDEX_GIST_DRAFT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_drafts_gist/INDEX_GIST_DRAFT.md) | md | Historischer Konzept-Entwurf für Index-Gist (realisiert 2026-05-18) |
+| _drafts_gist/ZERBERUS_GIST_DRAFT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_drafts_gist/ZERBERUS_GIST_DRAFT.md) | md | Historischer Konzept-Entwurf für Zerberus-Gist (realisiert 2026-05-18) |
 
 ### `_erledigt/`
 
@@ -160,16 +172,18 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 |------|----------|-----|-------------|
 | _erledigt/FEATURE_REQUEST_CLAUDE_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_CLAUDE_ERLEDIGT.md) | md | Audit: faulheits-catch-integration |
 | _erledigt/FEATURE_REQUEST_aufraeumarbeiten-post-catch_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_aufraeumarbeiten-post-catch_ERLEDIGT.md) | md | Audit: aufraeumarbeiten-post-catch |
+| _erledigt/FEATURE_REQUEST_gist-infrastruktur_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_gist-infrastruktur_ERLEDIGT.md) | md | Audit: gist-infrastruktur (Index + Claude-KB + Zerberus-Gist erstellt) |
+| _erledigt/FEATURE_REQUEST_git-push-diagnose_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_git-push-diagnose_ERLEDIGT.md) | md | Audit: git-push-diagnose (vor gist-infrastruktur, prior-session leftover) |
 | _erledigt/FEATURE_REQUEST_repo-inventur_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_repo-inventur_ERLEDIGT.md) | md | Audit: repo-inventur |
-| _erledigt/FEATURE_REQUEST_repo-restrukturierung_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_repo-restrukturierung_ERLEDIGT.md) | md | Audit: repo-restrukturierung (diese Session) |
+| _erledigt/FEATURE_REQUEST_repo-restrukturierung_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_repo-restrukturierung_ERLEDIGT.md) | md | Audit: repo-restrukturierung |
 | _erledigt/FEATURE_REQUEST_supervisor-briefing_ERLEDIGT.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/_erledigt/FEATURE_REQUEST_supervisor-briefing_ERLEDIGT.md) | md | Audit: supervisor-briefing |
 
 ---
 
 ## Statistik
 
-- Dateien gesamt (ohne `.git/`): 46
-- Letzte strukturelle Änderung: 2026-05-18 (Restrukturierung: `_erledigt/`, `workflow/`, `bugs/README.md`, `lessons/INDEX.md`, `REPO_INDEX.md` neu; Worktree entfernt)
+- Dateien gesamt (ohne `.git/`): 51 (+5 ggü. repo-restrukturierung: `GIST_LINK.md`, `GIT_DIAGNOSE.md`, `workflow/gist_publisher.py`, `_erledigt/FEATURE_REQUEST_gist-infrastruktur_ERLEDIGT.md`, `_erledigt/FEATURE_REQUEST_git-push-diagnose_ERLEDIGT.md`)
+- Letzte strukturelle Änderung: 2026-05-18 (Gist-Brücke + git-push-diagnose-Audit-Cleanup)
 - Letzter Generator-Lauf: 2026-05-18
 
 ## Aktualisierungs-Regel

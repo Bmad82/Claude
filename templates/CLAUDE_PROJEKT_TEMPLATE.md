@@ -73,6 +73,7 @@ Startskript|{...}
 | mjolnir.md | Session-Ende | PFLICHT, ausnahmslos, mit STATUS-Header |
 | lessons_{PROJEKT}.md | jeder ≥2-Min-Stolperstein | Bibel-Format |
 | REPO_INDEX.md | Verzeichnisänderung in Session | Verzeichnisbaum + Raw-Link-Tabelle, vor finalem Push |
+| Projekt-Gist (HANDOVER, MJOLNIR, STATUS, REPO_INDEX, LESSONS) | Session-Ende | PATCH via gist_publisher.py, nach Push |
 
 ## REPO_INDEX-Pflicht
 - `REPO_INDEX.md` im Repo-Root ist Pflicht für jedes Projekt.
@@ -81,6 +82,14 @@ Startskript|{...}
 - Aktualisierung passiert VOR dem finalen Push.
 - Wenn keine Verzeichnisänderungen stattfanden: REPO_INDEX nicht anfassen (kein Diff-Noise).
 - Zweck: Supervisor (Chat-Instanz) fetcht REPO_INDEX.md und leitet daraus Raw-Links für beliebige Dateien ab — kein manuelles Link-Relaying nötig.
+
+## Gist-Pflicht
+- Jedes Projekt hat einen PUBLIC Gist mit Briefing-Dateien (HANDOVER, MJOLNIR, REPO_INDEX, STATUS, LESSONS).
+- Gist-URL steht in `GIST_LINK.md` im Repo-Root.
+- Gist wird am Session-Ende aktualisiert (zusammen mit lokalen Dateien) — Helfer-Skript: `workflow/gist_publisher.py` aus dem Claude-Repo.
+- Index-Gist wird nur bei neuem Projekt aktualisiert (nicht bei jedem Patch).
+- Hintergrund: Supervisor-Instanz (claude.ai Chat) kann GitHub-Raw-Links nicht fetchen, Gists schon — kein Auth-Bedarf.
+- Session-Ende-Checkliste: „Gist-Dateien aktualisiert (HANDOVER, MJOLNIR, STATUS, ggf. REPO_INDEX, LESSONS)?"
 
 ## Git-Pflicht nach Patch (Coda macht das SELBST)
 1. Tests ausführen | Ergebnis prüfen
@@ -95,6 +104,8 @@ Startskript|{...}
 2. Worktree-Branch SELBST auf main mergen (kein Auftrag an Chris): `git merge --ff-only` oder rebase + ff-merge
 3. Worktree NICHT löschen | Sicherheitsnetz
 4. Merge-Konflikt → DECISIONS_PENDING.md + BLOCKIERT in mjolnir.md, NICHT destruktiv
+5. Projekt-Gist aktualisieren (PATCH via `workflow/gist_publisher.py` aus Claude-Repo): HANDOVER, MJOLNIR, STATUS, ggf. REPO_INDEX, LESSONS
+6. mjolnir.md trägt Gist-URL (oder Verweis auf `GIST_LINK.md`) ein, damit Architekt vom Handy direkt zum Gist springen kann
 
 ## Stopp-Regeln
 - Kontext < 400k Token → sauber abschließen | HANDOVER_{PROJEKT}.md schreiben | mjolnir.md mit STATUS=IN_ARBEIT

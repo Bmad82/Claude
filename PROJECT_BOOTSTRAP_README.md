@@ -28,7 +28,13 @@ Dieses README sagt dir, wie du eine neue Coda-Session in einem frischen Marathon
    - Nur Architektur-Entscheidungen, die du NICHT selbst treffen kannst (Tech-Stack-Wahl, externe Auth, DB-Engine, Port-Konflikte mit anderen Projekten)
    - In `DECISIONS_PENDING.md` eintragen, falls Architekt nicht sofort verfügbar
    - Implementierungs-Details NICHT fragen — die löst du selbst
-8. **Antwort abwarten, dann: go.**
+8. **Projekt-Gist erstellen (PUBLIC):**
+   - Helfer: `python C:\Users\chris\Python\Claude\workflow\gist_publisher.py <staging_dir> "<beschreibung>"`
+   - Dateien im Gist: `STATUS.md` (Bibel-Einzeiler), `HANDOVER.md`, `MJOLNIR.md`, `REPO_INDEX.md`, `LESSONS.md` (optional `DECISIONS.md`)
+   - Gist-URL in `GIST_LINK.md` ins Projekt-Root ablegen
+   - Index-Gist aktualisieren (neue Zeile in `GIST_INDEX.md`) — URL des Index-Gists steht in `C:\Users\chris\Python\Claude\GIST_LINK.md`
+   - Globale Konvention + Hintergrund: `C:\Users\chris\Python\Claude\GIST_LINK.md` + Sektion „Gist-Pflicht" in `CLAUDE_PROJEKT_TEMPLATE.md`
+9. **Antwort abwarten, dann: go.**
 
 ---
 
@@ -61,6 +67,8 @@ Wenn der Architekt KEINE `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist der Bootstra
 | Templates | `C:\Users\chris\Python\Claude\templates\` | mjolnir, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT, HANDOVER, MARATHON_WORKFLOW, DECISIONS, DESIGN_PROJEKT, ROADMAP, lessons |
 | Globale Lessons-Library | `C:\Users\chris\Python\Claude\lessons\` | Technologie-spezifische Lessons (python-fastapi, sqlite-db, ...) |
 | Pending Decisions | `C:\Users\chris\Python\Claude\DECISIONS_PENDING.md` | Konflikte/offene Fragen für den Meta-Layer |
+| Gist-Brücke | `C:\Users\chris\Python\Claude\GIST_LINK.md` | Index-Gist + Claude-KB-Gist URLs (Supervisor-Lesezugang ohne GitHub-Auth) |
+| Gist-Publisher | `C:\Users\chris\Python\Claude\workflow\gist_publisher.py` | Helfer-Skript für PUBLIC Gist erstellen/updaten (REST-API, Token aus git credential) |
 
 ---
 

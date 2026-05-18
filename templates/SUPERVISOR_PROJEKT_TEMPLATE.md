@@ -100,3 +100,12 @@ Lifecycle:
 - Bei Session-Start: REPO_INDEX fetchen, um den aktuellen Repo-Stand zu kennen.
 - Kein manuelles Link-Relaying durch den Architekten nötig.
 - REPO_INDEX wird von Coda VOR dem finalen Push aktualisiert, wenn Verzeichnisänderungen passiert sind — d.h. der Stand auf main ist konsistent mit dem letzten Push.
+
+## Gist-Navigation
+- Index-Gist: `{INDEX_GIST_URL}` (beim Bootstrap eintragen, Quelle: `GIST_LINK.md` im Claude-Repo)
+- Projekt-Gist: `{PROJEKT_GIST_URL}` (beim Bootstrap eintragen, Quelle: `GIST_LINK.md` im Projekt-Repo)
+- Der Supervisor fetcht bei Session-Start den Projekt-Gist für aktuellen Stand (STATUS, MJOLNIR, HANDOVER, REPO_INDEX).
+- Vorteil ggü. Raw-Link: Supervisor-Instanz (claude.ai Chat) kann Gists fetchen, aber keine GitHub-Raw-Links — keine Auth/Token im Chat nötig.
+- Kein manuelles Link-Relaying durch den Architekten nötig.
+- Bei Unklarheiten: Index-Gist fetchen → Projekt-Gist-URL extrahieren → Projekt-Gist fetchen → konkrete Dateien lesen.
+- Projekt-Gist wird von Coda am Session-Ende aktualisiert (Schritt nach Push im Git-Workflow).

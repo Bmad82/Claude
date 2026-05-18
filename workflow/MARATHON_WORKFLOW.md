@@ -29,6 +29,7 @@ Jedes Projekt, das den Marathon-Workflow nutzt, hat folgende Pflicht-Dateien (Vo
 | `DESIGN_{PROJEKT}.md` | projektspezifische Design-Entscheidungen | bei UI-Patch |
 | `ROADMAP_{PROJEKT}.md` | Phasen-Roadmap (Prosa erlaubt) | bei Phasen-Wechsel |
 | `REPO_INDEX.md` | automatisch gepflegtes Verzeichnis mit Raw-Links | bei Verzeichnisänderungen |
+| `GIST_LINK.md` | Gist-Brücke (Index-Gist + Projekt-Gist-URL) | bei Bootstrap, dann statisch |
 
 ## Session-Zyklus (Coda)
 
@@ -43,6 +44,7 @@ Jedes Projekt, das den Marathon-Workflow nutzt, hat folgende Pflicht-Dateien (Vo
 9. Worktree-Branches selbst auf main mergen (kein „Schritt 0 für Chris").
 10. `mjolnir.md` neu schreiben mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) — Pflicht, ausnahmslos.
 11. Bei Verzeichnisänderungen: `REPO_INDEX.md` aktualisieren VOR dem finalen Push.
+12. Projekt-Gist aktualisieren (PATCH via `workflow/gist_publisher.py`): HANDOVER, MJOLNIR, STATUS, ggf. REPO_INDEX, LESSONS — Supervisor kann nur Gists fetchen, keine Raw-Links.
 
 ## Die 6 Faulheits-Catches (Quick Reference)
 
@@ -76,11 +78,22 @@ STATUS|FERTIG|AUFTRAG: kurzname|FORTSCHRITT: X/Y Schritte / N Sessions|NÄCHSTE 
 
 Vollständige Cheat-Sheet-Sektion in [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md).
 
+## Gist-Brücke (Supervisor-Lesezugang)
+
+Die Supervisor-Instanz (claude.ai Chat-Fenster) kann GitHub-Raw-Links **nicht** fetchen, aber GitHub-Gists **schon**. Daher hält jedes Projekt einen parallelen PUBLIC Gist mit den Briefing-Dateien (HANDOVER, MJOLNIR, STATUS, REPO_INDEX, LESSONS).
+
+- **Index-Gist:** Zentrale Navigationsdatei mit allen Projekt-Gist-URLs. Wird nur bei neuem Projekt erweitert.
+- **Claude-KB-Gist:** Globale Wissensbasis (GLOBAL_LESSONS, TEMPLATES_INDEX, WORKFLOW_SUMMARY, BOOTSTRAP_CHECKLIST). Wird vom Lessons-Cron-Job aktualisiert.
+- **Projekt-Gists:** Eine je aktivem Projekt. Coda aktualisiert am Session-Ende via PATCH.
+
+Konkrete URLs stehen in [`GIST_LINK.md`](../GIST_LINK.md). Helfer-Skript: [`workflow/gist_publisher.py`](gist_publisher.py).
+
 ## Weitere Workflow-Dokumente
 
 - [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md) — universelle Lessons, Faulheits-Catches, Selbsttest-Pattern, Bibel-Format
 - [SUPERVISOR_KODEX.md](../SUPERVISOR_KODEX.md) — NIE/IMMER-Listen für Chat-Supervisor
 - [PROJECT_BOOTSTRAP_README.md](../PROJECT_BOOTSTRAP_README.md) — Schritt-für-Schritt für neues Projekt
 - [DECISIONS_PENDING.md](../DECISIONS_PENDING.md) — offene Meta-Layer-Architektur-Fragen
+- [GIST_LINK.md](../GIST_LINK.md) — Gist-Brücke (URLs)
 - [concepts/Try_Faulheits_catch.md](../concepts/Try_Faulheits_catch.md) — historischer Konzept-Ursprung der Faulheits-Catches
 - [templates/](../templates/) — Bootstrap-Vorlagen für neue Projekte

@@ -1,144 +1,105 @@
 # mjolnir.md — Claude (Meta-Layer)
 
 ```
-STATUS|FERTIG|AUFTRAG: git-push-diagnose|FORTSCHRITT: 1/1 Phasen / 1 Session|NÄCHSTE SESSION: entfällt (FERTIG)
+STATUS|FERTIG|AUFTRAG: gist-infrastruktur|FORTSCHRITT: 4/4 Phasen / 1 Session|NÄCHSTE SESSION: entfällt (FERTIG)
 ```
 
 **STATUS:** FERTIG
-**AUFTRAG:** git-push-diagnose
-**FORTSCHRITT:** 1 Session | Diagnose abgeschlossen, vollständige Ausgabe in `GIT_DIAGNOSE.md`
+**AUFTRAG:** gist-infrastruktur
+**FORTSCHRITT:** 1 Session | alle 4 Phasen + Templates-Update durch | drei PUBLIC Gists live, alle Akzeptanzkriterien erfüllt
 **NÄCHSTE SESSION:** entfällt
 
 ---
 
 ## Was Chris physisch tun muss
 
-- **`GIT_DIAGNOSE.md` im Repo-Root lesen** — vollständige Ausgaben aller 7 Diagnose-Befehle plus Zusatz-Checks (`git ls-remote`, Reflog, decorated log).
-- **Browser-Cache testen:** GitHub-Repo-Seite mit `Strg+Shift+R` neu laden; URL exakt prüfen (`https://github.com/Bmad82/Claude`).
-- **Restschuld Worktree-Lock** (aus voriger Session): `.claude/worktrees/focused-payne-b38e6a/` bei Gelegenheit aus geschlossener Session manuell entfernen.
+- **Index-Gist im Browser/Handy aufrufen:** https://gist.github.com/Bmad82/6fb4ba84419edc0e2d8290cacef1faeb — von dort führen Links zu Claude-KB- und Zerberus-Gist.
+- **Supervisor-Memory aktualisieren** (im claude.ai-Chat-Setting): den Index-Gist-Link als „Single Source of Truth für Marathon-Workflow-Projekte" hinterlegen. Dann findet jede frische Supervisor-Instanz von selbst die Projekt-Gists, ohne dass Chris Links relayen muss.
+- **Selbsttest am Handy:** Index-Gist in einer frischen, nicht-eingeloggten Browser-Session öffnen → muss HTTP 200 + Inhalt zeigen (verifiziert die PUBLIC-Eigenschaft aus Chris' Sicht).
 
 ---
 
-## Kernbefund (TL;DR)
+## Erledigte Phasen (TL;DR)
 
-**Es gibt KEIN Git-Push-Problem.** Lokales HEAD und `origin/main` sind byteidentisch (`bd0559f001caee1bd6230bb49d8b33af09e5a8c2`). `git ls-remote origin` (direkter Server-Query) bestätigt: GitHub-Remote kennt exakt diesen Commit auf `refs/heads/main`. `git push --dry-run` meldet "Everything up-to-date". Die drei vorherigen Pushes (repo-inventur, supervisor-briefing, repo-restrukturierung) sind angekommen.
+### Phase 1 — Index-Gist (PUBLIC)
+- URL: https://gist.github.com/Bmad82/6fb4ba84419edc0e2d8290cacef1faeb
+- Description: „Marathon Workflow — Projekt-Index für Supervisor-Instanzen"
+- Datei: `GIST_INDEX.md` mit Verweisen auf Claude-KB- und Zerberus-Gist.
 
-**Wenn GitHub-Web-UI nur 1 Commit zeigt**, liegt das nicht an Git, sondern vermutlich an:
-- Browser-/CDN-Cache
-- Falsches Repo / falscher Branch im Browser
-- GitHub-Web-UI-Verzögerung
+### Phase 2 — Claude-KB-Gist (PUBLIC, 4 Dateien)
+- URL: https://gist.github.com/Bmad82/48b997e53ff331eeefef53c810ee7331
+- Description: „Claude-KB — Globale Lessons, Templates, Workflow"
+- Dateien: `GLOBAL_LESSONS.md` (Volltext aus Repo + Header), `TEMPLATES_INDEX.md` (alle 10 Templates), `WORKFLOW_SUMMARY.md` (62 Zeilen, < 100), `BOOTSTRAP_CHECKLIST.md` (mit Gist-Schritt).
 
----
+### Phase 3 — Claude-Repo-Updates
+- `GIST_LINK.md` neu im Repo-Root: enthält Index-Gist + Claude-KB-Gist URLs (Latest-Raws, ohne SHA).
+- `REPO_INDEX.md` aktualisiert: `GIST_LINK.md`, `GIT_DIAGNOSE.md`, `workflow/gist_publisher.py`, beide neuen `_erledigt/`-Audits, Datei-Statistik (46 → 51).
+- `templates/CLAUDE_PROJEKT_TEMPLATE.md`: Sektion „Gist-Pflicht" + Eintrag in Doku-Pflicht-Tabelle + Schritte 5–6 im Git-Workflow am Session-Ende.
+- `templates/SUPERVISOR_PROJEKT_TEMPLATE.md`: Sektion „Gist-Navigation" mit Platzhalter-Bootstrap-Pattern.
+- `workflow/MARATHON_WORKFLOW.md`: `GIST_LINK.md` in Datei-Hierarchie + Schritt 12 im Session-Zyklus + neue Sektion „Gist-Brücke (Supervisor-Lesezugang)".
+- `PROJECT_BOOTSTRAP_README.md`: Bootstrap-Schritt 8 (Projekt-Gist erstellen) + Tabellen-Eintrag für Gist-Brücke und Publisher.
+- `workflow/gist_publisher.py` neu: Helfer-Skript für POST/PATCH gegen Gist-API (Token aus `git credential fill`, kein hartkodierter Secret). Wird vom Lessons-Cron und für künftige Projekt-Gist-Updates verwendet.
 
-## Vollständige Outputs (Kopie für Weiterleitung)
-
-### 1. `git status`
-```
-On branch main
-Your branch is up to date with 'origin/main'.
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	FEATURE_REQUEST_CLAUDE.md
-
-nothing added to commit but untracked files present (use "git add" to track)
-```
-
-### 2. `git branch -vv`
-```
-* main bd0559f [origin/main] refactor: Repo-Restrukturierung + REPO_INDEX-Einführung
-```
-
-### 3. `git remote -v`
-```
-origin	https://github.com/Bmad82/Claude.git (fetch)
-origin	https://github.com/Bmad82/Claude.git (push)
-```
-
-### 4. `git log --oneline -10`
-```
-bd0559f refactor: Repo-Restrukturierung + REPO_INDEX-Einführung
-9292248 docs: Supervisor-Briefing für Repo-Restrukturierung
-3bdfd24 feat(inventur): REPO_INVENTORY.md — vollständige Bestandsaufnahme des Repos
-5c945bc Lessons sync: B-db-finale ...
-74975a9 Lessons sync: B-db-merge ...
-2b185e6 chore: mjolnir.md STATUS=FERTIG + FEATURE_REQUEST aufraeumarbeiten-post-catch → _ERLEDIGT
-9ee03e1 chore(pending): DECISIONS_PENDING.md ...
-1f3b34a feat(gist-prep): _drafts_gist/ ...
-6062d9e docs: align DESIGN.md ...
-5fe4481 docs: modernize README.md ...
-```
-
-### 5. `git fetch origin`
-```
-(leer — keine neuen Refs vom Remote)
-```
-
-### 6. `git log --oneline origin/main..HEAD`
-```
-(leer — lokales HEAD ist NICHT ahead von origin/main)
-```
-
-### 7. SHA-Vergleich
-```
-LOCAL HEAD:  bd0559f001caee1bd6230bb49d8b33af09e5a8c2
-ORIGIN MAIN: bd0559f001caee1bd6230bb49d8b33af09e5a8c2
-```
-
-### 8. `git push origin main --verbose --dry-run`
-```
-Pushing to https://github.com/Bmad82/Claude.git
-To https://github.com/Bmad82/Claude.git
- = [up to date]      main -> main
-Everything up-to-date
-```
-
-### 9. `git ls-remote origin` (direkt am Remote-Server)
-```
-bd0559f001caee1bd6230bb49d8b33af09e5a8c2	HEAD
-bd0559f001caee1bd6230bb49d8b33af09e5a8c2	refs/heads/main
-```
-
-### 10. Credentials / Identity
-```
-credential.helper: manager  (= Git Credential Manager / Windows Credential Manager)
-user.name:         Bmad82
-user.email:        christian-boehnke@hotmail.de
-```
-
-### 11. Repo-Identität
-```
-pwd: /c/Users/chris/Python/Claude
-.git/config remote.origin.url: https://github.com/Bmad82/Claude.git
-.git/config branch.main.remote: origin
-.git/config branch.main.merge:  refs/heads/main
-```
-
-### 12. `git log --oneline --all --decorate -5`
-```
-bd0559f (HEAD -> main, origin/main, origin/HEAD) refactor: Repo-Restrukturierung + REPO_INDEX-Einführung
-9292248 docs: Supervisor-Briefing für Repo-Restrukturierung
-3bdfd24 feat(inventur): REPO_INVENTORY.md — vollständige Bestandsaufnahme des Repos
-5c945bc Lessons sync: B-db-finale ...
-74975a9 Lessons sync: B-db-merge ...
-```
+### Phase 4 — Zerberus-Gist (PUBLIC, 5 Dateien)
+- URL: https://gist.github.com/Bmad82/7f5af9dd878a6a9d664f062976b27ae8
+- Description: „Zerberus Pro 4.0 — Supervisor-Briefing"
+- Dateien: `STATUS.md` (Bibel-Einzeiler), `HANDOVER.md` (aus Repo), `MJOLNIR.md` (aus Repo), `REPO_INDEX.md` (für Zerberus neu generiert, gleiche Konvention wie Claude-Repo), `LESSONS.md` (lessons_zerberus.md Master, 1022 Zeilen).
+- Zerberus-Repo bekam zusätzlich `GIST_LINK.md` + `REPO_INDEX.md` als Commit `347e317`, Push verifiziert (ahead/behind 0/0).
 
 ---
 
-## Was NICHT getan wurde (laut Auftrag)
+## Gist-URLs (kanonisch, kopierfertig)
 
-- ❌ Kein Push (wäre sinnlos, da Remote bereits aktuell ist).
-- ❌ Keine Spekulation über Ursache (Auftrag: nur Daten sammeln).
-- ❌ Keine Fixes am Push-Prozess (es ist nichts kaputt).
+```
+INDEX:        https://gist.github.com/Bmad82/6fb4ba84419edc0e2d8290cacef1faeb
+CLAUDE-KB:    https://gist.github.com/Bmad82/48b997e53ff331eeefef53c810ee7331
+ZERBERUS:     https://gist.github.com/Bmad82/7f5af9dd878a6a9d664f062976b27ae8
+```
+
+Raw-Latest-Pattern: `https://gist.githubusercontent.com/Bmad82/{gist_id}/raw/{filename}.md`
+
+---
+
+## Akzeptanzkriterien (alle ✓)
+
+- [x] Index-Gist existiert, ist PUBLIC, enthält `GIST_INDEX.md`
+- [x] Claude-KB-Gist existiert, ist PUBLIC, enthält 4 Dateien (GLOBAL_LESSONS, TEMPLATES_INDEX, WORKFLOW_SUMMARY, BOOTSTRAP_CHECKLIST)
+- [x] Claude-Repo hat `GIST_LINK.md` mit beiden URLs
+- [x] Templates (CLAUDE_PROJEKT, SUPERVISOR_PROJEKT, MARATHON_WORKFLOW, PROJECT_BOOTSTRAP_README) enthalten Gist-Konvention
+- [x] Session-Ende-Checkliste enthält Gist-Update-Schritt (im `Git-Workflow am Session-Ende` der CLAUDE-Template)
+- [x] Zerberus hat Projekt-Gist + `GIST_LINK.md` (Commit `347e317` gepusht)
+- [x] Index-Gist verweist auf alle erstellten Gists (Claude-KB + Zerberus)
+- [x] Alle Pushes verifiziert (`$LASTEXITCODE` / `git rev-list --left-right --count` → 0/0)
+- [x] Kein Secret/Token in Gists oder Repo — `gist_publisher.py` liest Token live aus `git credential fill`, hartkodiert nichts; gezielte Regex-Suche über alle Gist-Raws (`ghp_/gho_/sk-/AKIA/JWT/40-hex`) → 0 Treffer
+- [x] Alle Gists sind PUBLIC (anonyme `curl` ohne Auth liefert HTTP 200 + Inhalt)
+
+---
+
+## Selbsttest-Spur (Phase A–D)
+
+- **A Setup:** drei Staging-Verzeichnisse unter `_gist_staging/` mit den späteren Gist-Inhalten gefüllt, Pre-API-Verifikation via `wc -l`.
+- **B Replay:** alle drei Gists nach Erstellung anonym (ohne Token-Header) gefetcht — HTTP 200, Inhalt identisch zu Staging.
+- **C Adversarial:** Secret-Pattern-Scan (`ghp_|gho_|github_pat_|sk-|AKIA|JWT|40-hex`) gegen alle 10 Gist-Raw-Dateien — 0 Treffer.
+- **D Cleanup:** `_gist_staging/` entfernt (Inhalt lebt in Gists), `create_gist.py` als `workflow/gist_publisher.py` persistiert für Cron-Job und künftige Updates.
+
+Ein Surrogat-Hinweis: „Supervisor-Replay via Sub-Agent" entfällt — die anonyme `curl`-Fetch-Verifikation simuliert das Supervisor-Lesen ohne Auth realistisch.
+
+---
+
+## Commits (final)
+
+- Claude-Repo `fb288d5` — prior-session-Audit (git-push-diagnose) committed, da vorige Coda-Session den Push vergessen hatte. Saubere Trennung Audit ↔ neuer Auftrag.
+- Claude-Repo: gist-infrastruktur-Commit folgt direkt im Anschluss (mit dieser mjolnir.md + `GIST_LINK.md`, Templates, REPO_INDEX, gist_publisher.py, neuer `_erledigt/`-Audit).
+- Zerberus-Repo `347e317` — `GIST_LINK.md` + `REPO_INDEX.md`, gepusht, Remote-State 0/0.
 
 ---
 
 <!--
 LIFECYCLE-Notiz für Coda:
 
-- STATUS=FERTIG  →  beim nächsten Session-Start: mjolnir.md einlesen, dann löschen. FEATURE_REQUEST_CLAUDE.md zu _ERLEDIGT.md umbenennen.
-- STATUS=IN_ARBEIT  →  beim nächsten Session-Start: mjolnir.md einlesen, FORTSCHRITT-Block prüfen, laufenden Auftrag fortsetzen. FEATURE_REQUEST NICHT umbenennen.
-- STATUS=BLOCKIERT  →  beim nächsten Session-Start: mjolnir.md einlesen, DECISIONS_PENDING.md prüfen, BLOCKER auflösen oder eskalieren.
+- STATUS=FERTIG  →  beim nächsten Session-Start: mjolnir.md einlesen, dann löschen. FEATURE_REQUEST liegt bereits unter _erledigt/FEATURE_REQUEST_gist-infrastruktur_ERLEDIGT.md (kebab-case-Konvention statt CLAUDE-Filename).
+- STATUS=IN_ARBEIT  →  entfällt hier.
+- STATUS=BLOCKIERT  →  entfällt hier.
 
-mjolnir.md ist Single-Slot — genau EINE Datei zur Zeit, wird beim nächsten Session-Start gelöscht. _ERLEDIGT.md ist Audit-Log (akkumuliert).
+mjolnir.md ist Single-Slot — genau EINE Datei zur Zeit, wird beim nächsten Session-Start gelesen + gelöscht.
 -->
