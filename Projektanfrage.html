@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projekt-Anfrage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #08080c;
+  --ember: #c4622d;
+  --gold: #d4a843;
+  --crack: #e8c97a;
+  --mist: #12121a;
+  --surface: #0f0f16;
+  --border: #1e1e2e;
+  --text: #c8c8d8;
+  --text-dim: #6b6b8a;
+  --accent: #c4622d;
+  --input-bg: #0d0d14;
+  --input-focus: #161622;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.35;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes crackGlow {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 80vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 75% 40%, #c4622d0d 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 20% 70%, #d4a8430a 0%, transparent 50%),
+    radial-gradient(ellipse 80% 40% at 50% 0%, #1a0a0408 0%, transparent 60%);
+}
+
+nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 60px;
+  border-bottom: 1px solid #ffffff06;
+}
+
+.nav-logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.nav-logo span { color: var(--gold); }
+
+.nav-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  border: 1px solid #ffffff10;
+  padding: 6px 14px;
+  border-radius: 2px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px;
+  max-width: 960px;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ember);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 7vw, 90px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -2px;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-subtitle {
+  font-size: 21px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.6;
+  max-width: 580px;
+  margin-bottom: 0;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+.hero-subtitle strong { color: var(--text); font-weight: 400; }
+
+.hero-bottom {
+  position: relative;
+  z-index: 10;
+  padding: 32px 60px;
+  border-top: 1px solid #ffffff06;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.scroll-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.scroll-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--ember), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── GOLD DIVIDER ── */
+.gold-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.15;
+}
+
+/* ── FORM SECTIONS ── */
+.form-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 60px;
+}
+
+.form-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.form-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 48px;
+  font-weight: 500;
+  color: #ffffff06;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.form-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ember);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.form-label::after {
+  content: '';
+  height: 1px;
+  width: 36px;
+  background: var(--ember);
+  opacity: 0.4;
+}
+
+.form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+.form-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+.form-hint {
+  font-size: 16px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+/* ── INPUTS ── */
+textarea {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.6;
+  padding: 20px 24px;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--ember);
+  background: var(--input-focus);
+  box-shadow: 0 0 0 1px #c4622d20, 0 4px 24px #00000040;
+}
+textarea::placeholder {
+  color: var(--text-dim);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+textarea.one-liner {
+  min-height: 56px;
+  resize: none;
+}
+
+.textarea-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.textarea-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ── CHECKBOXES ── */
+.check-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+}
+.check-item:hover {
+  border-color: #ffffff15;
+  background: var(--input-focus);
+}
+
+.check-item input[type="checkbox"],
+.check-item input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s;
+}
+.check-item input[type="radio"] { border-radius: 50%; }
+
+.check-item input:checked {
+  border-color: var(--ember);
+  background: var(--ember);
+}
+.check-item input:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  color: #fff;
+  font-weight: 700;
+}
+.check-item input[type="radio"]:checked::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.check-item .check-label {
+  font-size: 16px;
+  color: var(--text);
+  flex: 1;
+}
+
+.check-item.has-input {
+  flex-wrap: wrap;
+}
+.check-item.has-input input[type="text"] {
+  flex: 1;
+  min-width: 200px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  padding: 4px 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.check-item.has-input input[type="text"]:focus {
+  border-color: var(--ember);
+}
+
+/* ── PRIORITY LISTS ── */
+.prio-group {
+  margin-bottom: 32px;
+}
+
+.prio-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.prio-label.must { color: var(--ember); }
+.prio-label.nice { color: var(--gold); }
+
+.prio-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prio-row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.prio-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #ffffff10;
+  font-weight: 500;
+  text-align: right;
+}
+
+.prio-row input[type="text"] {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  padding: 12px 18px;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+.prio-row input[type="text"]:focus {
+  border-color: var(--ember);
+  background: var(--input-focus);
+}
+.prio-row input[type="text"]::placeholder {
+  color: var(--text-dim);
+  opacity: 0.3;
+}
+
+/* ── TECH SECTION ── */
+.tech-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.tech-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tech-field label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.tech-field input[type="text"] {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  padding: 12px 18px;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+.tech-field input[type="text"]:focus {
+  border-color: var(--ember);
+  background: var(--input-focus);
+}
+
+/* ── EXPORT BUTTON ── */
+.export-section {
+  padding: 80px 0 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.export-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--void);
+  background: linear-gradient(135deg, var(--ember), var(--gold));
+  border: none;
+  padding: 18px 48px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px #c4622d30;
+}
+.export-btn:active { transform: translateY(0); }
+
+.export-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+/* ── EXPORT MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000000cc;
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+  position: relative;
+}
+
+.modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 2;
+}
+
+.modal-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ember);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.modal-close {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.modal-close:hover { border-color: var(--ember); color: var(--text); }
+
+.modal-body {
+  padding: 32px;
+}
+
+.modal-body pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.modal-actions {
+  padding: 20px 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  position: sticky;
+  bottom: 0;
+  background: var(--surface);
+}
+
+.modal-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-btn.primary {
+  background: var(--ember);
+  color: #fff;
+  border: 1px solid var(--ember);
+}
+.modal-btn.primary:hover { background: #d4702f; }
+.modal-btn.secondary {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.modal-btn.secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+.copy-feedback {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.copy-feedback.show { opacity: 1; }
+
+/* ── KINTSUGI QUOTE ── */
+.kintsugi-section {
+  padding: 100px 60px;
+  text-align: center;
+  position: relative;
+}
+
+.kintsugi-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-dim);
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+.kintsugi-quote span { color: var(--gold); }
+
+.kintsugi-attr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 60px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+footer span { color: var(--gold); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 20px 24px; }
+  .hero-content { padding: 48px 24px; }
+  .hero-bottom { padding: 24px; }
+  .form-wrapper { padding: 0 24px; }
+  .form-section { padding: 56px 0; }
+  .tech-grid { grid-template-columns: 1fr; }
+  footer { padding: 28px 24px; flex-direction: column; gap: 8px; text-align: center; }
+  .kintsugi-section { padding: 72px 24px; }
+  .hero-title { letter-spacing: -1px; }
+}
+
+@media (max-width: 480px) {
+  .nav-tag { display: none; }
+  .form-num { font-size: 36px; }
+  .check-item { padding: 12px 14px; gap: 10px; }
+  .prio-row { grid-template-columns: 24px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <nav>
+    <div class="nav-logo">Marathon <span>Workflow</span></div>
+    <div class="nav-tag">Projekt-Intake</div>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Neues Projekt</div>
+    <h1 class="hero-title">Sag mir was<br><em>du bauen willst.</em></h1>
+    <p class="hero-subtitle">
+      Füll aus was du kannst. Lass weg was du nicht weißt.
+      <strong>Wir klären den Rest im Gespräch.</strong>
+    </p>
+  </div>
+  <div class="hero-bottom">
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Anfrage ausfüllen
+    </div>
+  </div>
+</div>
+
+<div class="gold-divider"></div>
+
+<!-- FORM -->
+<div class="form-wrapper">
+
+  <!-- 1: KERNIDEE -->
+  <div class="form-section" id="s1">
+    <div class="form-num">01</div>
+    <div class="form-label">Kernidee</div>
+    <h2 class="form-title">Was soll die Software <em>tun?</em></h2>
+    <div class="textarea-group">
+      <div>
+        <div class="textarea-label">In einem Satz</div>
+        <textarea class="one-liner" id="idea-short" placeholder="z.B. „Eine App die meine Weinsammlung verwaltet und mir sagt welchen Wein ich zu welchem Essen trinken soll""></textarea>
+      </div>
+      <div>
+        <div class="textarea-label">Ausführlicher</div>
+        <textarea id="idea-long" placeholder="Erzähl so viel du willst. Was ist das Problem? Was nervt dich gerade? Was soll danach besser sein?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: NUTZER -->
+  <div class="form-section" id="s2">
+    <div class="form-num">02</div>
+    <div class="form-label">Nutzer</div>
+    <h2 class="form-title">Wer <em>benutzt</em> das?</h2>
+    <div class="check-grid">
+      <label class="check-item"><input type="radio" name="users" value="solo"><span class="check-label">Nur ich</span></label>
+      <label class="check-item"><input type="radio" name="users" value="friends"><span class="check-label">Ich und ein paar Freunde / Familie</span></label>
+      <label class="check-item"><input type="radio" name="users" value="team"><span class="check-label">Ein kleines Team (< 20 Leute)</span></label>
+      <label class="check-item"><input type="radio" name="users" value="public"><span class="check-label">Viele Leute (öffentlich zugänglich)</span></label>
+    </div>
+    <div class="textarea-label">Gibt es verschiedene Rollen?</div>
+    <textarea class="one-liner" id="roles" placeholder="z.B. Admin und normale User, Lehrer und Schüler, Chef und Mitarbeiter"></textarea>
+  </div>
+
+  <!-- 3: PLATTFORM -->
+  <div class="form-section" id="s3">
+    <div class="form-num">03</div>
+    <div class="form-label">Plattform</div>
+    <h2 class="form-title">Wo soll es <em>laufen?</em></h2>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox" name="platform" value="browser"><span class="check-label">Im Browser (PC / Laptop)</span></label>
+      <label class="check-item"><input type="checkbox" name="platform" value="mobile"><span class="check-label">Auf dem Handy</span></label>
+      <label class="check-item"><input type="checkbox" name="platform" value="both"><span class="check-label">Beides</span></label>
+      <label class="check-item"><input type="checkbox" name="platform" value="whatever"><span class="check-label">Egal, Hauptsache es funktioniert</span></label>
+    </div>
+  </div>
+
+  <!-- 4: DATEN -->
+  <div class="form-section" id="s4">
+    <div class="form-num">04</div>
+    <div class="form-label">Daten</div>
+    <h2 class="form-title">Was für Daten <em>sind im Spiel?</em></h2>
+    <textarea id="data-types" placeholder="z.B. Texte, Bilder, Tabellen, Termine, Rezepte, Kundendaten, Messwerte..."></textarea>
+    <div style="margin-top: 24px;">
+      <div class="textarea-label">Vorhandene Daten?</div>
+      <div class="check-grid">
+        <label class="check-item has-input"><input type="radio" name="existing-data" value="yes"><span class="check-label">Ja:</span><input type="text" id="existing-data-detail" placeholder="Excel, CSVs, Notizen..."></label>
+        <label class="check-item"><input type="radio" name="existing-data" value="no"><span class="check-label">Nein, fange bei null an</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: INTEGRATIONEN -->
+  <div class="form-section" id="s5">
+    <div class="form-num">05</div>
+    <div class="form-label">Integrationen</div>
+    <h2 class="form-title">Muss es mit irgendwas <em>reden?</em></h2>
+    <textarea id="integrations" placeholder="z.B. Google Calendar, E-Mail, WhatsApp, eine bestimmte Webseite, ein Gerät, eine Datenbank, eine API..."></textarea>
+  </div>
+
+  <!-- 6: DESIGN -->
+  <div class="form-section" id="s6">
+    <div class="form-num">06</div>
+    <div class="form-label">Design</div>
+    <h2 class="form-title">Wie soll es <em>aussehen?</em></h2>
+    <div class="textarea-label">Stil-Richtung</div>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox" name="style" value="modern"><span class="check-label">Modern / clean / minimalistisch</span></label>
+      <label class="check-item"><input type="checkbox" name="style" value="playful"><span class="check-label">Verspielt / bunt</span></label>
+      <label class="check-item"><input type="checkbox" name="style" value="business"><span class="check-label">Professionell / Business</span></label>
+      <label class="check-item"><input type="checkbox" name="style" value="dashboard"><span class="check-label">Technisch / Dashboard-mäßig</span></label>
+      <label class="check-item"><input type="checkbox" name="style" value="whatever"><span class="check-label">Mir egal, Hauptsache übersichtlich</span></label>
+      <label class="check-item has-input"><input type="checkbox" name="style" value="reference"><span class="check-label">Vorbild:</span><input type="text" id="style-ref" placeholder="App, Webseite, Screenshot..."></label>
+    </div>
+    <div style="margin-top: 16px;">
+      <div class="textarea-label">Farbvorlieben</div>
+      <textarea class="one-liner" id="colors" placeholder="optional"></textarea>
+    </div>
+    <div style="margin-top: 20px;">
+      <div class="textarea-label">Dark Mode?</div>
+      <div class="check-grid">
+        <label class="check-item"><input type="radio" name="darkmode" value="yes"><span class="check-label">Ja</span></label>
+        <label class="check-item"><input type="radio" name="darkmode" value="no"><span class="check-label">Nein</span></label>
+        <label class="check-item"><input type="radio" name="darkmode" value="toggle"><span class="check-label">Beides (umschaltbar)</span></label>
+        <label class="check-item"><input type="radio" name="darkmode" value="dunno"><span class="check-label">Kein Plan</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7: PRIORITÄTEN -->
+  <div class="form-section" id="s7">
+    <div class="form-num">07</div>
+    <div class="form-label">Prioritäten</div>
+    <h2 class="form-title">Was ist am <em>wichtigsten?</em></h2>
+    <div class="prio-group">
+      <div class="prio-label must">🔴 Muss unbedingt</div>
+      <div class="prio-inputs">
+        <div class="prio-row"><span class="prio-num">1.</span><input type="text" id="must-1" placeholder=""></div>
+        <div class="prio-row"><span class="prio-num">2.</span><input type="text" id="must-2" placeholder=""></div>
+        <div class="prio-row"><span class="prio-num">3.</span><input type="text" id="must-3" placeholder=""></div>
+      </div>
+    </div>
+    <div class="prio-group">
+      <div class="prio-label nice">✨ Wäre schön</div>
+      <div class="prio-inputs">
+        <div class="prio-row"><span class="prio-num">1.</span><input type="text" id="nice-1" placeholder=""></div>
+        <div class="prio-row"><span class="prio-num">2.</span><input type="text" id="nice-2" placeholder=""></div>
+        <div class="prio-row"><span class="prio-num">3.</span><input type="text" id="nice-3" placeholder=""></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8: ANTI-FEATURES -->
+  <div class="form-section" id="s8">
+    <div class="form-num">08</div>
+    <div class="form-label">Anti-Features</div>
+    <h2 class="form-title">Was soll es <em>auf keinen Fall?</em></h2>
+    <textarea id="anti" placeholder="z.B. „keine Werbung", „keine Cloud", „keine Registrierung", „kein Social Media""></textarea>
+  </div>
+
+  <!-- 9: VORBILDER -->
+  <div class="form-section" id="s9">
+    <div class="form-num">09</div>
+    <div class="form-label">Vorbilder</div>
+    <h2 class="form-title">Gibt es <em>Vorbilder?</em></h2>
+    <div class="form-hint">Apps, Webseiten oder Tools die so ähnlich funktionieren — auch wenn sie es nicht perfekt machen.</div>
+    <textarea id="references" placeholder=""></textarea>
+  </div>
+
+  <!-- 10: SONSTIGES -->
+  <div class="form-section" id="s10">
+    <div class="form-num">10</div>
+    <div class="form-label">Sonstiges</div>
+    <h2 class="form-title">Alles was <em>nirgends reinpasst.</em></h2>
+    <textarea id="misc" placeholder="Ideen, Sorgen, Wünsche, Rants."></textarea>
+  </div>
+
+  <!-- 11: TECHNIK -->
+  <div class="form-section" id="s11" style="border-bottom: none;">
+    <div class="form-num">11</div>
+    <div class="form-label">Technik (optional)</div>
+    <h2 class="form-title">Nur ausfüllen wenn du weißt <em>was das ist.</em></h2>
+    <div class="form-hint">Kein Stress — wenn du hier nichts einträgst, entscheiden wir das für dich.</div>
+    <div class="tech-grid">
+      <div class="tech-field">
+        <label>Sprache / Framework</label>
+        <input type="text" id="tech-lang">
+      </div>
+      <div class="tech-field">
+        <label>Hosting</label>
+        <input type="text" id="tech-hosting" placeholder="lokal / Cloud / egal">
+      </div>
+      <div class="tech-field">
+        <label>Datenbank</label>
+        <input type="text" id="tech-db">
+      </div>
+      <div class="tech-field">
+        <label>Login nötig?</label>
+        <input type="text" id="tech-auth" placeholder="ja / nein / weiß nicht">
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="export-section">
+    <button class="export-btn" onclick="generateSummary()">Zusammenfassung erzeugen</button>
+    <div class="export-hint">Vorschau + Download als .md Datei</div>
+  </div>
+</div>
+
+<div class="gold-divider"></div>
+
+<!-- QUOTE -->
+<div class="kintsugi-section">
+  <div class="kintsugi-quote">
+    „Sag mir was du willst —<br>
+    <span>nicht wie</span> es gebaut wird."
+  </div>
+  <div class="kintsugi-attr">Marathon Workflow — Prinzip</div>
+</div>
+
+<div class="gold-divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div>Marathon Workflow <span>Projekt-Intake</span> — Mai 2026</div>
+  <div>github.com/Bmad82</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Zusammenfassung</div>
+      <button class="modal-close" onclick="closeModal()">Schließen</button>
+    </div>
+    <div class="modal-body">
+      <pre id="summary-output"></pre>
+    </div>
+    <div class="modal-actions">
+      <span class="copy-feedback" id="copy-feedback">Kopiert ✓</span>
+      <button class="modal-btn secondary" onclick="closeModal()">Schließen</button>
+      <button class="modal-btn secondary" onclick="copySummary()">Kopieren</button>
+      <button class="modal-btn primary" onclick="downloadSummary()">⬇ Download .md</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.form-section').forEach((el, i) => {
+  el.style.transitionDelay = `${Math.min(i * 40, 200)}ms`;
+  observer.observe(el);
+});
+
+function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+function checked(name) {
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
+    .map(el => el.closest('.check-item')?.querySelector('.check-label')?.textContent?.trim())
+    .filter(Boolean);
+}
+
+function radioVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.closest('.check-item')?.querySelector('.check-label')?.textContent?.trim() : '';
+}
+
+function generateSummary() {
+  // ── BOOTSTRAP-KOPF ──
+  // Das Erste was Coda sieht — Einstiegspunkte für Marathon Workflow
+  let s = '# BOOTSTRAP — Marathon Workflow\n\n';
+  s += '> **An den Coda-Agenten:** Dieses Projekt folgt dem Marathon Workflow.\n';
+  s += '> Lies zuerst die Bootstrap-Checkliste, dann diese Projektanfrage, dann leg los.\n\n';
+  s += '## Einstiegspunkte\n\n';
+  s += '**Index-Gist** (Zentrale Navigation — hier findest du alles):\n';
+  s += 'https://gist.github.com/Bmad82/6fb4ba84419edc0e2d8290cacef1faeb\n\n';
+  s += 'Dort findest du den **Claude-KB-Gist** mit:\n';
+  s += '- `BOOTSTRAP_CHECKLIST.md` — Deine Schritt-für-Schritt-Anleitung für den Projektstart\n';
+  s += '- `WORKFLOW_SUMMARY.md` — Wie der Marathon-Workflow funktioniert\n';
+  s += '- `GLOBAL_LESSONS.md` — Universelle Erkenntnisse (PFLICHTLEKTÜRE vor dem ersten Commit)\n';
+  s += '- `TEMPLATES_INDEX.md` — Welche Templates es gibt und wo sie liegen\n\n';
+  s += '## Kurzanleitung\n\n';
+  s += '1. Index-Gist fetchen → Claude-KB-Gist finden\n';
+  s += '2. BOOTSTRAP_CHECKLIST.md lesen und abarbeiten\n';
+  s += '3. Templates aus `github.com/Bmad82/Claude/templates/` ziehen\n';
+  s += '4. Projektstruktur anlegen, Projekt-Gist erstellen, Index-Gist aktualisieren\n';
+  s += '5. Dann: Erstes Feature aus der MUSS-Liste unten bauen\n\n';
+  s += '---\n\n';
+
+  // ── PROJEKT-ANFRAGE ──
+  s += '# PROJEKT-ANFRAGE\n';
+  s += `Erstellt: ${new Date().toLocaleDateString('de-DE')}\n\n`;
+
+  if (val('idea-short')) s += `## Kernidee\n${val('idea-short')}\n\n`;
+  if (val('idea-long')) s += `## Beschreibung\n${val('idea-long')}\n\n`;
+
+  const users = radioVal('users');
+  if (users || val('roles')) {
+    s += '## Nutzer\n';
+    if (users) s += `Zielgruppe: ${users}\n`;
+    if (val('roles')) s += `Rollen: ${val('roles')}\n`;
+    s += '\n';
+  }
+
+  const platforms = checked('platform');
+  if (platforms.length) s += `## Plattform\n${platforms.join(', ')}\n\n`;
+
+  if (val('data-types') || val('existing-data-detail')) {
+    s += '## Daten\n';
+    if (val('data-types')) s += `Typ: ${val('data-types')}\n`;
+    const ed = radioVal('existing-data');
+    if (ed) s += `Vorhandene Daten: ${ed} ${val('existing-data-detail')}\n`;
+    s += '\n';
+  }
+
+  if (val('integrations')) s += `## Integrationen\n${val('integrations')}\n\n`;
+
+  const styles = checked('style');
+  const dm = radioVal('darkmode');
+  if (styles.length || val('colors') || dm) {
+    s += '## Design\n';
+    if (styles.length) s += `Stil: ${styles.join(', ')}\n`;
+    if (val('style-ref')) s += `Vorbild: ${val('style-ref')}\n`;
+    if (val('colors')) s += `Farben: ${val('colors')}\n`;
+    if (dm) s += `Dark Mode: ${dm}\n`;
+    s += '\n';
+  }
+
+  const musts = [val('must-1'), val('must-2'), val('must-3')].filter(Boolean);
+  const nices = [val('nice-1'), val('nice-2'), val('nice-3')].filter(Boolean);
+  if (musts.length || nices.length) {
+    s += '## Prioritäten\n';
+    if (musts.length) { s += 'MUSS:\n'; musts.forEach((m,i) => s += `  ${i+1}. ${m}\n`); }
+    if (nices.length) { s += 'NICE-TO-HAVE:\n'; nices.forEach((m,i) => s += `  ${i+1}. ${m}\n`); }
+    s += '\n';
+  }
+
+  if (val('anti')) s += `## Anti-Features\n${val('anti')}\n\n`;
+  if (val('references')) s += `## Vorbilder\n${val('references')}\n\n`;
+  if (val('misc')) s += `## Sonstiges\n${val('misc')}\n\n`;
+
+  const techParts = [
+    val('tech-lang') ? `Sprache: ${val('tech-lang')}` : '',
+    val('tech-hosting') ? `Hosting: ${val('tech-hosting')}` : '',
+    val('tech-db') ? `Datenbank: ${val('tech-db')}` : '',
+    val('tech-auth') ? `Auth: ${val('tech-auth')}` : ''
+  ].filter(Boolean);
+  if (techParts.length) s += `## Technik\n${techParts.join('\n')}\n`;
+
+  document.getElementById('summary-output').textContent = s;
+  document.getElementById('modal').classList.add('active');
+}
+
+function copySummary() {
+  const text = document.getElementById('summary-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const fb = document.getElementById('copy-feedback');
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2000);
+  });
+}
+
+function downloadSummary() {
+  const text = document.getElementById('summary-output').textContent;
+  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  // Projektname aus Kernidee extrahieren (erstes Wort oder ganzer Kurztext)
+  const shortIdea = val('idea-short');
+  const projektName = shortIdea ? shortIdea.split(/[\s—–\-:,]/)[0].trim().toUpperCase() : 'PROJEKT';
+  a.download = `PROJEKT_ANFRAGE_${projektName}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  const fb = document.getElementById('copy-feedback');
+  fb.textContent = 'Download gestartet ✓';
+  fb.classList.add('show');
+  setTimeout(() => { fb.classList.remove('show'); fb.textContent = 'Kopiert ✓'; }, 2000);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+</script>
+
+</body>
+</html>
