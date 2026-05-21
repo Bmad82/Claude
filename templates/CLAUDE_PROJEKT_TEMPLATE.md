@@ -1,4 +1,4 @@
-<!-- TEMPLATE | Kopie als CLAUDE_{PROJEKT}.md ins Projekt-Root | Limit 150 Zeilen | NIE bestehende Projekt-CLAUDE-Datei überschreiben -->
+<!-- TEMPLATE | Kopie als CLAUDE_{PROJEKT}.md ins Projekt-Root | Limit < 150 Zeilen (Ziel ~100) | task-spezifische Regeln in `playbooks/`, pfadspezifische in `.claude/rules/` mit `globs:`-Frontmatter (mw-v2b Paket 2) | NIE bestehende Projekt-CLAUDE-Datei überschreiben -->
 
 # CLAUDE_{PROJEKT}.md | Bibel-Format
 
@@ -21,8 +21,8 @@ Kurzform:
 3. `mjolnir.md` einlesen (STATUS-Header zuerst), dann löschen (Single-Slot).
 4. `HANDOVER_{PROJEKT}.md` lesen.
 5. `MARATHON_WORKFLOW_{PROJEKT}.md` lesen.
-6. `lessons_{PROJEKT}.md` konsultieren.
-7. Globale Quellen prüfen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`.
+6. `python scripts/lessons_lookup.py --task '<aufgabe>'` (TF-IDF Top-3, ~500 Token). Bei 0 Treffern → „Aufgabe ist neu", kein Kontext-Stuffing. NICHT `lessons_{PROJEKT}.md` komplett laden (mw-v2a Paket 1).
+7. Globale Quellen prüfen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`. Task-spezifische Regeln aus `playbooks/<task>.md`, pfadspezifische aus `.claude/rules/` (mw-v2b Paket 2).
 
 ## Globale Wissensbasis
 Repo: https://github.com/Bmad82/Claude | PUBLIC | keine Secrets/Keys/Tokens/IPs/interne URLs in Lessons/Templates

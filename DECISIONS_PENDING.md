@@ -14,6 +14,13 @@ Eingetragen|2026-05-17 (aufraeumarbeiten-post-catch verschoben)
 
 ## Getroffene Entscheidungen
 
+### 2026-05-21 | v2b-Paket 1 Hooks bleiben opt-in (settings.json NICHT committed)
+Entscheidung|Die drei Hook-Scripts (`scripts/lessons_lookup_auto.py`, `scripts/validate_edit.py`, `scripts/session_end_check.py`) sind im Zerberus-Repo committed und verifiziert. Die Verdrahtung in `.claude/settings.json` wird NICHT committed. Chris aktiviert sie nach Bedarf in `.claude/settings.local.json` (Variante B aus `scripts/HOOK_SETUP.md`).
+Begründung|Schreibversuch auf `.claude/settings.json` wurde in der v2b-Session abgelehnt. Konsistent mit der Vorab-Direktive in `HOOK_SETUP.md` ("opt-in, weil Hooks Befehle automatisch ausfuehren"). Variante B ist kein Funktionsverlust — alle Hooks feuern auch bei lokaler Verdrahtung.
+Alternativen|A) settings.json doch committen — wäre Verstoß gegen Permission-Entscheidung | C) Hooks komplett zurueckbauen — Funktionsverlust
+Konsequenz|Akzeptanzkriterien Paket 1 (settings.json enthält Hooks, SessionStart injiziert Lessons, Edit auf CLAUDE_GLOBAL.md blockiert, SessionEnd meldet Fehler) sind auf Skript-Ebene erfuellt + per CLI-Smoke-Test verifiziert. Die finale "Mechanik unumgehbar"-Eigenschaft tritt erst nach Chris-seitiger Aktivierung der Variante B ein. Sub-Aufgabe Akzeptanzkriterium 1 (settings.json enthält Hooks) ist daher als "READY, Aktivierung opt-in" zu lesen.
+Patch-Referenz|mw-v2b-durchsetzung (2026-05-21)
+
 ### 2026-05-17 | Quelle Try_Faulheits_catch.md als Konzept-Ursprung in concepts/ verankert
 Entscheidung|Rekonstruierte Fassung als `concepts/Try_Faulheits_catch.md` mit Status-Header „Historisches Dokument. Operative Version siehe GLOBAL_LESSONS.md".
 Begründung|Original existiert nur im Anthropic-Chat-Projekt-Speicher, nicht im Git. Damit die Konzept-Wurzel dauerhaft auf der Platte verankert ist (nicht nur in flüchtigen Chat-Sessions), wird die rekonstruierte Liste der 6 Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet als kanonische Konzept-Datei archiviert.

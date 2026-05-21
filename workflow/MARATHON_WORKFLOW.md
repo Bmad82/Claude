@@ -38,8 +38,8 @@ Jedes Projekt, das den Marathon-Workflow nutzt, hat folgende Pflicht-Dateien (Vo
 3. `mjolnir.md` lesen (STATUS-Header zuerst), dann löschen (Single-Slot).
 4. `HANDOVER_{PROJEKT}.md` lesen, falls vorhanden.
 5. `MARATHON_WORKFLOW_{PROJEKT}.md` lesen.
-6. `lessons_{PROJEKT}.md` konsultieren.
-7. Globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`.
+6. `python scripts/lessons_lookup.py --task '<aufgabe>'` (TF-IDF Top-3, ~500 Token statt 80k Full-Load). Bei 0 Treffern → „Aufgabe ist neu", kein Kontext-Stuffing. Detail: GLOBAL_LESSONS „Lessons-Retrieval statt Lessons-Komplett-Load" (mw-v2a Paket 1).
+7. Globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`. Task-spezifische Regeln aus `playbooks/`, pfadspezifische aus `.claude/rules/` (mw-v2b Paket 2).
 8. Arbeit ausführen — Tests, Commit, Push selbst (`$LASTEXITCODE` verifizieren).
 9. **Auffüll-Check:** Auftrag erledigt UND < 300k Token verbraucht → nächstes Item aus FEATURE_REQUEST / MARATHON_WORKFLOW / BACKLOG nehmen statt abzuschließen. Stopp bei ~350k (50k Reserve für Doku). NUR sichere, unabhängige Items — destruktive Ops nie als Auffüller. Siehe Sektion „Session-Auffüll-Regel" unten.
 10. Worktree-Branches selbst auf main mergen (kein „Schritt 0 für Chris").

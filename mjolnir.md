@@ -1,59 +1,56 @@
 # mjolnir.md — Claude (Meta-Repo)
 
 ```
-STATUS|FERTIG|AUFTRAG: mw-v2a-kontextentlastung|FORTSCHRITT: 3 von 3 Pakete | EINE Coding-Session|NÄCHSTE SESSION: v2b (Hooks, Schlankheitskur, Doku) — bei Token-Budget direkt anschließend per Auffüll-Regel
+STATUS|FERTIG|AUFTRAG: mw-v2b-durchsetzung|FORTSCHRITT: 4 von 4 Paketen | EINE Coding-Session (Sammel-Lieferung)|NÄCHSTE SESSION: BACKLOG/Auffüll — keine FR offen
 ```
 
 **STATUS:** FERTIG
-**AUFTRAG:** FEATURE_REQUEST_CLAUDE.md mw-v2a-kontextentlastung (Marathon-Workflow v2a, Kontextentlastung — Sichere Gewinne). Umbenannt zu `FEATURE_REQUEST_CLAUDE_ERLEDIGT.md`.
-**FORTSCHRITT:** Alle drei Pakete in EINER Coding-Session geliefert (EIN Commit pro Paket per OVERRIDE-Direktive). Paket 1 (Zerberus `60e42a1`) — `scripts/lessons_lookup.py` TF-IDF + `CLAUDE_ZERBERUS.md` Session-Start umgestellt. Paket 2 (Zerberus `948c1d5`) — `scripts/session_end.ps1` Sammel-Bundle für 6 mechanische Schritte. Paket 3 (Zerberus `615abe4`) — `STAND.json` SSOT + `scripts/propagate_stand.py` + 5 STAND-Anker eingefügt. Claude-Repo Begleit-Commit: `workflow/gist_publisher.py` `--patch`-CLI + FR-Rename + drei neue Lessons in `GLOBAL_LESSONS.md`.
-**NÄCHSTE SESSION:** Per FR-Folge-Auftrag `FEATURE_REQUEST_MW_V2B.md` (Hooks, Schlankheitskur `CLAUDE_ZERBERUS.md`, Doku-Refresh). Wenn Token-Budget < 300k erlaubt (Auffüll-Regel) direkt anschließend, sonst neue Session.
+**AUFTRAG:** `FEATURE_REQUEST_CLAUDE.md` mw-v2b-durchsetzung (Marathon-Workflow v2b: Mechanische Durchsetzung & Alignment). Umbenannt zu `FEATURE_REQUEST_CLAUDE_mw-v2b-durchsetzung_ERLEDIGT.md`.
+**FORTSCHRITT:** Alle vier Pakete in EINER Coding-Session geliefert (Commits per Paket im Zerberus-Repo, Sammel-Commit fuer Claude-Begleit-Doku). Paket 1 (Zerberus `a031719` + `a6c3cae`) — SessionStart/PreToolUse/SessionEnd Hooks (Scripts committed, Verdrahtung opt-in). Paket 2 (Zerberus `3eb52bf` + `b6e7ce6` + `c2dded8` + Nachzug `4b02f0e`) — Lessons-Split + CLAUDE_ZERBERUS.md 282→121 Zeilen + 5 Playbooks + 2 Path-Rules in docs/claude_rules/. Paket 3 (Zerberus `4edfd35`) — SUPERVISOR_ZERBERUS.md 2423→74 Zeilen Archiv-Schnitt. Paket 4 (Claude `<HASH-C>`) — Templates + WORKFLOW + GLOBAL_LESSONS Progressive-Disclosure-Lesson + WORKFLOW_SUMMARY Gist-Update + MARATHON_WORKFLOW_ZERBERUS.md v2b-Alignment.
+**NÄCHSTE SESSION:** Keine FR offen. Auffüll-Regel greift falls Token-Budget. Wenn Chris weitere Arbeit reingibt: Eröffnungs-Message hat Vorrang. Sonst BACKLOG (Zerberus B-074 ff.) oder Lessons-Hygiene.
 
 ---
 
 ## Was diese Session war
 
-Coda hat `FEATURE_REQUEST_CLAUDE.md` (mw-v2a-kontextentlastung) als Sammel-Auftrag mit drei unabhängigen Paketen abgearbeitet. Grundlage: Deep-Research-PDF "LLM Regelbefolgung" (IFScale-Benchmark: 500 Regeln → max 68% Accuracy bei Frontier-Modellen, Auslassungsfehler ab 200 Regeln) + Supervisor-Audit 2026-05-21. Ziel laut FR: ~109k Token Bootstrap-Overhead pro Session abbauen (Lessons-Komplett-Load + manuelles Session-End + 6× Stand-Anker-Pflege). Pilot-Projekt: Zerberus.
+Coda hat `FEATURE_REQUEST_CLAUDE.md` (mw-v2b-durchsetzung) als Sammel-Auftrag mit vier Paketen abgearbeitet. Grundlage: Deep-Research-PDF „LLM Regelbefolgung" + Supervisor-Audit 2026-05-21. Ziel laut FR: mw-v2a-Gewinne mechanisch unumgehbar machen (Hooks) + Kern-Bibel-Wachstum stoppen (Playbooks + Path-Rules) + Naming/Doku-Drift bereinigen.
 
 ## Was geliefert wurde
 
-**Paket 1 — `scripts/lessons_lookup.py` (Zerberus `60e42a1`)**
+**Paket 1 — Claude Code Hooks (Zerberus, opt-in via `scripts/HOOK_SETUP.md`)**
+- `scripts/lessons_lookup_auto.py` (SessionStart, leitet Query aus FEATURE_REQUEST/mjolnir ab)
+- `scripts/validate_edit.py` (PreToolUse, blockt Edits an Schutzdateien: GLOBAL_LESSONS, KODEX, *_TEMPLATE_*)
+- `scripts/session_end_check.py` (SessionEnd, prueft mjolnir/HANDOVER/STAND/Gist-Marker als JSON systemMessage)
+- `.claude/settings.json`-Verdrahtung BLEIBT OPT-IN (Chris-Entscheidung, dokumentiert in `DECISIONS_PENDING.md`)
 
-TF-IDF-Retrieval per scikit-learn (bereits Zerberus-Dependency) über alle `lessons_*.md` im Repo-Root. CLI mit `--task`, `--file`, `--top`, `--max-chars`, `--all`. Default Top-3, max 1200 Zeichen pro Block. Verifiziert: `"uvicorn reload"` → 3 Treffer ~500 Tokens statt 80k Full-Load. Bei 0 Treffern explizite Meldung "Aufgabe ist evtl. neu — kein Lesson-Kontext nötig". Funktioniert sowohl gegen `lessons_ZERBERUS.md` als auch gegen `GLOBAL_LESSONS.md` / `LESSONS_KONSOLIDIERT.md` (via `--file`). `CLAUDE_ZERBERUS.md` Session-Start-Pflicht-Zeile entsprechend angepasst.
+**Paket 2 — Kern-Bibel-Schlankheitskur + Playbooks + Path-Rules (Zerberus)**
+- `lessons_ZERBERUS.md` (1093 Z / 316k chars) gesplittet via `scripts/split_lessons.py` in Pipe-only (142k chars, 147 Sektionen) + `lessons_ZERBERUS_KONTEXT.md` (317k chars Prosa)
+- `CLAUDE_ZERBERUS.md` (282 → 121 Zeilen) — nur noch Kern: OBERSTES GEBOT + Autonome Prioritaetsliste + 6 Faulheits-Catches + Marathon-Workflow + Session-Auffuell + Token-Effizienz + Basics-Regeln
+- `playbooks/` (5 Stueck): `testing.md`, `rag_pipeline.md`, `auth_security.md`, `database.md`, `observability.md`
+- `docs/claude_rules/` (opt-in Path-Rules): `frontend_mobile.md` (globs: Templates/CSS/HTML), `destructive_ops.md` (globs: *.py/scripts/alembic) + README mit Install-Variante A/B
+- `.claude/rules/` ist permission-protected — Setup bleibt Chris-Entscheidung, konsistent mit Hooks-Wiring
 
-**Paket 2 — `scripts/session_end.ps1` (Zerberus `948c1d5`)**
+**Paket 3 — Zerberus-Marathon-Alignment (Zerberus)**
+- `SUPERVISOR_ZERBERUS.md` (2423 → 74 Zeilen), Patch-Historie ausgelagert in `SUPERVISOR_ZERBERUS_ARCHIV_2026-05-21.md`
+- Naming HYPERVISOR→SUPERVISOR auditiert (verbleibende Hits sind intentional: Archiv-Audit-Logs, Don't-Reminder, technischer VM-Begriff in Huginn-Doc)
 
-Sechs mechanische Session-End-Schritte in einem Aufruf: (1) git add+commit für uncommittete Doku/State-Files via Temp-File-F-Flag, (2) `sync_repos.ps1`, (3) Gist-PATCH Zerberus-Gist (HANDOVER + MJOLNIR + STATUS aus mjolnir-Header generiert + LESSONS + REPO_INDEX), (4) Gist-PATCH Claude-KB-Gist (GLOBAL_LESSONS + Optionals WORKFLOW_SUMMARY/TEMPLATES_INDEX/BOOTSTRAP_CHECKLIST wenn lokal vorhanden), (5) `huginn_kennt_zerberus.md` → `docs/RAG Testdokumente/` Hash-vergleich-basiert spiegeln, (6) `verify_sync.ps1`. Best-effort: Netzwerk-Fehler → Warnung statt Crash. Flags `-SkipCommit -SkipGist -DryRun -CommitMessage`. Farbcodierte Summary. Voraussetzung: `workflow/gist_publisher.py` mit neuem `--patch`-CLI (siehe Claude-Commit).
+**Paket 4 — Workflow-Doku-Updates (Claude-Repo + Zerberus)**
+- `MARATHON_WORKFLOW_ZERBERUS.md` Step 4 (lessons_lookup statt full-load), Steps 12-13 (session_end.ps1 + Hook-Erweiterung), neue Sektion „Playbook-Architektur"
+- `workflow/MARATHON_WORKFLOW.md` Step 6/7 (lessons_lookup + Playbook-Verweis)
+- `templates/CLAUDE_PROJEKT_TEMPLATE.md` (Limit-Hinweis playbooks/rules + Step 6/7-Update)
+- `templates/MARATHON_WORKFLOW_TEMPLATE.md` Step 5
+- `GLOBAL_LESSONS.md` + `GLOBAL_LESSONS_KONTEXT.md`: neue Lesson „Progressive Disclosure: Playbooks + .claude/rules statt Kern-Bibel-Wachstum"
+- `_drafts_gist/WORKFLOW_SUMMARY.md`: Session-Zyklus + neue Sektionen Progressive-Disclosure + Hooks
 
-**Paket 3 — `STAND.json` + `scripts/propagate_stand.py` + 5 Anker (Zerberus `615abe4`)**
+## Bekannte Limitations
 
-`STAND.json` als Single Source of Truth mit `patch`/`phase`/`datum`/`tests`/`commits.{zerberus,ratatoskr,claude}`. `propagate_stand.py` baut kanonischen HTML-Kommentar-Block (`<!-- STAND-ANKER:START -->` … `END`) und ersetzt ihn in 5 Target-Dateien. Modi: default = schreiben + Summary, `--dry-run` = Diff, `--check` = exit 1 bei Drift (CI-Modus). Idempotent verifiziert (zweimal hintereinander = 0 Updates). Drift-Detection verifiziert mit Test-Patch `P221_TEST`. Alle 5 Targets haben Anker-Block direkt nach H1.
+- `.claude/settings.json` und `.claude/rules/` sind permission-protected. Verdrahtung bleibt opt-in via `scripts/HOOK_SETUP.md` (Hooks) bzw. `docs/claude_rules/README.md` (Rules). Konsistent mit Variante A/B-Konvention.
+- „Anpassungen_11_05.2026" aus dem FR ist eine Projekt-Knowledge-Datei in claude.ai, nicht im Repo — kann Coda nicht editieren. Supervisor-Aufgabe.
+- Backups (`CLAUDE_ZERBERUS.md.bak_pre_v2b_paket2`, `lessons_ZERBERUS.md.bak_pre_v2b`, `GLOBAL_LESSONS.md.bak_pre_v2b`) liegen im Repo und sind in `.gitignore` ausgeschlossen oder werden bei Bedarf manuell entfernt.
 
-**Claude-Repo Begleit-Änderungen** (in diesem Commit):
-- `workflow/gist_publisher.py`: neuer `--patch <gist_id> <staging_dir>` CLI-Modus.
-- `FEATURE_REQUEST_CLAUDE.md` → `FEATURE_REQUEST_CLAUDE_ERLEDIGT.md` (Marathon-Konvention).
-- `GLOBAL_LESSONS.md`: drei neue Lessons oben — (a) Lessons-Retrieval statt Full-Load, (b) Stand-Anker SSOT statt N-Edit, (c) Session-End-Mechanik bündeln.
+## Was Chris noch machen muss (physisch)
 
-## Was nicht passiert ist
-
-- Kein Hook-System (per FR-Verweis → v2b).
-- Kein realer `session_end.ps1`-Live-Lauf (Gist-PATCH unter Echtbedingungen). DryRun und Staging-Build verifiziert, Happy-Path-Live-Test gehört in das nächste Session-Ende.
-- Keine `CLAUDE_ZERBERUS.md`-Schlankheitskur (v2b).
-
-## Akzeptanzkriterien
-
-- P1: AK1 ✅ (3 Treffer) · AK2 ✅ (~500 Tokens) · AK3 ✅ · AK4 ✅ · AK5 ✅.
-- P2: AK1 ✅ (DryRun grün) · AK3 ✅ · AK4 ✅ · AK5 ✅. AK2 (Gist-Timestamps) wird im nächsten realen Session-End belegt.
-- P3: AK1 ✅ · AK2 ✅ · AK3 ✅ · AK4 ✅ · AK5 ✅.
-
----
-
-<!--
-LIFECYCLE-Notiz für Coda:
-
-- STATUS=FERTIG  →  beim nächsten Session-Start: mjolnir.md einlesen, dann löschen. FEATURE_REQUEST_CLAUDE.md bereits zu _ERLEDIGT.md umbenannt mit drei-Paket-Bericht.
-- STATUS=IN_ARBEIT  →  entfällt hier.
-- STATUS=BLOCKIERT  →  entfällt hier.
-
-mjolnir.md ist Single-Slot — genau EINE Datei zur Zeit, wird beim nächsten Session-Start gelesen + gelöscht.
--->
+- **Optional:** `.claude/settings.json` aktivieren (Hook-Verdrahtung) — Anleitung in `Zerberus/scripts/HOOK_SETUP.md`. Variante B (`settings.local.json`) ist sicherer Default.
+- **Optional:** `.claude/rules/` aktivieren — `cp Zerberus/docs/claude_rules/*.md Zerberus/.claude/rules/`. README im selben Verzeichnis.
+- Projekt-Knowledge „Anpassungen_11_05.2026" in claude.ai mit „⚠️ HISTORISCH"-Header versehen (Supervisor-Aufgabe, nicht Coda).
+- Gist-Sync nach diesem Commit — passiert idealerweise via `scripts/session_end.ps1`, falls Chris den `gist_publisher.py --patch`-Aufruf manuell triggern moechte.

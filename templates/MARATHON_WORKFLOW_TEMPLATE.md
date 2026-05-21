@@ -13,7 +13,7 @@ Siehe `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` Sektion „Die 6 Faulheit
 2. `FEATURE_REQUEST_{kurzname}.md` prüfen | existiert? → abarbeiten | bei STATUS=FERTIG umbenennen zu `_ERLEDIGT.md`.
 3. `mjolnir.md` einlesen (STATUS-Header zuerst), dann löschen (Single-Slot).
 4. `HANDOVER_{PROJEKT}.md` lesen.
-5. `lessons_{PROJEKT}.md` konsultieren | globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`.
+5. `python scripts/lessons_lookup.py --task '<aufgabe>'` (TF-IDF Top-3, mw-v2a Paket 1) | globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md` | task-spezifische Regeln aus `playbooks/`, pfadspezifische aus `.claude/rules/` (mw-v2b Paket 2).
 6. Nächsten ⬜-Eintrag aus Workflow ziehen.
 7. Patch durchführen | Status updaten.
 8. Doku-Pflicht (CLAUDE/SUPERVISOR/CHANGELOG/lessons) | git commit+push (Coda macht SELBST, kein Auftrag an Chris).
