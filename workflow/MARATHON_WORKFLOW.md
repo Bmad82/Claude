@@ -41,10 +41,34 @@ Jedes Projekt, das den Marathon-Workflow nutzt, hat folgende Pflicht-Dateien (Vo
 6. `lessons_{PROJEKT}.md` konsultieren.
 7. Globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md`.
 8. Arbeit ausführen — Tests, Commit, Push selbst (`$LASTEXITCODE` verifizieren).
-9. Worktree-Branches selbst auf main mergen (kein „Schritt 0 für Chris").
-10. `mjolnir.md` neu schreiben mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) — Pflicht, ausnahmslos.
-11. Bei Verzeichnisänderungen: `REPO_INDEX.md` aktualisieren VOR dem finalen Push.
-12. Projekt-Gist aktualisieren (PATCH via `workflow/gist_publisher.py`): HANDOVER, MJOLNIR, STATUS, ggf. REPO_INDEX, LESSONS — Supervisor kann nur Gists fetchen, keine Raw-Links.
+9. **Auffüll-Check:** Auftrag erledigt UND < 300k Token verbraucht → nächstes Item aus FEATURE_REQUEST / MARATHON_WORKFLOW / BACKLOG nehmen statt abzuschließen. Stopp bei ~350k (50k Reserve für Doku). NUR sichere, unabhängige Items — destruktive Ops nie als Auffüller. Siehe Sektion „Session-Auffüll-Regel" unten.
+10. Worktree-Branches selbst auf main mergen (kein „Schritt 0 für Chris").
+11. `mjolnir.md` neu schreiben mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) — Pflicht, ausnahmslos.
+12. Bei Verzeichnisänderungen: `REPO_INDEX.md` aktualisieren VOR dem finalen Push.
+13. Projekt-Gist aktualisieren (PATCH via `workflow/gist_publisher.py`): HANDOVER, MJOLNIR, STATUS, ggf. REPO_INDEX, LESSONS — Supervisor kann nur Gists fetchen, keine Raw-Links.
+
+## Session-Auffüll-Regel (2026-05-21)
+
+Primärer Auftrag erledigt UND Token-Stand < 300k → NICHT abschließen, weiterarbeiten.
+
+Auffüll-Reihenfolge:
+1. Weitere Punkte im selben FEATURE_REQUEST (z.B. N+3, N+4... bei Multi-Session-Plänen)
+2. Offene Items in MARATHON_WORKFLOW mit Status OFFEN + keine Abhängigkeiten
+3. BACKLOG-Items mit Status OFFEN, sortiert nach Priorität (Sofort > Mittelfristig > Nice-to-have)
+4. Bekannte Test-Schulden (pre-existing Failures fixen)
+5. Doku-Hygiene (veraltete Stand-Anker, README-Drift, Lessons-Konsolidierung)
+
+Stopp-Schwelle: ~350k Token (50k Reserve für sauberen Doku-Abschluss).
+
+Ausnahmen — NIE als Auffüller:
+- Destruktive Operationen (DB-Migration, Auth-Refactor, FAISS-Switch)
+- Items die Chris-Entscheidung brauchen (DECISIONS_PENDING)
+- Items die externe Ressourcen brauchen (Docker-Pull, Modell-Download > 1 GB)
+- Items die die Test-Suite fundamental ändern (neues Framework, Fixture-Umbau)
+
+Doku-Pflicht bei Auffüll-Patches: eigener `git commit` pro Folge-Patch, kein separater HANDOVER/SUPERVISOR/Gist pro Zwischen-Patch — EIN HANDOVER am Session-Ende für alle.
+
+Anti-Pattern: „Patch fertig bei 120k → Doku → Handover → STOPP" verbrennt 80% des Budgets für Overhead und gilt als Verstoß gegen diese Regel. Anlass: Kintsugi-Migration Token-Audit (3 Sessions à 120k statt 1 à 360k = 200k verschwendet). Lesson: [GLOBAL_LESSONS.md](../GLOBAL_LESSONS.md) „Session-Auffüll-Regel".
 
 ## Die 6 Faulheits-Catches (Quick Reference)
 

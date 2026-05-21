@@ -7,6 +7,18 @@ Format: jede Lesson eine `##` Sektion mit Datum + Anlass-Patch im Titel. Inhalt 
 
 ---
 
+## Session-Auffüll-Regel (2026-05-21, Kintsugi-Migration Token-Audit)
+
+Sessions schlossen bei ~120k ab obwohl 300k+ Budget frei war|3 Sessions à 120k statt 1 à 360k = 200k verschwendet|Mega-Patch-Ära (P122–P152) bewies: 24k/Patch bei Auffüll-Logik vs 100k+/Patch ohne|Fix: Primärer Auftrag fertig UND < 300k verbraucht → nächstes Item nehmen, Stopp bei ~350k|Nur sichere unabhängige Items als Auffüller, destruktive Ops nie|Ein HANDOVER am Ende statt pro Zwischen-Patch
+
+**Anlass:** Kintsugi-Migration CSS-Patches (N+1 bis N+10) wurden über drei Coda-Sessions verteilt — drei à ~120k statt einer à ~360k. Mega-Patch-Ära (P122–P152) hatte gezeigt: 16 Patches in einem 383k-Fenster = ~24k/Patch, also Overhead-Ratio ~5:1 statt 100:1 bei kleinen Single-Patch-Sessions. Coda schließt Sessions aktuell ab sobald der primäre Auftrag erledigt ist, egal wie viel Budget übrig ist — der Bootstrap-Overhead (FEATURE_REQUEST + HANDOVER + MARATHON_WORKFLOW + lessons + globale Quellen + mjolnir-Read) wiegt schwer und wird pro Mini-Patch komplett neu bezahlt.
+
+**Lösung:** Auffüll-Regel direkt in den Session-Zyklus integriert (neuer Schritt 9 zwischen „Arbeit committed" und „mjolnir.md schreiben"). Primärer Auftrag erledigt UND < 300k Token verbraucht → nächstes Item nehmen (FEATURE_REQUEST-Restpunkte > MARATHON_WORKFLOW-OFFEN > BACKLOG > Test-Schulden > Doku-Hygiene). Stopp-Schwelle ~350k Token (50k Reserve für sauberen Doku-Abschluss). Zwischen-Patches kriegen je eigenen `git commit`, aber NUR EIN HANDOVER am Session-Ende für alle. Destruktive Ops (DB-Migration, Auth-Refactor, FAISS-Switch), Chris-Entscheidungs-Items, große externe Downloads und Test-Framework-Umbauten bleiben kategorisch von der Auffüll-Liste ausgenommen.
+
+**Lesson generalisierbar:** Bootstrap-Overhead ist eine Sunk-Cost der ersten ~50k Token jeder Session — wer den primären Auftrag bei ~120k abschließt, hat 70k davon (≈ Bootstrap + Doku) in 50k Patch-Arbeit gesteckt: 60% Overhead-Ratio. Die kosteneffiziente Antwort ist nicht „weniger Bootstrap", sondern „mehr Auffüll-Patches pro Bootstrap" — das ist exakt das Mega-Patch-Pattern, nur als verbindliche Workflow-Regel statt als Glücksfall. Sicherheit kommt durch die Auffüll-Whitelist (nur unabhängige, nicht-destruktive Items) und die explizite Stopp-Schwelle bei ~350k. Anti-Pattern: „Patch fertig bei 120k → Doku → Handover → STOPP" verbrennt 80% des Budgets für Overhead und ist ab sofort als Verstoß gegen die Auffüll-Regel zu werten.
+
+---
+
 ## Gist-Sync (Schritt 12) ist gleichrangige Session-End-Pflicht (2026-05-21, Zerberus Gist-Drift)
 
 Vier Sessions in Folge übersprangen Schritt 12 (Gist-PATCH) des Session-Zyklus|Local-Commit + Push wurden gemacht, Gist-PATCH fiel aus|Gist-Stand fror auf Stand B-aufraeumen (2026-05-18) ein, drei große Sessions später vollständig veraltet|Supervisor (Chat-Instanz) kann Raw-Links nicht fetchen — nur Gists — also ist Mjölnir-Round-Trip auf Supervisor-Seite kaputt sobald Gist-Sync ausfällt|Identisches Anti-Pattern-Profil wie B-072 (mjolnir.md): Pflicht-Schritt am Ende der Session-Liste → Token-knapp-Risiko-Zone → wird als erster gestrichen

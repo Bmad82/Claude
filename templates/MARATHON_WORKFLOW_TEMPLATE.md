@@ -17,7 +17,35 @@ Siehe `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` Sektion „Die 6 Faulheit
 6. Nächsten ⬜-Eintrag aus Workflow ziehen.
 7. Patch durchführen | Status updaten.
 8. Doku-Pflicht (CLAUDE/SUPERVISOR/CHANGELOG/lessons) | git commit+push (Coda macht SELBST, kein Auftrag an Chris).
-9. `mjolnir.md` mit STATUS-Header schreiben (Session-Ende, ausnahmslos).
+9. **Auffüll-Check** (siehe Session-Auffüll-Regel unten): Auftrag erledigt UND < 300k Token verbraucht → nächstes Item aus FEATURE_REQUEST/Workflow/BACKLOG nehmen statt abzuschließen.
+10. `mjolnir.md` mit STATUS-Header schreiben (Session-Ende, ausnahmslos).
+
+## Session-Auffüll-Regel (2026-05-21)
+
+Primärer Auftrag erledigt UND Token-Stand < 300k → NICHT abschließen, weiterarbeiten.
+
+Auffüll-Reihenfolge:
+1. Weitere Punkte im selben FEATURE_REQUEST (z.B. N+3, N+4... bei Multi-Session-Plänen)
+2. Offene Items in MARATHON_WORKFLOW mit Status OFFEN + keine Abhängigkeiten
+3. BACKLOG-Items mit Status OFFEN, sortiert nach Priorität (Sofort > Mittelfristig > Nice-to-have)
+4. Bekannte Test-Schulden (pre-existing Failures fixen)
+5. Doku-Hygiene (veraltete Stand-Anker, README-Drift, Lessons-Konsolidierung)
+
+Stopp-Schwelle: ~350k Token (50k Reserve für sauberen Doku-Abschluss).
+
+Ausnahmen — NIE als Auffüller:
+- Destruktive Operationen (DB-Migration, Auth-Refactor, FAISS-Switch)
+- Items die Chris-Entscheidung brauchen (DECISIONS_PENDING)
+- Items die externe Ressourcen brauchen (Docker-Pull, Modell-Download > 1 GB)
+- Items die die Test-Suite fundamental ändern (neues Framework, Fixture-Umbau)
+
+Doku-Pflicht bei Auffüll-Patches:
+- Eigener `git commit` pro Folge-Patch (mit Patch-Nummer/Name)
+- Lesson-Eintrag falls nötig
+- KEIN separater HANDOVER/SUPERVISOR/Gist-Update pro Zwischen-Patch
+- Am Session-Ende: EIN HANDOVER der ALLE Patches zusammenfasst
+
+Anti-Pattern: "Patch fertig bei 120k → Doku → Handover → STOPP" — verbrennt 80% des Budgets für Overhead.
 
 ## Phase 1 — {PHASENNAME}
 

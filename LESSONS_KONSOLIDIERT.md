@@ -1,5 +1,10 @@
 # LESSONS — Konsolidiert aus allen Supervisor-Chats (Stand: P49, 2026-05-15)
 
+## Session-Auffüll-Regel (2026-05-21, Kintsugi-Migration Token-Audit)
+Sessions schlossen bei ~120k ab obwohl 300k+ Budget frei war|3 Sessions à 120k statt 1 à 360k = 200k verschwendet|Mega-Patch-Ära (P122–P152) bewies: 24k/Patch bei Auffüll-Logik vs 100k+/Patch ohne|Fix: Primärer Auftrag fertig UND < 300k verbraucht → nächstes Item nehmen, Stopp bei ~350k|Nur sichere unabhängige Items als Auffüller, destruktive Ops nie|Ein HANDOVER am Ende statt pro Zwischen-Patch
+
+Anlass: Kintsugi-Migration CSS-Patches. 10 kleine Sub-Tasks über 3 Sessions verteilt, jede mit vollem Bootstrap-Overhead. Hätten in eine einzige Session gepasst.
+
 ## Plattform / Betriebssystem
 - IMMER explizit fragen welches OS bevor Architektur-Entscheidungen. Nie aus Projektkontext schlussfolgern. tmux/bash/systemd=Linux, PowerShell/.bat=Windows. Die Frage muss vom Supervisor kommen. (Linux→Windows-Pivot P22)
 - Chris' Rechner ist Windows. Claude Code = Desktop-App + PowerShell CLI. Kein WSL, kein Linux, kein tmux.

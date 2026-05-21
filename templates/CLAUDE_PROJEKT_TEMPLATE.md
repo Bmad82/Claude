@@ -113,6 +113,9 @@ Startskript|{...}
 - Blockiert → DECISIONS_PENDING.md | STATUS=BLOCKIERT in mjolnir.md | nächsten unabhängigen Patch
 - Lessons konsultieren VOR Aufgabe | eintragen NACH ≥2-Min-Falle
 
+## Session-Auffüll-Regel (2026-05-21, Kintsugi-Migration Token-Audit)
+Primärer Auftrag erledigt UND < 300k Token verbraucht → weiterarbeiten, nicht abschließen|Auffüll-Reihenfolge: (1) FEATURE_REQUEST Restpunkte (2) MARATHON_WORKFLOW offene Items (3) BACKLOG (4) Test-Schulden (5) Doku-Hygiene|Stopp bei ~350k (50k Reserve für Doku)|Zwischen-Patches: eigener Commit, ABER kein separater HANDOVER — ein HANDOVER am Session-Ende für alle|AUSNAHME: destruktive/riskante Patches NIE als Auffüller|Anti-Pattern: "Patch fertig bei 120k → Doku → STOPP" = 80% Overhead
+
 ## mjolnir.md-Konvention
 Coda schreibt am Session-Ende `mjolnir.md` ins Projekt-Root | STATUS-Header als erster Block PFLICHT | 5-10 Zeilen + Status-Header | wird beim nächsten Session-Start eingelesen+gelöscht (Single-Slot, nicht Audit).
 Vorlage: `C:\Users\chris\Python\Claude\templates\mjolnir_TEMPLATE.md`
