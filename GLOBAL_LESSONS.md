@@ -7,6 +7,18 @@ Format: jede Lesson eine `##` Sektion mit Datum + Anlass-Patch im Titel. Inhalt 
 
 ---
 
+## Gist-Sync (Schritt 12) ist gleichrangige Session-End-Pflicht (2026-05-21, Zerberus Gist-Drift)
+
+Vier Sessions in Folge übersprangen Schritt 12 (Gist-PATCH) des Session-Zyklus|Local-Commit + Push wurden gemacht, Gist-PATCH fiel aus|Gist-Stand fror auf Stand B-aufraeumen (2026-05-18) ein, drei große Sessions später vollständig veraltet|Supervisor (Chat-Instanz) kann Raw-Links nicht fetchen — nur Gists — also ist Mjölnir-Round-Trip auf Supervisor-Seite kaputt sobald Gist-Sync ausfällt|Identisches Anti-Pattern-Profil wie B-072 (mjolnir.md): Pflicht-Schritt am Ende der Session-Liste → Token-knapp-Risiko-Zone → wird als erster gestrichen
+
+**Anlass:** Zerberus, FEATURE_REQUEST_ZERBERUS-Folge-Session 2026-05-21. Chris-Nachtrag im FEATURE_REQUEST: „Gists stehen auf 2026-05-18. Letzte Session hat Schritt 12 NICHT ausgeführt. Pflichtaufgabe vor allem anderen: prüfen warum, Gists aktualisieren, Verstoß als Lesson dokumentieren." Audit per `git log` + Vergleich mit Raw-URLs: vier Sessions hintereinander (B-074, Frontend-Separation, Hel-Separation, FEATURE_REQUEST Teil-Lieferung) hatten Local-Push gemacht, aber den Gist-PATCH unterlassen. Faulheits-Catch #2 (mjolnir.md PFLICHT) ist die naheliegende Wurzel — Gist-Sync ist genauso ein End-of-Session-Schritt und hat genauso wenig Inertia gegen Token-Druck.
+
+**Lösung:** (1) Aktuelle Sync-Lieferung — Gist-PATCH für Projekt-Gist + Claude-KB-Gist mit den jeweiligen aktuellen Files. (2) Lesson-Eintrag projektspezifisch (lessons_ZERBERUS.md) UND projektübergreifend (diese). (3) Workflow-Text in MARATHON_WORKFLOW (sowohl Claude-Master als auch projektspezifisch) verschärft Schritt 12: „PFLICHT, gleichrangig mit HANDOVER (Schritt 8) und mjolnir.md (Schritt 10) — kein optional, kein 'wenn Token übrig'".
+
+**Lesson generalisierbar:** Pflicht-Schritte am Ende der Session-Liste sind systematisch unterbelichtet. Sobald **ein** End-Pflicht-Schritt einmal stillschweigend ausfällt, etabliert sich das Pattern und alle anderen End-Pflicht-Schritte sind als nächstes gefährdet. Schutz: explizite Gleichrangigkeit aller End-Pflichten im Workflow-Text (kein „und dann noch" als Suffix), Anti-Pattern-Block mit konkretem Beispiel, **eigene Lesson** jedes Mal wenn ein End-Pflicht-Schritt ausfällt. Faustregel: wenn der Round-Trip auf Supervisor-/Mjölnir-Seite kaputt geht, weil ein Schritt am Session-Ende übersprungen wurde, ist die Lesson **immer** beim Workflow-Text zu verankern, nicht beim einzelnen Coder. Aktuelle End-Pflicht-Schritte für Coda: HANDOVER (Schritt 8), mjolnir.md (Schritt 10), REPO_INDEX falls geändert (Schritt 11), Push + sync_repos + verify_sync + **Gist-PATCH** (Schritt 12) — alle vier in einem Atemzug, kein „und ggf. noch".
+
+---
+
 ## OBERSTES GEBOT (2026-05-16, Zerberus P-umzug)
 
 Chris terminalisiert NICHTS was Coda kann|NIEMALS git/pytest/pip/robocopy/npm-Befehle an Chris delegieren|Coda merged Branches SELBST auf main + pusht SELBST vor Session-Ende|mjolnir.md enthält NUR was physisch unmöglich ist (Touch-Test, echtes Gerät, Docker Desktop UI)|Supervisor (Chat-Fenster) gibt KEINE Terminal-Befehle sondern baut Coda-Prompts (.md)|Verstoß = sofortige Korrektur
