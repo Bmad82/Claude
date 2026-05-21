@@ -7,6 +7,36 @@ Format: jede Lesson eine `##` Sektion mit Datum + Anlass-Patch im Titel. Inhalt 
 
 ---
 
+## Lessons-Retrieval statt Lessons-Komplett-Load (2026-05-21, mw-v2a Paket 1)
+
+`lessons_*.md` darf NICHT mehr im Session-Start komplett geladen werden|TF-IDF-Retrieval per `scripts/lessons_lookup.py --task '<aufgabe>'` liefert Top-3 relevante Bloecke (~500 Tokens) statt 80k Token Full-Load|Bei 0 Treffern: explizite Meldung "Aufgabe ist evtl. neu", kein Kontext-Stuffing|scikit-learn TF-IDF reicht: exakte Keyword-Matches (Funktionsnamen, Patch-IDs) schlagen FAISS, kein VRAM-Bedarf, Matrix-Build in Millisekunden|Session-Start-Pflicht-Zeile entsprechend angepasst (CLAUDE_{PROJEKT}.md ersetzt `→ lessons_{PROJEKT}.md →` durch `→ python scripts/lessons_lookup.py --task '<aufgabe>' →`)
+
+**Anlass:** Deep-Research-PDF "LLM Regelbefolgung" + Supervisor-Audit 2026-05-21 zeigten: IFScale-Benchmark belegt 500 Regeln → max 68% Accuracy bei Frontier-Modellen, ab 200 Regeln werden Fehler zu lautlosen Auslassungsfehlern. Unser `lessons_ZERBERUS.md` ist ~316 KB ≈ 80k Token, Bootstrap-Overhead ~100-170k Token (25-42% des Budgets). Das System produzierte mehr Regeln als es befolgen konnte.
+
+**Lesson generalisierbar:** Progressive Disclosure schlaegt Komplett-Load fuer regelbasierte Kontexte. Devin, SWE-Agent, Aider machen es alle so. Coda darf per Default keinen >5k-Token-Doku-Block laden — wenn das passieren muss, dann gezielt per Query (TF-IDF/grep) statt cat. Faulheits-Catch-Variante: "lieber alles laden, dann ist sicher nichts vergessen" ist ein Anti-Pattern, weil das Modell unter Last lautlos ignoriert. Besser: nichts laden, gezielt fragen, Audit-Trail im Tool-Call-Log.
+
+---
+
+## Stand-Anker SSOT statt N-fach-Edit (2026-05-21, mw-v2a Paket 3)
+
+Patch-Nummer / Phase / Tests / Commit-Hashes in 6 Dateien manuell pflegen = ~15k Token-Overhead pro Patch und N Stellen koennen voneinander driften|`STAND.json` als SSOT|`scripts/propagate_stand.py` liest JSON, baut HTML-Kommentar-Block (`<!-- STAND-ANKER:START -->` … `END`) und ersetzt ihn in allen Target-Dateien|HTML-Kommentar ist im gerenderten Markdown unsichtbar — kein UI-Noise|Idempotent (zweimal hintereinander = 0 Updates) plus `--dry-run` und `--check` (CI-Drift-Erkennung mit Exit 1)|Coda touched nach Patch nur `STAND.json` + ein Befehl, statt 6 Datei-Edits
+
+**Anlass:** mw-v2a-kontextentlastung Paket 3. Stand-Anker-Drift bei Zerberus: README, SUPERVISOR_ZERBERUS, docs/PROJEKTDOKUMENTATION, docs/huginn_kennt_zerberus (+ Spiegel in `docs/RAG Testdokumente/`) hatten alle eigene "Stand:"-Zeilen mit unterschiedlichem Patch-Nummer-Stand — Drift ist im Verlauf von 3-4 Sessions garantiert.
+
+**Lesson generalisierbar:** Wenn dieselbe Information in N Dateien stehen MUSS (z.B. Versions-Stempel, gemeinsame Status-Anker), dann SSOT-File + Propagations-Script. Niemals N-mal-manuell. Anker-Mechanik: HTML-Kommentar-Marker mit `START`/`END`-Tag, regex-replace zwischen den Markern. Kein Anker im Target = klare Warnung + Block-Snippet zum manuellen Einfuegen, keine Auto-Insertion (Sicherheit > Komfort). `--check` fuer CI-Gate gegen "vergessen zu propagieren".
+
+---
+
+## Session-End-Mechanik buendeln statt N-Schritte-Checklist (2026-05-21, mw-v2a Paket 2)
+
+Session-End-Checkliste hatte 6 mechanische Schritte (commit, sync_repos, Gist-PATCH Projekt-Gist, Gist-PATCH Claude-KB-Gist, RAG-Spiegel, verify_sync)|Coda hatte 3 Sessions in Folge Schritt 12 (Gist-PATCH) uebersprungen (Gist-Sync-Faulheits-Catch)|Fix: `scripts/session_end.ps1` buendelt alle 6 Schritte, best-effort fuer Netzwerk-Fehler (Warnung statt Crash), Summary mit Farbcode am Ende|Coda macht weiterhin manuell (kreative Arbeit): HANDOVER schreiben, SUPERVISOR aktualisieren, Lessons formulieren, mjolnir schreiben — nur die mechanischen Schritte automatisiert|`workflow/gist_publisher.py` bekommt `--patch <gist_id> <staging_dir>` CLI (vorher nur `create`)
+
+**Anlass:** Audit 2026-05-21 zeigte: 4 Sessions hintereinander hatten Gist-PATCH ausgelassen — klassisches Faulheits-Catch-#2-Derivat (Pflicht-Schritt am Ende der Liste, Token-knapp-Risiko-Zone, wird als erster gestrichen). Mechanische Pflicht-Schritte als manuelle Checkliste sind unter Last unzuverlaessig.
+
+**Lesson generalisierbar:** Wenn ein Pflicht-Schritt unter Kontextdruck systematisch faellt, ist die Antwort NICHT "Coda muss diszipliner sein" sondern "Mechanik buendeln in ein Tool, das mit einem Aufruf alles macht". Das ist Marathon-Workflow-Faulheits-Catch #1 in der praktischen Anwendung: Coda terminalisiert nichts, was Coda kann — also baut Coda das Tool, das Coda spaeter aufruft. v2b haengt das Tool an einen Stop-Hook, dann wird der Schritt mechanisch erzwungen (faellt nicht mehr aus).
+
+---
+
 ## Session-Auffüll-Regel (2026-05-21, Kintsugi-Migration Token-Audit)
 
 Sessions schlossen bei ~120k ab obwohl 300k+ Budget frei war|3 Sessions à 120k statt 1 à 360k = 200k verschwendet|Mega-Patch-Ära (P122–P152) bewies: 24k/Patch bei Auffüll-Logik vs 100k+/Patch ohne|Fix: Primärer Auftrag fertig UND < 300k verbraucht → nächstes Item nehmen, Stopp bei ~350k|Nur sichere unabhängige Items als Auffüller, destruktive Ops nie|Ein HANDOVER am Ende statt pro Zwischen-Patch

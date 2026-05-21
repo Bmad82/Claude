@@ -1,10 +1,12 @@
-"""Create a public GitHub gist from a directory of files.
+"""Create or patch a public GitHub gist from a directory of files.
 
 Usage:
-    python create_gist.py <staging_dir> <description>
+    python gist_publisher.py <staging_dir> <description>        # create
+    python gist_publisher.py --patch <gist_id> <staging_dir>    # update existing
 
 Reads token from `git credential fill` for github.com.
-Prints the html_url + raw URLs of created files.
+Create mode: prints html_url + raw URLs of created files.
+Patch mode: prints PATCHED=<filename> per file plus final OK summary.
 """
 import json
 import os
@@ -76,9 +78,42 @@ def update_gist(gist_id: str, files: dict, token: str) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
+def _patch_from_staging(gist_id: str, staging_dir: Path, token: str) -> dict:
+    if not staging_dir.is_dir():
+        raise SystemExit(f"Staging-Dir nicht vorhanden: {staging_dir}")
+    files = {}
+    for f in sorted(staging_dir.iterdir()):
+        if f.is_file():
+            files[f.name] = f.read_text(encoding="utf-8")
+    if not files:
+        raise SystemExit(f"Keine Dateien in Staging-Dir: {staging_dir}")
+    result = update_gist(gist_id, files, token)
+    for fname in files:
+        print(f"PATCHED={fname}")
+    print(f"OK gist_id={gist_id} files={len(files)}")
+    return result
+
+
 if __name__ == "__main__":
+    if len(sys.argv) >= 2 and sys.argv[1] == "--patch":
+        if len(sys.argv) < 4:
+            print(
+                "Usage: python gist_publisher.py --patch <gist_id> <staging_dir>",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        gist_id = sys.argv[2]
+        staging = Path(sys.argv[3])
+        token = get_token()
+        _patch_from_staging(gist_id, staging, token)
+        sys.exit(0)
+
     if len(sys.argv) < 3:
-        print("Usage: python create_gist.py <staging_dir> <description>", file=sys.stderr)
+        print(
+            "Usage: python gist_publisher.py <staging_dir> <description>\n"
+            "       python gist_publisher.py --patch <gist_id> <staging_dir>",
+            file=sys.stderr,
+        )
         sys.exit(1)
     staging = Path(sys.argv[1])
     desc = sys.argv[2]
