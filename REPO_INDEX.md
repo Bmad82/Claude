@@ -1,8 +1,9 @@
 # REPO_INDEX — Bmad82/Claude
 
 <!-- AUTO-GENERATED — Wird von Claude Code bei Verzeichnisänderungen aktualisiert -->
-<!-- Letzte Aktualisierung: 2026-05-18 -->
-<!-- Generator: Claude Code Session — gist-infrastruktur -->
+<!-- Letzte Aktualisierung: 2026-05-24 -->
+<!-- Generator: Claude Code Session — orchestrator-konsolidierung -->
+<!-- HINWEIS: Vollständiger Verzeichnisbaum hat seit 2026-05-18 Drift (mw-v2a/v2b Pakete, Kintsugi, Orchestrator-Konzept). Re-Sync als eigener Auftrag vorgemerkt. -->
 
 Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschieben/Umbenennen von Dateien) am Session-Ende aktualisiert. Der Supervisor (Chat-Instanz) fetcht sie via Raw-Link und leitet daraus Raw-Links für alle anderen Dateien ab — kein manuelles Link-Relaying durch Chris.
 

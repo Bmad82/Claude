@@ -9,6 +9,38 @@ Format: jede Lesson eine `##` Sektion mit Datum + Anlass-Patch im Titel. Inhalt 
 
 ---
 
+## `--bare` bricht OAuth (2026-05-23, Orchestrator-Konzept)
+
+--bare deaktiviert Hooks+CLAUDE.md+MCP+Skills — aber auch OAuth|Erzwingt ANTHROPIC_API_KEY|Für Abo-Nutzer nicht brauchbar|Alternative: --settings ./config.json mit {"disableAllHooks": true}|GitHub Issue #48840 fordert --no-hooks ohne OAuth-Bruch, existiert noch nicht|NIEMALS --bare in Playbooks empfehlen die im Abo-Modus laufen sollen
+
+**Anlass:** `ORCHESTRATOR_KONZEPT_v2.md` empfahl in der ersten Fassung `--bare` als saubere Worker-Isolation. Web-Recherche zur Verifikation zeigte: `--bare` umgeht den kompletten Startup-Prozess und damit auch den OAuth-Flow. Worker-Sessions, die per `--bare` starten, brauchen einen manuell gesetzten `ANTHROPIC_API_KEY` — das widerspricht dem Abo-Modell, bei dem OAuth die Authentifizierung übernimmt. Die Alternative `--settings ./worker-config.json` mit `{"disableAllHooks": true}` deaktiviert Hooks ohne den Auth-Flow zu zerstören. Generalisierung: Jede Flag-Empfehlung im Orchestrator-Konzept muss im Abo-Kontext gegengeprüft werden — was im API-Modus sauber ist, kann im Abo-Modus brechen.
+
+---
+
+## Billing-Split-Faustformel (2026-05-23, Anthropic Billing)
+
+Ab 15. Juni 2026: Wer tippt den Prompt?|Mensch am Terminal = interaktiv = Abo|Maschine/Script/Cron = programmatisch = Credit-Pool mit API-Raten|claude -p, Agent SDK, GitHub Actions → Credit-Pool|Interaktive Terminal-Sessions + Claude.ai + Cowork → Abo|Agent Teams in-process = interaktiv (Mensch sitzt am Terminal), aber Rate-Limit proportional zu Anzahl paralleler Teammates
+
+**Anlass:** Anthropic-Billing-Split angekündigt am 14. Mai 2026, wirksam ab 15. Juni. Mjölnir startet aktuell `claude -p` und fällt damit in den teuren Topf. Die Faustformel „Wer tippt?" ist die einfachste Entscheidungshilfe für jede neue Integration: bevor ein Tool/Skript Claude startet, fragen ob ein Mensch am Terminal sitzt — wenn ja, ist es interaktiv und im Abo; wenn nein, fällt es in den Credit-Pool zu API-Vollpreisen. Generalisierung: Bei jeder neuen Orchestrator-/Worker-Architektur in der Roadmap die Frage „Wer tippt?" als allererste Designfrage stellen.
+
+---
+
+## Credits verfallen ohne Claim (2026-05-23, Anthropic Billing)
+
+Agent SDK Credits sind pro Account|Nicht poolbar, nicht übertragbar|Verfallen am Monatsende ohne Rollover|Müssen EINMALIG per Mail-Link beansprucht werden|Mail kommt ~8. Juni 2026|Ohne Claim vor 15. Juni → kein Credit|Danach automatische monatliche Erneuerung
+
+**Anlass:** Anthropic Help Center Artikel 15036540. Viele Power-User werden die Mail übersehen — das ist bares Geld, das verfällt. Konkrete Handlungsanweisung: Ab dem 5. Juni täglich Mail-Eingang prüfen, beim ersten Auftauchen sofort klicken. Generalisierung: Anthropic-Mails mit Aktivierungs-Links sind keine Marketing-Mails — sie sind operative Voraussetzungen für den laufenden Betrieb.
+
+---
+
+## Model-IDs mit Datum-Suffix sterben (2026-05-23, Anthropic)
+
+claude-sonnet-4-20250514 und claude-opus-4-20250514 werden am 15. Juni 2026 abgeschaltet|Immer Aliase OHNE Datum-Suffix verwenden: claude-sonnet-4-6, claude-opus-4-6|Grep-Check in allen Projekten: grep -r "20250514" .|Betrifft: LLM-Config, Guard-Config, Persona-Config, Mjölnir Model-Selector, OpenRouter-Aufrufe
+
+**Anlass:** Anthropic Modell-Retirement-Policy. Wer hartgecodete Datum-Suffixe hat, bekommt am 15. Juni Fehler. Generalisierung: Modell-Referenzen IMMER als Alias ohne Datum-Suffix in Config/Code halten; Datum-Suffixe nur in Memos/Lessons als historische Marker erlaubt. Bei jedem Modell-Wechsel pre-flight grep über alle Projekte (`grep -r "<altes-suffix>" .`) als CI-Check.
+
+---
+
 ## Progressive Disclosure: Playbooks + .claude/rules statt Kern-Bibel-Wachstum (2026-05-21, mw-v2b Paket 2)
 
 CLAUDE_{PROJEKT}.md ist Kern-Bibel (OBERSTES GEBOT + Faulheits-Catches + Workflow), max 150 Zeilen Ziel 100|Task-spezifische Regeln wandern in `playbooks/<task>.md` (testing, rag_pipeline, auth_security, database, observability)|Pfad-getriggerte Regeln wandern in `.claude/rules/<rule>.md` mit YAML-Frontmatter `globs: [pattern, ...]` (NICHT `paths:` — falsche Syntax wird ignoriert)|Claude Code matched globs gegen die aktive Datei und laedt nur passende Regeln in den Kontext|Anlass: IFScale-Benchmark zeigt bei 500 Rules max 68% Befolgung — Kontext-Stuffing schadet|Opt-in-Pattern: `.claude/rules/` ist permission-protected, daher Rules-Templates in `docs/claude_rules/` + README mit Install-Instructions (Variante A committed / Variante B lokal). Konsistent mit Hooks-Verdrahtung in `scripts/HOOK_SETUP.md`

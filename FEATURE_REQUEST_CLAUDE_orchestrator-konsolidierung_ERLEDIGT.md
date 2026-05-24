@@ -1,6 +1,6 @@
 # FEATURE_REQUEST: orchestrator-konsolidierung
 
-## STATUS: NEU
+## STATUS: FERTIG (2026-05-24)
 
 ## KURZNAME: orchestrator-konsolidierung
 

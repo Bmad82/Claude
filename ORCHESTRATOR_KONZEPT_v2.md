@@ -120,7 +120,7 @@ class DossierFactory:
 
 Die gesamte technische Machbarkeit aus der Gemini-Recherche bleibt gültig:
 
-- **`--bare` Flag:** Volle Kontext-Isolation. Worker sieht NUR sein Playbook, keine globale CLAUDE.md.
+- **`--settings ./worker-config.json` mit `{"disableAllHooks": true}`:** Worker-Isolation ohne OAuth-Bruch. Deaktiviert Hooks (und nach Bedarf weitere Startup-Hooks), lässt aber den OAuth-Flow intakt. **NICHT `--bare` verwenden** — das Flag deaktiviert zwar Hooks/CLAUDE.md/MCP/Skills, bricht aber auch OAuth und erzwingt einen manuell gesetzten `ANTHROPIC_API_KEY` (für Abo-Nutzer nicht brauchbar). GitHub Issue [#48840](https://github.com/anthropics/claude-code/issues/48840) fordert ein `--no-hooks` ohne OAuth-Bruch — bis das landed, ist `--settings` der Weg.
 - **Modell-Mischbetrieb:** Orchestrator=Opus, Worker=Sonnet/Haiku via `CLAUDE_CODE_SUBAGENT_MODEL`.
 - **Worktree-Isolation:** `isolation: worktree` im Frontmatter → jeder Worker in eigenem Git-Branch.
 - **.claude/agents/*.md:** Volle Agenten-Definition per Markdown (name, model, tools, disallowedTools, effort, isolation, maxTurns, permissionMode, initialPrompt).
@@ -152,16 +152,16 @@ Mjölnir startet aktuell Claude-Code-Sessions per `claude -p` (headless). Ab 15.
 Mjölnir simuliert echte menschliche Eingaben: Fenster öffnen, Position anklicken, Prompt einfügen. Interaktiv → im Abo. Vorteil: Sessions sind sichtbar, Fehler erkennbar. Nachteil: Fragil bei Layout-Drift. Mitigation: Screenshot-basierter Anker-Check vor jedem Klick.
 
 **Weg B — In-Process Agent Teams (zu verifizieren):**
-Agent Teams im `--teammate-mode in-process` starten alle Worker in der primären Terminal-Session. **Offene Frage:** Zählt das als interaktiv (Abo) oder programmatisch (Kredit)? Wenn interaktiv → Königsweg. Wenn nicht → Sackgasse.
+Agent Teams im `--teammate-mode in-process` starten alle Worker in der primären Terminal-Session. **Geklärt:** Zählt als interaktiv (Abo). Königsweg-Potential bestätigt, aber noch Research Preview und frisst Rate-Limit proportional. Als Brücke vor dem 15. Juni nicht tauglich (zu experimentell), als mittelfristige Option interessant.
 
 **Weg C — Zerberus als Orchestrator (Endgame):**
 Zerberus dispatcht an DeepSeek-Instanzen per eigener API. Kein Claude für Bulk-Arbeit. Claude nur noch als optionaler Monokel-Review. Unabhängig von Anthropics Preispolitik.
 
 ### Empfohlene Reihenfolge
 
-1. **Sofort:** Klären ob Weg B (in-process) im Abo bleibt (eine Web-Recherche)
-2. **Kurzfristig:** Weg A als Brücke bauen (Bildschirm-Klick via RustDesk)
-3. **Mittelfristig:** Weg C als Endgame (Zerberus mit DeepSeek)
+1. **Sofort:** Weg A als Brücke bauen (Bildschirm-Klick via RustDesk) — Billing-Frage Weg B ist geklärt (interaktiv), aber Research-Preview-Status macht ihn als Brücke vor dem 15. Juni zu fragil.
+2. **Mittelfristig:** Weg B (in-process Agent Teams) sobald Research-Preview stabilisiert ist.
+3. **Endgame:** Weg C (Zerberus mit DeepSeek).
 
 ---
 
@@ -253,7 +253,8 @@ _playbooks/
 
 | Mechanismus | CLI-Flag / Config | Funktion |
 |---|---|---|
-| Volle Isolation | `--bare` | Deaktiviert CLAUDE.md, Hooks, Skills, Projektconfig |
+| Hook-Isolation (Abo-tauglich) | `--settings ./worker.json` (`{"disableAllHooks": true}`) | Deaktiviert Hooks ohne OAuth zu brechen — empfohlener Weg für Abo-Nutzer |
+| Volle Isolation (Achtung, OAuth-Bruch) | `--bare` | Deaktiviert CLAUDE.md, Hooks, Skills, Projektconfig — bricht aber auch OAuth (erzwingt `ANTHROPIC_API_KEY`). Für Abo-Nutzer nicht brauchbar. Siehe Issue #48840. |
 | Eigenes Arbeitsverzeichnis | `--cwd <path>` | Worker in anderem Verzeichnis |
 | Custom System-Prompt | `--system-prompt-file` | Eigener Prompt, aber CLAUDE.md wird trotzdem geladen |
 | Worktree-Isolation | `isolation: worktree` | Eigener Git-Branch + Verzeichnis pro Worker |
@@ -362,7 +363,7 @@ Effektive Kosten: DeepSeek-API + 0 EUR Claude-Aufpreis
 
 ## Offene Punkte (zu klären)
 
-1. **In-Process Agent Teams Billing:** Zählt `--teammate-mode in-process` als interaktiv (Abo) oder programmatisch (Kredit)? → Entscheidend für Weg B.
+1. **In-Process Agent Teams Billing:** ✅ GEKLÄRT — zählt als interaktiv (Abo), weil der Mensch am Terminal sitzt. Aber: Rate-Limit wird proportional zur Anzahl paralleler Teammates aufgebraucht (10 Agents = 10x schneller). Kein Kredit-Problem, aber ein Tempo-Problem. Quelle: Anthropic Help Center + CloudZero-Analyse.
 2. **DeepSeek-Reasoning-Qualität:** Kann DeepSeek V4 Pro die Orchestrator-Rolle mit derselben Zuverlässigkeit wie Opus tragen? → Praxistest nötig.
 3. **Kredit beanspruchen:** Anthropic schickt um den 8. Juni eine Mail. Aktiv klicken vor dem 15. Juni, sonst verfällt der Kredit.
 4. **Modell-ID-Retirement:** `claude-sonnet-4-20250514` und `claude-opus-4-20250514` werden am 15. Juni abgeschaltet. Aliase ohne Datum-Suffix nutzen.

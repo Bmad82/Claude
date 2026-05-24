@@ -1,56 +1,52 @@
 # mjolnir.md — Claude (Meta-Repo)
 
 ```
-STATUS|FERTIG|AUFTRAG: mw-v2b-durchsetzung|FORTSCHRITT: 4 von 4 Paketen | EINE Coding-Session (Sammel-Lieferung)|NÄCHSTE SESSION: BACKLOG/Auffüll — keine FR offen
+STATUS|FERTIG|AUFTRAG: orchestrator-konsolidierung|FORTSCHRITT: 3 von 3 Paketen | EINE Coding-Session|NÄCHSTE SESSION: BACKLOG/Auffüll — keine FR offen
 ```
 
 **STATUS:** FERTIG
-**AUFTRAG:** `FEATURE_REQUEST_CLAUDE.md` mw-v2b-durchsetzung (Marathon-Workflow v2b: Mechanische Durchsetzung & Alignment). Umbenannt zu `FEATURE_REQUEST_CLAUDE_mw-v2b-durchsetzung_ERLEDIGT.md`.
-**FORTSCHRITT:** Alle vier Pakete in EINER Coding-Session geliefert (Commits per Paket im Zerberus-Repo, Sammel-Commit fuer Claude-Begleit-Doku). Paket 1 (Zerberus `a031719` + `a6c3cae`) — SessionStart/PreToolUse/SessionEnd Hooks (Scripts committed, Verdrahtung opt-in). Paket 2 (Zerberus `3eb52bf` + `b6e7ce6` + `c2dded8` + Nachzug `4b02f0e`) — Lessons-Split + CLAUDE_ZERBERUS.md 282→121 Zeilen + 5 Playbooks + 2 Path-Rules in docs/claude_rules/. Paket 3 (Zerberus `4edfd35`) — SUPERVISOR_ZERBERUS.md 2423→74 Zeilen Archiv-Schnitt. Paket 4 (Claude `ea3a055`) — Templates + WORKFLOW + GLOBAL_LESSONS Progressive-Disclosure-Lesson + WORKFLOW_SUMMARY Gist-Update + MARATHON_WORKFLOW_ZERBERUS.md v2b-Alignment.
-**NÄCHSTE SESSION:** Keine FR offen. Auffüll-Regel greift falls Token-Budget. Wenn Chris weitere Arbeit reingibt: Eröffnungs-Message hat Vorrang. Sonst BACKLOG (Zerberus B-074 ff.) oder Lessons-Hygiene.
+**AUFTRAG:** `FEATURE_REQUEST_CLAUDE.md` orchestrator-konsolidierung (Drei Arbeitspakete: GLOBAL_LESSONS-Updates, ORCHESTRATOR_KONZEPT_v2-Korrekturen, Template-Check). Umbenannt zu `FEATURE_REQUEST_CLAUDE_orchestrator-konsolidierung_ERLEDIGT.md`.
+**FORTSCHRITT:** Alle drei Pakete in EINER Coding-Session. Paket 2 (ORCHESTRATOR_KONZEPT_v2.md) — `--bare` durch `--settings ./worker-config.json` ersetzt mit OAuth-Begründung, Agent-Teams-Billing als geklärt markiert, Weg-B-Status aktualisiert, Empfohlene Reihenfolge entsprechend angepasst. Paket 1 (GLOBAL_LESSONS.md) — 4 neue Lessons oben angehängt: `--bare` bricht OAuth, Billing-Split-Faustformel, Credits verfallen ohne Claim, Model-IDs mit Datum-Suffix sterben (alle im Bibel-Format + Anlass-Prosa). Paket 3 (Templates) — `grep "20250514"` über `templates/` = 0 Treffer (sauber), Billing-Kommentar als HTML-Block in `CLAUDE_PROJEKT_TEMPLATE.md` eingefügt; FEATURE_REQUEST_TEMPLATE nicht angefasst (Billing-Relevanz wäre Overengineering, ist globale Lesson). Claude-KB-Gist (`48b997e5...`) per `gist_publisher.py --patch` aktualisiert mit neuer GLOBAL_LESSONS. REPO_INDEX.md minimal-Update (Datum + Drift-Hinweis), kein voller Re-Sync.
+**NÄCHSTE SESSION:** Keine FR offen. Auffüll-Regel greift falls Token-Budget. REPO_INDEX hat seit 2026-05-18 erheblichen Drift (mw-v2a/v2b, Kintsugi, Orchestrator-Konzept) — als eigener Auftrag vorgemerkt, nicht hier gefixt um Diff-Noise zu vermeiden.
 
 ---
 
 ## Was diese Session war
 
-Coda hat `FEATURE_REQUEST_CLAUDE.md` (mw-v2b-durchsetzung) als Sammel-Auftrag mit vier Paketen abgearbeitet. Grundlage: Deep-Research-PDF „LLM Regelbefolgung" + Supervisor-Audit 2026-05-21. Ziel laut FR: mw-v2a-Gewinne mechanisch unumgehbar machen (Hooks) + Kern-Bibel-Wachstum stoppen (Playbooks + Path-Rules) + Naming/Doku-Drift bereinigen.
+Coda hat `FEATURE_REQUEST_CLAUDE.md` (orchestrator-konsolidierung) als Sammel-Auftrag mit drei Paketen abgearbeitet. Anlass: ORCHESTRATOR_KONZEPT_v2 hatte `--bare` als Worker-Isolation empfohlen — Web-Recherche zur Verifikation zeigte OAuth-Bruch. Gleichzeitig drei neue Anthropic-Billing-/Modell-Themen (Billing-Split ab 15.06., Credit-Claim, Modell-ID-Retirement) als globale Lessons hinterlegen, damit sie projektübergreifend gelten.
 
 ## Was geliefert wurde
 
-**Paket 1 — Claude Code Hooks (Zerberus, opt-in via `scripts/HOOK_SETUP.md`)**
-- `scripts/lessons_lookup_auto.py` (SessionStart, leitet Query aus FEATURE_REQUEST/mjolnir ab)
-- `scripts/validate_edit.py` (PreToolUse, blockt Edits an Schutzdateien: GLOBAL_LESSONS, KODEX, *_TEMPLATE_*)
-- `scripts/session_end_check.py` (SessionEnd, prueft mjolnir/HANDOVER/STAND/Gist-Marker als JSON systemMessage)
-- `.claude/settings.json`-Verdrahtung BLEIBT OPT-IN (Chris-Entscheidung, dokumentiert in `DECISIONS_PENDING.md`)
+**Paket 2 — `ORCHESTRATOR_KONZEPT_v2.md` korrigiert (Claude-Repo)**
+- Sektion „Was sich NICHT ändert": `--bare` ersetzt durch `--settings ./worker-config.json` mit `{"disableAllHooks": true}`. OAuth-Bruch erklärt, Issue #48840 verlinkt.
+- Tabelle „Technische Schlüssel-Findings": Zwei Zeilen — saubere Hook-Isolation (Abo-tauglich) + `--bare` mit Warnhinweis.
+- „Offene Punkte" Punkt 1: Agent-Teams-Billing als ✅ GEKLÄRT markiert (interaktiv = Abo, aber Rate-Limit proportional).
+- „Drei Lösungswege" Weg B: Offene Frage → Geklärt, als mittelfristige Option.
+- „Empfohlene Reihenfolge": Weg A jetzt sofort, Weg B mittelfristig, Weg C Endgame.
 
-**Paket 2 — Kern-Bibel-Schlankheitskur + Playbooks + Path-Rules (Zerberus)**
-- `lessons_ZERBERUS.md` (1093 Z / 316k chars) gesplittet via `scripts/split_lessons.py` in Pipe-only (142k chars, 147 Sektionen) + `lessons_ZERBERUS_KONTEXT.md` (317k chars Prosa)
-- `CLAUDE_ZERBERUS.md` (282 → 121 Zeilen) — nur noch Kern: OBERSTES GEBOT + Autonome Prioritaetsliste + 6 Faulheits-Catches + Marathon-Workflow + Session-Auffuell + Token-Effizienz + Basics-Regeln
-- `playbooks/` (5 Stueck): `testing.md`, `rag_pipeline.md`, `auth_security.md`, `database.md`, `observability.md`
-- `docs/claude_rules/` (opt-in Path-Rules): `frontend_mobile.md` (globs: Templates/CSS/HTML), `destructive_ops.md` (globs: *.py/scripts/alembic) + README mit Install-Variante A/B
-- `.claude/rules/` ist permission-protected — Setup bleibt Chris-Entscheidung, konsistent mit Hooks-Wiring
+**Paket 1 — `GLOBAL_LESSONS.md` (Claude-Repo)**
+Vier neue Sektionen oben angehängt (nach Header-Block), jeweils im Bibel-Format (Pipe-Line) + Anlass-Block (fett-prosaisch) + Generalisierung:
+- `--bare` bricht OAuth (2026-05-23, Orchestrator-Konzept)
+- Billing-Split-Faustformel (2026-05-23, Anthropic Billing)
+- Credits verfallen ohne Claim (2026-05-23, Anthropic Billing)
+- Model-IDs mit Datum-Suffix sterben (2026-05-23, Anthropic)
 
-**Paket 3 — Zerberus-Marathon-Alignment (Zerberus)**
-- `SUPERVISOR_ZERBERUS.md` (2423 → 74 Zeilen), Patch-Historie ausgelagert in `SUPERVISOR_ZERBERUS_ARCHIV_2026-05-21.md`
-- Naming HYPERVISOR→SUPERVISOR auditiert (verbleibende Hits sind intentional: Archiv-Audit-Logs, Don't-Reminder, technischer VM-Begriff in Huginn-Doc)
+**Paket 3 — Template-Check (Claude-Repo)**
+- 3a: `CLAUDE_PROJEKT_TEMPLATE.md` mit HTML-Kommentar-Block zur Billing-Split-Warnung versehen (oben nach dem TEMPLATE-Kommentar).
+- 3b: `FEATURE_REQUEST_TEMPLATE.md` — KEINE Änderung (Empfehlung aus FR: Overengineering vermeiden, Billing ist globale Lesson).
+- 3c: `grep "20250514" templates/` — 0 Treffer, sauber.
 
-**Paket 4 — Workflow-Doku-Updates (Claude-Repo + Zerberus)**
-- `MARATHON_WORKFLOW_ZERBERUS.md` Step 4 (lessons_lookup statt full-load), Steps 12-13 (session_end.ps1 + Hook-Erweiterung), neue Sektion „Playbook-Architektur"
-- `workflow/MARATHON_WORKFLOW.md` Step 6/7 (lessons_lookup + Playbook-Verweis)
-- `templates/CLAUDE_PROJEKT_TEMPLATE.md` (Limit-Hinweis playbooks/rules + Step 6/7-Update)
-- `templates/MARATHON_WORKFLOW_TEMPLATE.md` Step 5
-- `GLOBAL_LESSONS.md` + `GLOBAL_LESSONS_KONTEXT.md`: neue Lesson „Progressive Disclosure: Playbooks + .claude/rules statt Kern-Bibel-Wachstum"
-- `_drafts_gist/WORKFLOW_SUMMARY.md`: Session-Zyklus + neue Sektionen Progressive-Disclosure + Hooks
+**Gist-Sync:** Claude-KB-Gist (`48b997e53ff331eeefef53c810ee7331`) per `python workflow/gist_publisher.py --patch ... /tmp/claude_kb_staging` → `PATCHED=GLOBAL_LESSONS.md`. Index-Gist + Projekt-Gists nicht betroffen.
+
+**REPO_INDEX.md:** Minimal-Update (Datum + Drift-Hinweis). Voller Re-Sync ist Folge-Auftrag.
 
 ## Bekannte Limitations
 
-- `.claude/settings.json` und `.claude/rules/` sind permission-protected. Verdrahtung bleibt opt-in via `scripts/HOOK_SETUP.md` (Hooks) bzw. `docs/claude_rules/README.md` (Rules). Konsistent mit Variante A/B-Konvention.
-- „Anpassungen_11_05.2026" aus dem FR ist eine Projekt-Knowledge-Datei in claude.ai, nicht im Repo — kann Coda nicht editieren. Supervisor-Aufgabe.
-- Backups (`CLAUDE_ZERBERUS.md.bak_pre_v2b_paket2`, `lessons_ZERBERUS.md.bak_pre_v2b`, `GLOBAL_LESSONS.md.bak_pre_v2b`) liegen im Repo und sind in `.gitignore` ausgeschlossen oder werden bei Bedarf manuell entfernt.
+- REPO_INDEX hat erheblichen Drift (Stand 2026-05-18 vs. aktueller Repo-Stand). Neue Dateien wie `DESIGN_KINTSUGI.md`, `GLOBAL_LESSONS_KONTEXT.md`, `ORCHESTRATOR_KONZEPT_v2.md`, `Projektanfrage.html`, `mjolnir.md`, `scripts/`, `_drafts_gist/WORKFLOW_SUMMARY.md` fehlen im Tree.
+- `--settings`-Worker-Config-Beispiel im ORCHESTRATOR_KONZEPT_v2.md ist nur Snippet `{"disableAllHooks": true}` — falls weitere Felder (z.B. `disableAllSkills`) erwünscht sind, müssten die in einer Follow-up-Session ergänzt werden.
 
 ## Was Chris noch machen muss (physisch)
 
-- **Optional:** `.claude/settings.json` aktivieren (Hook-Verdrahtung) — Anleitung in `Zerberus/scripts/HOOK_SETUP.md`. Variante B (`settings.local.json`) ist sicherer Default.
-- **Optional:** `.claude/rules/` aktivieren — `cp Zerberus/docs/claude_rules/*.md Zerberus/.claude/rules/`. README im selben Verzeichnis.
-- Projekt-Knowledge „Anpassungen_11_05.2026" in claude.ai mit „⚠️ HISTORISCH"-Header versehen (Supervisor-Aufgabe, nicht Coda).
-- Gist-Sync nach diesem Commit — passiert idealerweise via `scripts/session_end.ps1`, falls Chris den `gist_publisher.py --patch`-Aufruf manuell triggern moechte.
+- **Vor dem 15. Juni 2026:** Anthropic-Aktivierungs-Mail abwarten (~8. Juni) und auf den Claim-Link klicken, sonst verfallen die monatlichen Agent-SDK-Credits.
+- **Optional:** Mjölnir-Backend von `claude -p` auf interaktiven Startweg umstellen (siehe ORCHESTRATOR_KONZEPT_v2 Weg A — Bildschirm-Klick via RustDesk). Eigene FR sinnvoll.
+- **Optional:** `grep -r "20250514" .` über alle weiteren Projekt-Repos laufen lassen (außerhalb des Claude-Repos prüfen).

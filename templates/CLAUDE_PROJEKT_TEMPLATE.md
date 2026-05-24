@@ -1,5 +1,9 @@
 <!-- TEMPLATE | Kopie als CLAUDE_{PROJEKT}.md ins Projekt-Root | Limit < 150 Zeilen (Ziel ~100) | task-spezifische Regeln in `playbooks/`, pfadspezifische in `.claude/rules/` mit `globs:`-Frontmatter (mw-v2b Paket 2) | NIE bestehende Projekt-CLAUDE-Datei überschreiben -->
 
+<!-- Ab 15. Juni 2026: claude -p fällt in Credit-Pool (API-Vollpreis). Interaktive Sessions bleiben im Abo.
+     Wenn dieses Projekt Headless-Sessions nutzt (z.B. via Mjölnir), muss der Session-Start
+     auf interaktiv umgestellt werden. Siehe GLOBAL_LESSONS: Billing-Split-Faustformel. -->
+
 # CLAUDE_{PROJEKT}.md | Bibel-Format
 
 ## Identität
