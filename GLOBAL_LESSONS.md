@@ -9,6 +9,14 @@ Format: jede Lesson eine `##` Sektion mit Datum + Anlass-Patch im Titel. Inhalt 
 
 ---
 
+## LLM-API-Call-Pflichtchecks: Cost Guard (2026-06-13, OpenRouter $42-Vorfall)
+
+Vor jedem neuen LLM-API-Call prüfen: Reasoning-Modell?|max_tokens = Reasoning+Output zusammen → mind. 3× Antwortlänge einplanen|Long-Context (>128k Tokens)? → Provider rechnet oft 2× ohne es in /models auszuweisen|Preflight-Kostenschätzung mit Long-Context-Multiplier PFLICHT|Hard Cap pro Call (Standard: $5.00) → teure Modelle nur mit explizitem Override|Post-Call: finish_reason=length + leerer Output = "Bezahlt, null Output"-Warnung|Shared Modul: C:\Users\chris\Python\Zerberus\scripts\cost_guard.py → importieren, nicht kopieren|Call-Typ (research/review/chat) bestimmt das max_tokens-Budget aus MODEL_REGISTRY
+
+**Anlass:** `run_review.py` sandte einen 658k-Token-Prompt an `openai/gpt-5.4-pro` via OpenRouter. `max_tokens=9000` war als Budget gesetzt — bei Reasoning-Modellen teilen sich internes Denken und Antworttext dieses Budget. Das Modell verbrauchte alle 9.000 Tokens für internes Reasoning und lieferte null Output-Text. Abgerechnet wurde trotzdem $42.21 — verschärft durch einen undokumentierten Long-Context-Tier (>128k Tokens → 2× Preis), der in der `/api/v1/models`-Liste nicht ausgewiesen ist. Commit `3109cb1` in Zerberus hat die strukturellen Fixes. Generalisierung: Jeder neue LLM-API-Call muss drei Fragen beantworten, bevor er deployed wird — (1) Reasoning-Modell? → Budget großzügig, (2) Prompt >128k? → 2×-Multiplier einrechnen, (3) Hard Cap gesetzt? → nie blind auf Anbieter-Listing vertrauen.
+
+---
+
 ## `--bare` bricht OAuth (2026-05-23, Orchestrator-Konzept)
 
 --bare deaktiviert Hooks+CLAUDE.md+MCP+Skills — aber auch OAuth|Erzwingt ANTHROPIC_API_KEY|Für Abo-Nutzer nicht brauchbar|Alternative: --settings ./config.json mit {"disableAllHooks": true}|GitHub Issue #48840 fordert --no-hooks ohne OAuth-Bruch, existiert noch nicht|NIEMALS --bare in Playbooks empfehlen die im Abo-Modus laufen sollen
