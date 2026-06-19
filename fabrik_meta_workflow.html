@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Die Fabrik — Meta-Workflow-Schaltplan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #08080c;
+  --ember: #c4622d;
+  --gold: #d4a843;
+  --crack: #e8c97a;
+  --mist: #12121a;
+  --surface: #0f0f16;
+  --border: #1e1e2e;
+  --text: #c8c8d8;
+  --text-dim: #6b6b8a;
+  --warn: #ef4444;
+  --pass: #4caf72;
+  --hitl: #5aa7c4;
+  --review: #9b7fd4;
+  --valid: #4fae9e;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999; opacity: 0.35;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scrollPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes warnPulse { 0%,100% { box-shadow: 0 0 0 0 #ef444400; } 50% { box-shadow: 0 0 0 3px #ef444422; } }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.gold-divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.3; }
+
+/* ════ HERO ════ */
+.hero { min-height: 88vh; display: grid; grid-template-rows: auto 1fr auto; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; background:
+  radial-gradient(ellipse 50% 40% at 70% 35%, #c4622d10 0%, transparent 60%),
+  radial-gradient(ellipse 35% 50% at 25% 65%, #d4a84308 0%, transparent 50%),
+  radial-gradient(ellipse 70% 30% at 50% 0%, #1a0a0408 0%, transparent 60%); }
+.hero-cracks { position: absolute; inset: 0; pointer-events: none; }
+.hero-cracks svg { width: 100%; height: 100%; }
+nav { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 28px 60px; border-bottom: 1px solid #ffffff06; }
+.nav-logo { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
+.nav-logo span { color: var(--gold); }
+.nav-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; border: 1px solid #ffffff10; padding: 6px 14px; border-radius: 2px; }
+.hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; justify-content: center; padding: 64px 60px; max-width: 1000px; }
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ember); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(44px, 6.5vw, 92px); font-weight: 900; line-height: 0.94; letter-spacing: -3px; margin-bottom: 32px; opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards; }
+.hero-title em { font-style: italic; font-weight: 400; color: var(--gold); display: block; }
+.hero-subtitle { font-size: 21px; font-weight: 300; color: var(--text-dim); line-height: 1.6; max-width: 640px; margin-bottom: 48px; opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards; }
+.hero-subtitle strong { color: var(--text); font-weight: 400; }
+.hero-meta { display: flex; gap: 44px; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards; }
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
+.meta-num { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--gold); line-height: 1; }
+.meta-num.warn { color: var(--warn); }
+.meta-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+.hero-bottom { position: relative; z-index: 10; padding: 28px 60px; border-top: 1px solid #ffffff06; }
+.scroll-hint { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; display: flex; align-items: center; gap: 12px; }
+.scroll-line { width: 60px; height: 1px; background: linear-gradient(90deg, var(--ember), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+/* ════ SECTIONS ════ */
+.section-inner { max-width: 1120px; margin: 0 auto; padding: 96px 60px; }
+.section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ember); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 16px; }
+.section-label::after { content: ''; height: 1px; width: 48px; background: var(--ember); opacity: 0.4; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 3.6vw, 50px); font-weight: 700; line-height: 1.1; letter-spacing: -1px; margin-bottom: 20px; }
+.section-title em { font-style: italic; font-weight: 400; color: var(--gold); }
+.section-lead { font-size: 18px; color: var(--text-dim); line-height: 1.7; max-width: 660px; margin-bottom: 16px; }
+.section-lead strong { color: var(--text); font-weight: 400; }
+
+/* ════ LEGENDE ════ */
+.legende-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 28px 60px; }
+.legende { max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
+.legende-group { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.legende-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
+.legende-item { display: flex; align-items: center; gap: 7px; }
+.legende-dot { width: 11px; height: 11px; border-radius: 50%; }
+.legende-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+.legende-divider { width: 1px; height: 22px; background: var(--border); }
+.type-chip { font-family: 'JetBrains Mono', monospace; font-size: 12px; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 3px; border: 1px solid; }
+
+/* status dot colors */
+.s-ist { background: var(--pass); box-shadow: 0 0 8px #4caf7240; }
+.s-teil { background: var(--gold); box-shadow: 0 0 8px #d4a84340; }
+.s-plan { background: var(--ember); box-shadow: 0 0 8px #c4622d40; }
+.s-strich { background: var(--text-dim); opacity: 0.5; }
+/* type accents */
+.t-step { color: var(--gold); border-color: #d4a84340; background: #d4a8430a; }
+.t-gate { color: var(--crack); border-color: #e8c97a40; background: #e8c97a0a; }
+.t-hitl { color: var(--hitl); border-color: #5aa7c440; background: #5aa7c40a; }
+.t-review { color: var(--review); border-color: #9b7fd440; background: #9b7fd40a; }
+.t-validation { color: var(--valid); border-color: #4fae9e40; background: #4fae9e0a; }
+.t-loop { color: var(--ember); border-color: #c4622d40; background: #c4622d0a; }
+
+/* ════ SPINE ════ */
+.spine-section { background: var(--void); }
+.spine-wrapper { position: relative; margin-top: 56px; padding-left: 64px; }
+.loop-svg { position: absolute; left: 0; top: 0; width: 64px; height: 100%; pointer-events: none; z-index: 1; overflow: visible; }
+.spine-line { position: absolute; left: 27px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--gold) 0%, var(--ember) 70%, var(--border) 100%); opacity: 0.28; }
+.stage-row { display: grid; grid-template-columns: 0 1fr; gap: 0; margin-bottom: 14px; position: relative; }
+.stage-dot { position: absolute; left: -45px; top: 26px; width: 18px; height: 18px; border-radius: 50%; z-index: 3; cursor: pointer; transition: transform 0.2s; }
+.stage-dot:hover { transform: scale(1.25); }
+.stage-card { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 22px 26px; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.2s; position: relative; }
+.stage-card:hover { background: #131320; border-color: #ffffff15; transform: translateX(2px); }
+.stage-card.has-fracture { border-color: #ef444455; }
+.stage-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.stage-label-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.stage-phase { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+.stage-order { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ember); letter-spacing: 1px; }
+.status-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 1px; padding: 3px 8px; border-radius: 2px; }
+.badge-IST { background: #2a5c3a22; color: var(--pass); border: 1px solid #4caf7230; }
+.badge-TEIL { background: #d4a84312; color: var(--gold); border: 1px solid #d4a84330; }
+.badge-PLAN { background: #c4622d12; color: var(--ember); border: 1px solid #c4622d30; }
+.badge-strich { background: #ffffff05; color: var(--text-dim); border: 1px solid var(--border); text-decoration: line-through; }
+.stage-name { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.15; }
+.stage-simple { font-size: 15px; color: var(--text-dim); line-height: 1.5; margin-top: 8px; max-width: 640px; }
+.stage-icons { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
+.mini-icon { font-family: 'JetBrains Mono', monospace; font-size: 11px; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 3px; border: 1px solid; }
+.stage-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 1px; padding: 3px 8px; border-radius: 2px; }
+.chip-loop { color: var(--ember); border: 1px solid #c4622d40; background: #c4622d0a; }
+.chip-fracture { color: var(--warn); border: 1px solid #ef444455; background: #ef44440f; animation: warnPulse 2.4s ease-in-out infinite; }
+.stage-arrow { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--ember); opacity: 0.45; flex-shrink: 0; }
+.stage-card:hover .stage-arrow { opacity: 1; }
+
+/* ════ BETRIEB ════ */
+.betrieb-section { background: var(--mist); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.betrieb-wrap { margin-top: 48px; border: 1px dashed #ffffff14; border-radius: 4px; padding: 28px; background: #0c0c12; }
+.betrieb-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); border: 1px solid var(--border); padding: 4px 10px; border-radius: 2px; display: inline-block; margin-bottom: 20px; }
+.betrieb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.node-mini { border: 1px solid var(--border); border-radius: 3px; padding: 14px 16px; background: var(--surface); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.node-mini:hover { border-color: #ffffff18; background: #131320; }
+.node-mini.has-fracture { border-color: #ef444455; }
+.node-mini-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.node-mini-name { font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--text); line-height: 1.3; }
+.node-mini-simple { font-size: 13px; color: var(--text-dim); line-height: 1.45; }
+
+/* ════ FRACTURES ════ */
+.fractures-section { background: var(--void); }
+.fractures-head { display: flex; align-items: baseline; gap: 14px; }
+.fractures-grid { margin-top: 48px; display: grid; gap: 14px; }
+.fracture-card { border: 1px solid #ef444540; border-left: 3px solid var(--warn); border-radius: 3px; padding: 20px 24px; background: linear-gradient(90deg, #ef44440a, transparent 60%); cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+.fracture-card:hover { background: linear-gradient(90deg, #ef444414, transparent 60%); border-color: #ef444466; }
+.fracture-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.fracture-kind { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; color: var(--warn); border: 1px solid #ef444540; background: #ef44440a; }
+.sev { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; }
+.sev-high { color: #ff6b6b; border: 1px solid #ef444466; background: #ef444414; }
+.sev-mid { color: var(--gold); border: 1px solid #d4a84340; background: #d4a8430a; }
+.sev-low { color: var(--text-dim); border: 1px solid var(--border); background: #ffffff05; }
+.fracture-where { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; margin-left: auto; }
+.fracture-desc { font-size: 16px; color: var(--text); line-height: 1.6; }
+
+/* ════ PROTOKOLL ════ */
+.protokoll-section { background: var(--surface); border-top: 1px solid var(--border); }
+.protokoll-list { margin-top: 36px; counter-reset: pp; display: grid; gap: 12px; max-width: 760px; }
+.protokoll-item { display: grid; grid-template-columns: 36px 1fr; gap: 16px; align-items: start; padding: 16px 20px; border: 1px solid var(--border); border-radius: 3px; background: var(--void); }
+.protokoll-item::before { counter-increment: pp; content: counter(pp); font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1; }
+.protokoll-text { font-size: 16px; color: var(--text); line-height: 1.5; }
+
+/* ════ FOOTER ════ */
+footer { border-top: 1px solid var(--border); padding: 40px 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--mist); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
+footer span { color: var(--gold); }
+.src-pill { font-size: 9px; padding: 3px 8px; border: 1px solid var(--border); border-radius: 2px; }
+
+/* ════ PANEL ════ */
+.panel-overlay { position: fixed; inset: 0; background: rgba(4,4,8,0.86); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 40px 24px; opacity: 0; transition: opacity 0.3s ease; }
+.panel-overlay.active { display: flex; opacity: 1; }
+.panel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; max-width: 720px; width: 100%; max-height: 86vh; overflow-y: auto; position: relative; }
+.panel-header { padding: 26px 32px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; position: sticky; top: 0; background: var(--surface); z-index: 2; }
+.panel-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ember); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+.panel-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; line-height: 1.15; }
+.panel-close { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--text-dim); cursor: pointer; padding: 4px 8px; flex-shrink: 0; }
+.panel-close:hover { color: var(--text); }
+.panel-body { padding: 24px 32px 32px; }
+.panel-lead { font-size: 16px; color: var(--text); line-height: 1.6; margin-bottom: 8px; }
+.panel-lead-dim { font-size: 15px; color: var(--text-dim); line-height: 1.6; margin-bottom: 24px; }
+.panel-block-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ember); letter-spacing: 2px; text-transform: uppercase; margin: 24px 0 12px; display: block; }
+.pnode { border: 1px solid var(--border); border-radius: 3px; padding: 16px 18px; margin-bottom: 10px; background: #ffffff03; }
+.pnode.has-fracture { border-color: #ef444555; background: #ef44440a; }
+.pnode-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.pnode-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; }
+.pnode-text { font-size: 15px; color: var(--text-dim); line-height: 1.55; }
+.pnode-text strong { color: var(--text); font-weight: 400; }
+.pnode-ref { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); background: #d4a84310; padding: 1px 6px; border-radius: 2px; }
+.pnode-fracture { margin-top: 10px; font-size: 13px; color: #ff8a8a; line-height: 1.5; border-top: 1px solid #ef444522; padding-top: 8px; }
+.pnode-fracture b { color: var(--warn); font-weight: 500; }
+.pedge { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); padding: 8px 12px; border-left: 2px solid var(--ember); background: #c4622d08; border-radius: 0 2px 2px 0; margin-bottom: 8px; }
+.pedge .lab { color: var(--text); }
+.type-tag { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; border: 1px solid; }
+
+@media (max-width: 768px) {
+  nav, .hero-bottom { padding: 20px 24px; }
+  .hero-content { padding: 48px 24px; }
+  .section-inner { padding: 64px 24px; }
+  .legende-section, .betrieb-section .section-inner { padding-left: 24px; padding-right: 24px; }
+  .spine-wrapper { padding-left: 44px; }
+  .loop-svg { width: 44px; }
+  .spine-line { left: 19px; }
+  .stage-dot { left: -34px; }
+  .panel-header { padding: 20px 20px 16px; }
+  .panel-body { padding: 18px 20px 24px; }
+  footer { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-cracks">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 600 0 Q 620 180 590 300 Q 560 420 600 550 Q 640 680 610 900" stroke="#d4a843" stroke-width="0.7" fill="none" opacity="0.1"/>
+      <path d="M 590 320 Q 680 350 780 330 Q 880 310 960 340" stroke="#d4a843" stroke-width="0.4" fill="none" opacity="0.07"/>
+      <path d="M 1050 0 Q 1030 250 1060 420 Q 1090 590 1050 780" stroke="#c4622d" stroke-width="0.5" fill="none" opacity="0.06"/>
+    </svg>
+  </div>
+  <nav>
+    <div class="nav-logo"><span>DIE FABRIK</span> · META-WORKFLOW</div>
+    <div class="nav-tag" id="nav-version">SSOT · JSON</div>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Der Prozess — nicht die Code-Karte</div>
+    <h1 class="hero-title">Wie die Fabrik<br><em>vorgeht.</em></h1>
+    <p class="hero-subtitle">
+      Der Meta-Workflow-Schaltplan: <strong>Überblick, Konsistenz-Check, Einfügen planen.</strong>
+      Sechs Phasen im Simple Mode — Klick auf eine Phase öffnet ihre Schritte, Gates, HITLs und Loops.
+      Brüche im Prozess sind rot markiert, exakt an Phase und Knoten.
+    </p>
+    <div class="hero-meta" id="hero-meta"></div>
+  </div>
+  <div class="hero-bottom">
+    <div class="scroll-hint"><div class="scroll-line"></div>Spine erkunden</div>
+  </div>
+</div>
+
+<div class="legende-section">
+  <div class="legende" id="legende"></div>
+</div>
+
+<div class="gold-divider"></div>
+
+<section class="spine-section">
+  <div class="section-inner">
+    <div class="section-label reveal">Simple Mode</div>
+    <h2 class="section-title reveal">Die Spine.<br><em>Sechs Phasen, ein Fluss.</em></h2>
+    <p class="section-lead reveal">
+      Jede Karte ist eine Phase. <strong>Klick öffnet den Expert-Blick</strong> mit allen Knoten.
+      Rück-Pfeile links sind Loops. Die Mini-Icons zeigen, was in der Phase steckt (Gate, HITL, Review, Loop).
+    </p>
+    <div class="spine-wrapper" id="spine-wrapper">
+      <div class="spine-line"></div>
+      <svg class="loop-svg" id="loop-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#c4622d"/>
+          </marker>
+        </defs>
+      </svg>
+      <div id="spine"></div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<section class="betrieb-section">
+  <div class="section-inner">
+    <div class="section-label reveal">Quer-Layer</div>
+    <h2 class="section-title reveal">Betrieb / KVP.<br><em>Neben der Pipeline, nicht in ihr.</em></h2>
+    <p class="section-lead reveal">
+      Projekt-agnostisch und dauerhaft: nächtliche Pflege, Gates, Sync. Bewusst <strong>getrennt</strong> von der Spine.
+    </p>
+    <div class="betrieb-wrap reveal">
+      <span class="betrieb-tag" id="betrieb-tag">layer: betrieb</span>
+      <div class="betrieb-grid" id="betrieb-grid"></div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<section class="fractures-section">
+  <div class="section-inner">
+    <div class="section-label reveal">Das Lauteste</div>
+    <div class="fractures-head reveal">
+      <h2 class="section-title">Brüche im Prozess.</h2>
+    </div>
+    <p class="section-lead reveal">
+      Konkurrierende Wahrheiten, un-propagierte Entscheidungen, Fehlendes. <strong>Klick springt zur Phase.</strong>
+      Code-Level-Drift gehört nicht hierher — der lebt in der physischen Karte.
+    </p>
+    <div class="fractures-grid" id="fractures-grid"></div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<section class="protokoll-section">
+  <div class="section-inner">
+    <div class="section-label reveal">Pflege-Protokoll</div>
+    <h2 class="section-title reveal">Damit der Plan <em>wahr bleibt.</em></h2>
+    <div class="protokoll-list reveal" id="protokoll-list"></div>
+  </div>
+</section>
+
+<footer>
+  <div>Die <span>Fabrik</span> — Meta-Workflow-Schaltplan</div>
+  <div id="footer-meta"></div>
+</footer>
+
+<div class="panel-overlay" id="panel-overlay" onclick="closePanel(event)">
+  <div class="panel-card" onclick="event.stopPropagation()">
+    <div class="panel-header">
+      <div>
+        <div class="panel-eyebrow" id="panel-eyebrow"></div>
+        <div class="panel-title" id="panel-title"></div>
+      </div>
+      <div class="panel-close" onclick="closePanel()">✕</div>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+</div>
+
+<script>
+/* ════════ EMBEDDED FALLBACK (Doppelklick ohne Server). Bei Server-Betrieb wird die externe JSON gezogen. ════════ */
+const FALLBACK_DATA = {"meta":{"version":"1.0","updated":"2026-06-15","kind":"meta-workflow","title":"Die Fabrik — Meta-Workflow-Schaltplan","legend":{"status":{"IST":"in Betrieb","TEIL":"v1 da, Härtung offen","PLAN":"noch nicht gebaut","—":"bewusst gestrichen (bleibt sichtbar)"},"types":{"step":"Arbeitsschritt","gate":"harte Schranke","hitl":"Human-in-the-Loop (du entscheidest)","review":"prüft Code / sammelt Wissen","validation":"prüft den Plan","loop":"Rück-Pfeil / Schleife"},"fracture_kinds":{"konflikt":"konkurrierende Wahrheiten","un-propagiert":"Entscheidung nicht überall nachgezogen","fehlend":"geplant, noch nicht integriert","dublette":"doppelt / alt benannt"}}},"layers":["pipeline","betrieb"],"stages":[{"id":"intake","phase":"INTAKE","name":"Intake","order":1,"layer":"pipeline","status":"IST","simple":"Projektanfrage wird zu einer Instanz-Datei mit Plan-Block.","expert":"Standard-Projekte: Anfrage → Intake_MD. Instanz-Datei (ex-'Template_Bootstrap') wird angelegt; der Intent-Block [PLAN] soll rein, ist aber noch nicht in den Templates."},{"id":"research","phase":"RESEARCH","name":"Research","order":2,"layer":"pipeline","status":"TEIL","simple":"Wissen sammeln (Deep Research ×2), den Plan unter Stress prüfen, dann dein OK.","expert":"Deep Research seriell ×2 (sammelt Wissen). Plan-Validation stresst per Heavy-Reasoning den PLAN — nicht den Code. HITL_1 ist dein Gate."},{"id":"bootstrap","phase":"BOOTSTRAP","name":"Bootstrap","order":3,"layer":"pipeline","status":"TEIL","simple":"Walking Skeleton: Kosten schätzen, Budget hart kappen, Tasks planen.","expert":"Sprint 0. Pre_Task_Cost_Eval → harte Budget-Kappe ($42) → ADL-Scopes deklarieren → DAG planen. Skeleton steht."},{"id":"build","phase":"BUILD","name":"Build","order":4,"layer":"pipeline","status":"TEIL","simple":"Marathon-Loop: Worker bauen; bei vollem Kontext-Fenster Handover; weiter.","expert":"Multi_Agent_Fabrik (Worker liefern Code, KEIN Worker-Handover). Bei ~50% Fenster: Window-Handover via Mjölnir. Kontext-Kompression, Roadmap-Update, Audit + lokale Lessons."},{"id":"review","phase":"REVIEW","name":"Review","order":5,"layer":"pipeline","status":"TEIL","simple":"Dein OK, dann Final Review durch ≥3 Modelle, ggf. Reparatur-Loop, Sign-Off.","expert":"HITL_2. Final Review: Code-Cat schneidet die Codebasis auf, ≥3 Modelle (ungerade). Repair_Loop bei Bedarf. Final_Audit_SignOff."},{"id":"handover","phase":"HANDOVER","name":"Handover (Run)","order":6,"layer":"pipeline","status":"TEIL","simple":"Run-Handover beim Zusammenfassungs-Klick — wenn das Projekt via Mjölnir lief.","expert":"Run-Handover alias 'Handover Remote' (Mjölnir). Greift beim Zusammenfassungs-Klick, nur wenn via Mjölnir gestartet. Der Mjölnir-Umbau ist separat — hier nur ein Knoten."},{"id":"betrieb","phase":"BETRIEB","name":"Betrieb / KVP","order":7,"layer":"betrieb","status":"TEIL","simple":"Quer-liegend, projekt-agnostisch: nächtliche Pflege, Gates, Sync. Nicht Teil der Spine.","expert":"Overnight_Cron (Lessons-Konsolidierung, Rule-Analysis, Drift_Guard), Telegram-HITL-Gate, Sync, Ping. Läuft neben der Pipeline, nicht in ihr."}],"nodes":[{"id":"in.start","stage_id":"intake","name":"Projekt-Anfrage → Intake_MD","type":"step","status":"IST","simple":"Anfrage wird aufgenommen.","expert":"Standard-Projekte: Projektanfrage → Intake_MD.","ref":"Projektanfrage.html"},{"id":"in.instanz","stage_id":"intake","name":"Instanz-Datei anlegen","type":"step","status":"TEIL","simple":"Projekt-eigene Datei aus Template.","expert":"Früher 'Template_Bootstrap' — umbenannt (Clash mit Phase BOOTSTRAP). Zieht Basis-Templates als physische MD in den Projektordner.","ref":"projects_template.py"},{"id":"in.intent","stage_id":"intake","name":"Intent-Block [PLAN]","type":"step","status":"PLAN","simple":"Plan-Block im Projekt-Header.","expert":"Der Intent-Block soll fest in die Instanz-Datei/Templates — noch nicht integriert."},{"id":"re.deep","stage_id":"research","name":"Deep Research ×2 (seriell)","type":"review","status":"PLAN","simple":"Zweifacher Recherche-Durchlauf, sammelt Wissen.","expert":"Gemini flach (spritzt frei) + Gemini tief (Skalpell), seriell. Als Standard-Muster noch nicht gebaut. Sammelt WISSEN — ≠ Plan-Validation, ≠ Final Review."},{"id":"re.planval","stage_id":"research","name":"Plan-Validation (Heavy-Reasoning)","type":"validation","status":"PLAN","simple":"Stresstest des Plans.","expert":"Adversarial Plan-Validation: isoliertes Heavy-Reasoning-Modell sucht Bias / blinde Flecken / logische Lücken im PLAN (nicht im Code). Cost-gated. Signierter Audit-Step.","ref":"H-09"},{"id":"re.hitl1","stage_id":"research","name":"HITL_1","type":"hitl","status":"IST","simple":"Dein Go nach der Recherche.","expert":"Telegram-Gate (Long-Poll, Tailscale). UserDecisionSignal KEEP|EDIT|WAIT.","ref":"hitl_policy"},{"id":"bo.cost","stage_id":"bootstrap","name":"Pre_Task_Cost_Eval","type":"step","status":"IST","simple":"Kosten vorab schätzen.","expert":"estimate_plan_cost läuft vor dem Gate.","ref":"estimate_plan_cost"},{"id":"bo.budget","stage_id":"bootstrap","name":"Budget_Check (Hard-Cap $42)","type":"gate","status":"IST","simple":"Harte Kosten-Notbremse — Überschreitung = Abbruch.","expert":"cost_guard Model-Registry, Long-Context-Tiers, Per-Modell-Caps, $42-Notbremse gegen API-Runaway.","ref":"cost_guard.py"},{"id":"bo.adl","stage_id":"bootstrap","name":"ADL_Deklaration","type":"step","status":"PLAN","simple":"Jeder Agent deklariert Read/Write-Scopes.","expert":"Agent Definition Language: read_set/write_set vor Start. Heute nur needs_sandbox/needs_rag/dependencies.","ref":"H-04"},{"id":"bo.dag","stage_id":"bootstrap","name":"DAG_Scheduling","type":"step","status":"TEIL","simple":"Tasks als Abhängigkeitsgraph.","expert":"DAG aus dependencies (v1) existiert. ADL-Parse + automatische Write-Scope-Serialisierung offen.","ref":"H-05"},{"id":"bu.fabrik","stage_id":"build","name":"Multi_Agent_Fabrik","type":"step","status":"TEIL","simple":"Worker bauen den Code.","expert":"Worker liefern Code — KEIN Worker-Handover. Multi-Agent v1 (DAG-Dispatch), Kollisionssicherung offen.","ref":"H-04/05"},{"id":"bu.window","stage_id":"build","name":"Window-Handover (Mjölnir)","type":"step","status":"TEIL","simple":"Bei vollem Kontext: Übergabe an Nachfolger.","expert":"Supervisor_Window_Close @~50% → physische Übergabedatei → sequenzieller Nachfolger. Heute manuell/narrativ, kein maschinenlesbarer State_Plan.","ref":"mjolnir/HANDOVER"},{"id":"bu.kompress","stage_id":"build","name":"Kontext_Kompression","type":"step","status":"PLAN","simple":"Kontext klein halten.","expert":"3-Stufen-Kaskade (Offload >20k / Strip @85% / Recursive Summary 9-Feld). Harness macht eigenes Compaction — als Eigenbau nicht gebaut."},{"id":"bu.roadmap","stage_id":"build","name":"Update_Roadmap","type":"step","status":"TEIL","simple":"Roadmap als Anker pflegen.","expert":"Immutable Roadmap-File als System-Anker + Token-Opt-State."},{"id":"bu.audit","stage_id":"build","name":"Append_Audit + Local_@L","type":"step","status":"TEIL","simple":"Doku + lokale Lessons anhängen.","expert":"Laufende Doku (heute manuell) + lokale Lessons. Async Auto-Anhang bei Window-Close offen."},{"id":"rv.hitl2","stage_id":"review","name":"HITL_2","type":"hitl","status":"IST","simple":"Dein OK vor dem Final Review.","expert":"Telegram-Gate."},{"id":"rv.final","stage_id":"review","name":"Final Review (≥3 Modelle)","type":"review","status":"PLAN","simple":"Mehrere Modelle prüfen den Code.","expert":"Code-Cat schneidet die Codebasis auf; ≥3 Modelle, ungerade Zahl (Mehrheit). Prüft CODE — ≠ Plan-Validation. Quad-Review war Hand-Event; Auto-Loop/Stern-Gate offen.","ref":"H-08"},{"id":"rv.repair","stage_id":"review","name":"Repair_Loop","type":"loop","status":"TEIL","simple":"Bei Mängeln: zurück in Build, fixen.","expert":"Generischer Reparatur-Loop bei Bedarf — NICHT die gestrichene PACE/STRAGO-Selbstheilung. Rück-Pfeil nach BUILD."},{"id":"rv.signoff","stage_id":"review","name":"Final_Audit_SignOff","type":"step","status":"TEIL","simple":"Abschluss-Audit, signiert.","expert":"Final Audit + SignOff. Heute teils manuell."},{"id":"ho.run","stage_id":"handover","name":"Run-Handover (Handover Remote)","type":"step","status":"TEIL","simple":"Übergabe beim Zusammenfassungs-Klick.","expert":"Mjölnir. Greift beim Zusammenfassungs-Klick, nur wenn das Projekt via Mjölnir gestartet wurde. Mjölnir-Umbau separat.","ref":"Mjolnir"},{"id":"be.cron.lessons","stage_id":"betrieb","name":"Overnight_Cron · Lessons-Konsolidierung","type":"step","status":"IST","simple":"Globale @L aus Tages-Logs.","expert":"lessons_cron 04:30 (DeepSeek). Extrahiert nächtlich globale Lessons, eliminiert RAG-Müll.","ref":"lessons_cron"},{"id":"be.cron.rules","stage_id":"betrieb","name":"Overnight_Cron · Rule-Analysis","type":"step","status":"PLAN","simple":"Regel-Evolution.","expert":"Nächtliche Analyse nachgeschärfter Regeln → HITL-Gate vor permanentem Core-Template-Merge. Merge offen."},{"id":"be.cron.drift","stage_id":"betrieb","name":"Overnight_Cron · Drift_Guard","type":"step","status":"—","simple":"Model-Collapse-Wächter.","expert":"Embedding-Cluster-Monitoring / Entropie-Schwelle gegen Model Collapse. Bewusst gestrichen — bleibt sichtbar (killt Doppelarbeit)."},{"id":"be.tggate","stage_id":"betrieb","name":"Telegram-HITL-Gate","type":"hitl","status":"TEIL","simple":"Gate für Regeln / Prompt-Patches.","expert":"Long-Poll (Tailscale), KEEP|EDIT|WAIT. Gate für Rule- und Prompt-Patches (Patch ≠ Deploy)."},{"id":"be.sync","stage_id":"betrieb","name":"Sync","type":"step","status":"IST","simple":"Sync-Vormerkung.","expert":"Sync-Vormerkung."},{"id":"be.ping","stage_id":"betrieb","name":"Ping","type":"step","status":"IST","simple":"Fertig-Benachrichtigung.","expert":"Mikrowellen-Ping bei Fertigstellung."}],"edges":[{"from":"intake","to":"research","kind":"flow","label":""},{"from":"research","to":"bootstrap","kind":"flow","label":""},{"from":"bootstrap","to":"build","kind":"flow","label":""},{"from":"build","to":"review","kind":"flow","label":""},{"from":"review","to":"handover","kind":"flow","label":""},{"from":"in.start","to":"in.instanz","kind":"flow","label":""},{"from":"in.instanz","to":"in.intent","kind":"flow","label":"Block in Instanz-Datei"},{"from":"re.deep","to":"re.planval","kind":"flow","label":""},{"from":"re.planval","to":"re.hitl1","kind":"flow","label":""},{"from":"bo.cost","to":"bo.budget","kind":"flow","label":""},{"from":"bo.budget","to":"bo.adl","kind":"gate-pass","label":"im Budget"},{"from":"bo.adl","to":"bo.dag","kind":"flow","label":""},{"from":"bu.fabrik","to":"bu.window","kind":"flow","label":"@~50% Fenster"},{"from":"rv.hitl2","to":"rv.final","kind":"gate-pass","label":"OK"},{"from":"rv.final","to":"rv.signoff","kind":"gate-pass","label":"≥ Schwelle (Mehrheit)"},{"from":"re.hitl1","to":"re.deep","kind":"loopback","label":"abgelehnt → nachschärfen"},{"from":"bu.window","to":"bu.fabrik","kind":"loopback","label":"Fenster voll → nächste Runde"},{"from":"rv.hitl2","to":"bu.fabrik","kind":"gate-fail","label":"abgelehnt → zurück in Build"},{"from":"rv.final","to":"rv.repair","kind":"gate-fail","label":"Mängel gefunden"},{"from":"rv.repair","to":"bu.fabrik","kind":"loopback","label":"Reparatur in Build"},{"from":"bu.audit","to":"be.cron.lessons","kind":"related","label":"Tages-Logs füttern Cron"},{"from":"be.cron.lessons","to":"in.instanz","kind":"related","label":"Lessons → Templates (HITL-gated)"},{"from":"be.tggate","to":"be.cron.rules","kind":"gate-pass","label":"Rule-Merge nur via Gate"}],"fractures":[{"id":"fr.supervisor-removal","where":["bu.fabrik","bu.window"],"kind":"un-propagiert","severity":"high","desc":"Entscheidung 'kein Worker-Handover, nur Window-Handover (Mjölnir)' ist nicht überall nachgezogen — Favbrik V3.14 nennt noch den Supervisor-1:1-Handover als Kern."},{"id":"fr.mjolnir-handover","where":["ho.run","bu.window"],"kind":"un-propagiert","severity":"mid","desc":"mjölnir→HANDOVER-Umzug nicht durchgängig nachgezogen; Run-Handover ist hier bewusst nur ein Knoten, der Mjölnir-Umbau ist ein separater Auftrag."},{"id":"fr.template-bootstrap-clash","where":["in.instanz"],"kind":"dublette","severity":"mid","desc":"'Template_Bootstrap' (Namens-Clash mit Phase BOOTSTRAP) in Favbrik V3.14 + hotfix.txt noch alt benannt; in der Spine umbenannt zu 'Instanz-Datei anlegen' — Quell-Artefakte nicht nachgezogen."},{"id":"fr.intent-block-missing","where":["in.intent"],"kind":"fehlend","severity":"mid","desc":"Intent-Block [PLAN] noch nicht in die Templates / Instanz-Datei integriert."},{"id":"fr.lessons-no-index","where":["bu.audit","be.cron.lessons"],"kind":"fehlend","severity":"mid","desc":"Lessons-Hierarchie (GLOBAL_LESSONS / LESSONS_KONSOLIDIERT / Local @L) hat keinen Index."},{"id":"fr.fr-naming","where":["be.cron.rules"],"kind":"konflikt","severity":"low","desc":"Konkurrierende FR-Namenskonventionen: FEATURE_REQUEST_CLAUDE_*.md vs. H-xx Hardening-IDs."}],"pflege_protokoll":["Supervisor liest den Schaltplan VOR dem Bauen.","VOR dem Anlegen prüfen, ob Stage/Node schon existiert (gegen Dubletten).","NACH dem Bauen: JSON aktualisieren (SSOT). HTML zieht den Stand beim Öffnen."]};
+
+/* ════════ TYPE / STATUS MAPS ════════ */
+const TYPE = {
+  step:       { icon:'●', label:'Schritt',    cls:'t-step' },
+  gate:       { icon:'◆', label:'Gate',       cls:'t-gate' },
+  hitl:       { icon:'✋', label:'HITL',       cls:'t-hitl' },
+  review:     { icon:'🔎', label:'Review',     cls:'t-review' },
+  validation: { icon:'🛡', label:'Validation', cls:'t-validation' },
+  loop:       { icon:'↻', label:'Loop',       cls:'t-loop' }
+};
+function statusDotCls(s){ return s==='IST'?'s-ist':s==='TEIL'?'s-teil':s==='PLAN'?'s-plan':'s-strich'; }
+function statusBadgeCls(s){ return s==='IST'?'badge-IST':s==='TEIL'?'badge-TEIL':s==='PLAN'?'badge-PLAN':'badge-strich'; }
+function statusLabel(s,leg){ const d=(leg&&leg[s])?leg[s]:''; return (s==='—'?'GESTRICHEN':s)+(d?' · '+d:''); }
+function esc(t){ const d=document.createElement('div'); d.textContent=t==null?'':t; return d.innerHTML; }
+
+let DATA = null;
+let stageDots = {}; // stageId -> dot element (for loop arrows)
+
+/* ════════ LOAD: fetch live, fall back to embed ════════ */
+async function load(){
+  if (location.protocol !== 'file:') {
+    try {
+      const r = await fetch('fabrik_meta_workflow.json', { cache:'no-store' });
+      if (r.ok) return { data: await r.json(), source: 'fabrik_meta_workflow.json (live)' };
+    } catch(e){ /* fall through */ }
+  }
+  return { data: FALLBACK_DATA, source: 'eingebettet' };
+}
+
+function fracturesFor(idSet){
+  return DATA.fractures.filter(f => f.where.some(w => idSet.has(w)));
+}
+
+function render(payload){
+  DATA = payload.data;
+  const leg = (DATA.meta.legend)||{};
+
+  /* nav + footer */
+  document.getElementById('nav-version').textContent = 'v'+DATA.meta.version+' · '+DATA.meta.updated;
+  document.getElementById('footer-meta').innerHTML =
+    'SSOT: <span>fabrik_meta_workflow.json</span> · Daten: <span class="src-pill">'+esc(payload.source)+'</span>';
+
+  const pipeStages = DATA.stages.filter(s=>s.layer==='pipeline').sort((a,b)=>a.order-b.order);
+  const nHitl = DATA.nodes.filter(n=>n.type==='hitl').length;
+  const nLoop = DATA.edges.filter(e=>e.kind==='loopback'||e.kind==='gate-fail').length;
+
+  /* hero meta */
+  const hm = [
+    ['6','Phasen'], [String(DATA.nodes.length),'Knoten'],
+    [String(nHitl),'HITLs'], [String(nLoop),'Loops/Fails'],
+    [String(DATA.fractures.length),'Brüche', true]
+  ];
+  document.getElementById('hero-meta').innerHTML = hm.map(m=>
+    '<div class="meta-item"><div class="meta-num'+(m[2]?' warn':'')+'">'+m[0]+'</div><div class="meta-label">'+m[1]+'</div></div>'
+  ).join('');
+
+  /* legend */
+  const statusItems = Object.keys(leg.status||{}).map(s=>
+    '<div class="legende-item"><span class="legende-dot '+statusDotCls(s)+'"></span><span class="legende-text">'+(s==='—'?'—':s)+'</span></div>'
+  ).join('');
+  const typeItems = Object.keys(TYPE).map(t=>
+    '<div class="legende-item"><span class="type-chip '+TYPE[t].cls+'">'+TYPE[t].icon+'</span><span class="legende-text">'+TYPE[t].label+'</span></div>'
+  ).join('');
+  document.getElementById('legende').innerHTML =
+    '<div class="legende-group"><span class="legende-title">Reife</span>'+statusItems+'</div>'+
+    '<div class="legende-divider"></div>'+
+    '<div class="legende-group"><span class="legende-title">Typ</span>'+typeItems+'</div>';
+
+  /* spine */
+  const spine = document.getElementById('spine');
+  spine.innerHTML='';
+  stageDots = {};
+  pipeStages.forEach(st=>{
+    const nodes = DATA.nodes.filter(n=>n.stage_id===st.id);
+    const idSet = new Set(nodes.map(n=>n.id)); idSet.add(st.id);
+    const fr = fracturesFor(idSet);
+    // mini icons: unique special types present (gate/hitl/review/validation/loop)
+    const present = [...new Set(nodes.map(n=>n.type))].filter(t=>t!=='step');
+    const mini = present.map(t=>'<span class="mini-icon '+TYPE[t].cls+'" title="'+TYPE[t].label+'">'+TYPE[t].icon+'</span>').join('');
+    // loop chips: outgoing loopback/gate-fail edges from nodes in this stage
+    const loopEdges = DATA.edges.filter(e=>(e.kind==='loopback'||e.kind==='gate-fail') && idSet.has(e.from));
+    const loopChips = loopEdges.map(e=>'<span class="chip chip-loop">↩ '+esc(e.label||'loop')+'</span>').join('');
+    const frChip = fr.length?'<span class="chip chip-fracture">⚠ '+fr.length+' Bruch'+(fr.length>1?'e':'')+'</span>':'';
+
+    const row=document.createElement('div');
+    row.className='stage-row reveal';
+    row.innerHTML=
+      '<span class="stage-dot '+statusDotCls(st.status)+'" data-stage="'+st.id+'"></span>'+
+      '<div class="stage-card'+(fr.length?' has-fracture':'')+'" data-stage="'+st.id+'">'+
+        '<div class="stage-top"><div>'+
+          '<div class="stage-label-row">'+
+            '<span class="stage-order">PHASE 0'+st.order+'</span>'+
+            '<span class="stage-phase">'+esc(st.phase)+'</span>'+
+            '<span class="status-badge '+statusBadgeCls(st.status)+'">'+statusLabel(st.status,leg.status)+'</span>'+
+          '</div>'+
+          '<div class="stage-name">'+esc(st.name)+'</div>'+
+        '</div>'+
+        '<div class="stage-icons">'+mini+'<span class="stage-arrow">→</span></div>'+
+        '</div>'+
+        '<div class="stage-simple">'+esc(st.simple)+'</div>'+
+        ((loopChips||frChip)?'<div class="stage-chips">'+loopChips+frChip+'</div>':'')+
+      '</div>';
+    spine.appendChild(row);
+    stageDots[st.id]=row.querySelector('.stage-dot');
+    row.querySelector('.stage-card').addEventListener('click',()=>openStage(st.id));
+    row.querySelector('.stage-dot').addEventListener('click',()=>openStage(st.id));
+  });
+  drawLoopArrows(pipeStages);
+
+  /* betrieb */
+  const betriebStage = DATA.stages.find(s=>s.layer==='betrieb');
+  document.getElementById('betrieb-tag').textContent='layer: betrieb · '+ (betriebStage?betriebStage.phase:'');
+  const bgrid=document.getElementById('betrieb-grid'); bgrid.innerHTML='';
+  DATA.nodes.filter(n=>n.stage_id===(betriebStage&&betriebStage.id)).forEach(n=>{
+    const fr=fracturesFor(new Set([n.id]));
+    const el=document.createElement('div');
+    el.className='node-mini'+(fr.length?' has-fracture':'');
+    el.innerHTML=
+      '<div class="node-mini-top">'+
+        '<span class="type-chip '+TYPE[n.type].cls+'">'+TYPE[n.type].icon+'</span>'+
+        '<span class="legende-dot '+statusDotCls(n.status)+'"></span>'+
+        (fr.length?'<span class="chip chip-fracture" style="margin-left:auto">⚠</span>':'')+
+      '</div>'+
+      '<div class="node-mini-name">'+esc(n.name)+'</div>'+
+      '<div class="node-mini-simple">'+esc(n.simple)+'</div>';
+    el.addEventListener('click',()=>openStage(betriebStage.id, n.id));
+    bgrid.appendChild(el);
+  });
+
+  /* fractures */
+  const fg=document.getElementById('fractures-grid'); fg.innerHTML='';
+  const byId={}; DATA.nodes.forEach(n=>byId[n.id]=n); DATA.stages.forEach(s=>byId[s.id]=s);
+  DATA.fractures.slice().sort((a,b)=>({high:0,mid:1,low:2}[a.severity]-{high:0,mid:1,low:2}[b.severity])).forEach(f=>{
+    const where = f.where.map(w=>byId[w]?byId[w].name:w).join(' · ');
+    const stageOf = (()=>{ for(const w of f.where){ const n=DATA.nodes.find(x=>x.id===w); if(n) return n.stage_id; const s=DATA.stages.find(x=>x.id===w); if(s) return s.id; } return null; })();
+    const kindLabel=(leg.fracture_kinds&&leg.fracture_kinds[f.kind])?f.kind:f.kind;
+    const el=document.createElement('div');
+    el.className='fracture-card';
+    el.innerHTML=
+      '<div class="fracture-top">'+
+        '<span class="fracture-kind">'+esc(kindLabel)+'</span>'+
+        '<span class="sev sev-'+f.severity+'">'+f.severity+'</span>'+
+        '<span class="fracture-where">@ '+esc(where)+'</span>'+
+      '</div>'+
+      '<div class="fracture-desc">'+esc(f.desc)+'</div>';
+    if(stageOf) el.addEventListener('click',()=>openStage(stageOf));
+    fg.appendChild(el);
+  });
+
+  /* protokoll */
+  const pl=document.getElementById('protokoll-list'); pl.innerHTML='';
+  (DATA.pflege_protokoll||[]).forEach(t=>{
+    const el=document.createElement('div'); el.className='protokoll-item';
+    el.innerHTML='<div class="protokoll-text">'+esc(t)+'</div>'; pl.appendChild(el);
+  });
+
+  initReveal();
+}
+
+/* ════════ LOOP ARROWS (cross-stage loopbacks, drawn on left gutter) ════════ */
+function drawLoopArrows(pipeStages){
+  const svg=document.getElementById('loop-svg');
+  // clear previous paths (keep defs)
+  [...svg.querySelectorAll('path.loop')].forEach(p=>p.remove());
+  const wrap=document.getElementById('spine-wrapper');
+  const wrapBox=wrap.getBoundingClientRect();
+  const stageIdOf=id=>{ const n=DATA.nodes.find(x=>x.id===id); if(n) return n.stage_id; const s=DATA.stages.find(x=>x.id===id); return s?s.id:null; };
+  const pipeSet=new Set(pipeStages.map(s=>s.id));
+  const loops=DATA.edges.filter(e=>{
+    if(e.kind!=='loopback'&&e.kind!=='gate-fail') return false;
+    const a=stageIdOf(e.from), b=stageIdOf(e.to);
+    return a&&b&&a!==b&&pipeSet.has(a)&&pipeSet.has(b);
+  });
+  loops.forEach((e,i)=>{
+    const src=stageDots[stageIdOf(e.from)], tgt=stageDots[stageIdOf(e.to)];
+    if(!src||!tgt) return;
+    const sb=src.getBoundingClientRect(), tb=tgt.getBoundingClientRect();
+    const x=27, ys=sb.top-wrapBox.top+sb.height/2, yt=tb.top-wrapBox.top+tb.height/2;
+    const bow=6+i*9; // left bow, offset per loop to avoid overlap
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('class','loop');
+    p.setAttribute('d','M '+x+' '+ys+' C '+(x-bow)+' '+ys+', '+(x-bow)+' '+yt+', '+x+' '+yt);
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke','#c4622d');
+    p.setAttribute('stroke-width','1.4');
+    p.setAttribute('opacity','0.7');
+    p.setAttribute('marker-end','url(#arrow)');
+    svg.appendChild(p);
+  });
+}
+
+/* ════════ PANEL ════════ */
+function openStage(stageId, focusNodeId){
+  const st=DATA.stages.find(s=>s.id===stageId); if(!st) return;
+  const leg=(DATA.meta.legend)||{};
+  const nodes=DATA.nodes.filter(n=>n.stage_id===stageId);
+  const idSet=new Set(nodes.map(n=>n.id)); idSet.add(st.id);
+
+  document.getElementById('panel-eyebrow').textContent =
+    (st.layer==='betrieb'?'BETRIEB / KVP':'PHASE 0'+st.order+' · '+st.phase);
+  document.getElementById('panel-title').textContent = st.name;
+
+  let html =
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">'+
+      '<span class="status-badge '+statusBadgeCls(st.status)+'">'+statusLabel(st.status,leg.status)+'</span>'+
+    '</div>'+
+    '<div class="panel-lead">'+esc(st.simple)+'</div>'+
+    '<div class="panel-lead-dim">'+esc(st.expert)+'</div>';
+
+  /* nodes */
+  html+='<span class="panel-block-label">Knoten</span>';
+  nodes.forEach(n=>{
+    const fr=fracturesFor(new Set([n.id]));
+    html+='<div class="pnode'+(fr.length?' has-fracture':'')+(focusNodeId===n.id?'" style="border-color:#d4a84366':'')+'">'+
+      '<div class="pnode-top">'+
+        '<span class="type-chip '+TYPE[n.type].cls+'">'+TYPE[n.type].icon+'</span>'+
+        '<span class="type-tag '+TYPE[n.type].cls+'">'+TYPE[n.type].label+'</span>'+
+        '<span class="status-badge '+statusBadgeCls(n.status)+'">'+statusLabel(n.status,leg.status)+'</span>'+
+        (n.ref?'<span class="pnode-ref">'+esc(n.ref)+'</span>':'')+
+      '</div>'+
+      '<div class="pnode-name">'+esc(n.name)+'</div>'+
+      '<div class="pnode-text" style="margin-top:6px">'+esc(n.expert||n.simple)+'</div>'+
+      (fr.length?fr.map(f=>'<div class="pnode-fracture"><b>⚠ '+esc(f.kind)+' ('+f.severity+'):</b> '+esc(f.desc)+'</div>').join(''):'')+
+    '</div>';
+  });
+
+  /* edges touching this stage: loopbacks / gates */
+  const rel=DATA.edges.filter(e=>(idSet.has(e.from)||idSet.has(e.to)) && e.kind!=='flow' && e.label);
+  if(rel.length){
+    html+='<span class="panel-block-label">Pfeile & Schleifen</span>';
+    const nm=id=>{ const n=DATA.nodes.find(x=>x.id===id); if(n) return n.name; const s=DATA.stages.find(x=>x.id===id); return s?s.name:id; };
+    const sym={'loopback':'↩','gate-fail':'✗','gate-pass':'✓','related':'⤳'};
+    rel.forEach(e=>{
+      html+='<div class="pedge">'+(sym[e.kind]||'→')+' <span class="lab">'+esc(e.label)+'</span> &nbsp;·&nbsp; '+esc(nm(e.from))+' → '+esc(nm(e.to))+'</div>';
+    });
+  }
+
+  document.getElementById('panel-body').innerHTML=html;
+  const ov=document.getElementById('panel-overlay');
+  ov.classList.add('active');
+  document.body.style.overflow='hidden';
+  ov.querySelector('.panel-card').scrollTop=0;
+}
+function closePanel(e){
+  if(e && e.target!==e.currentTarget && !(e.target.classList&&e.target.classList.contains('panel-close'))) return;
+  document.getElementById('panel-overlay').classList.remove('active');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanel(); });
+
+/* ════════ REVEAL ════════ */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ setTimeout(()=>en.target.classList.add('visible'),60); obs.unobserve(en.target);} });
+  },{threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  document.querySelectorAll('.stage-row.reveal').forEach((el,i)=>{ el.style.transitionDelay=(i*55)+'ms'; });
+}
+
+let rtmr;
+window.addEventListener('resize',()=>{ clearTimeout(rtmr); rtmr=setTimeout(()=>{ if(DATA) drawLoopArrows(DATA.stages.filter(s=>s.layer==='pipeline').sort((a,b)=>a.order-b.order)); },150); });
+
+load().then(render);
+</script>
+</body>
+</html>

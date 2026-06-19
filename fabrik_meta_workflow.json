@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "version": "1.0",
+    "updated": "2026-06-15",
+    "kind": "meta-workflow",
+    "title": "Die Fabrik — Meta-Workflow-Schaltplan",
+    "intent": "Die 'wie wird vorgegangen'-Sicht der Fabrik-Pipeline. Überblick (Simple→tief), Konsistenz-Check, Einfügen planen. NICHT die physische Code-Karte (eigener Auftrag).",
+    "source": "Gelockte Spine (CODER_AUFTRAG) + Favbrik V3.14 (Vision) + hotfix.txt (gegen Codebase geerdet, IST/TEIL/PLAN). Kuratiert, kein Code-Scan.",
+    "conventions": {
+      "stage_status": "Stage-Status = läuft die Kern-Funktion der Phase heute in Betrieb. Feinkörniges IST/TEIL/PLAN steckt in den nodes.",
+      "honesty": "Status nur belegbar (ref-Feld). Unklar → nicht raten.",
+      "gestrichen": "Status '—' = bewusst gestrichen, BLEIBT SICHTBAR (killt Doppelarbeit) — übernommen aus SCHALTPLAN_SCHEMA.md."
+    },
+    "legend": {
+      "status": {
+        "IST": "in Betrieb",
+        "TEIL": "v1 da, Härtung offen",
+        "PLAN": "noch nicht gebaut",
+        "—": "bewusst gestrichen (bleibt sichtbar)"
+      },
+      "types": {
+        "step": "Arbeitsschritt",
+        "gate": "harte Schranke",
+        "hitl": "Human-in-the-Loop (du entscheidest)",
+        "review": "prüft Code / sammelt Wissen",
+        "validation": "prüft den Plan",
+        "loop": "Rück-Pfeil / Schleife"
+      },
+      "fracture_kinds": {
+        "konflikt": "konkurrierende Wahrheiten",
+        "un-propagiert": "Entscheidung nicht überall nachgezogen",
+        "fehlend": "geplant, noch nicht integriert",
+        "dublette": "doppelt / alt benannt"
+      }
+    }
+  },
+  "layers": ["pipeline", "betrieb"],
+  "stages": [
+    { "id": "intake", "phase": "INTAKE", "name": "Intake", "order": 1, "layer": "pipeline", "status": "IST",
+      "simple": "Projektanfrage wird zu einer Instanz-Datei mit Plan-Block.",
+      "expert": "Standard-Projekte: Anfrage → Intake_MD. Instanz-Datei (ex-'Template_Bootstrap') wird angelegt; der Intent-Block [PLAN] soll rein, ist aber noch nicht in den Templates." },
+    { "id": "research", "phase": "RESEARCH", "name": "Research", "order": 2, "layer": "pipeline", "status": "TEIL",
+      "simple": "Wissen sammeln (Deep Research ×2), den Plan unter Stress prüfen, dann dein OK.",
+      "expert": "Deep Research seriell ×2 (sammelt Wissen). Plan-Validation stresst per Heavy-Reasoning den PLAN — nicht den Code. HITL_1 ist dein Gate." },
+    { "id": "bootstrap", "phase": "BOOTSTRAP", "name": "Bootstrap", "order": 3, "layer": "pipeline", "status": "TEIL",
+      "simple": "Walking Skeleton: Kosten schätzen, Budget hart kappen, Tasks planen.",
+      "expert": "Sprint 0. Pre_Task_Cost_Eval → harte Budget-Kappe ($42) → ADL-Scopes deklarieren → DAG planen. Skeleton steht." },
+    { "id": "build", "phase": "BUILD", "name": "Build", "order": 4, "layer": "pipeline", "status": "TEIL",
+      "simple": "Marathon-Loop: Worker bauen; bei vollem Kontext-Fenster Handover; weiter.",
+      "expert": "Multi_Agent_Fabrik (Worker liefern Code, KEIN Worker-Handover). Bei ~50% Fenster: Window-Handover via Mjölnir. Kontext-Kompression, Roadmap-Update, Audit + lokale Lessons." },
+    { "id": "review", "phase": "REVIEW", "name": "Review", "order": 5, "layer": "pipeline", "status": "TEIL",
+      "simple": "Dein OK, dann Final Review durch ≥3 Modelle, ggf. Reparatur-Loop, Sign-Off.",
+      "expert": "HITL_2. Final Review: Code-Cat schneidet die Codebasis auf, ≥3 Modelle (ungerade). Repair_Loop bei Bedarf. Final_Audit_SignOff." },
+    { "id": "handover", "phase": "HANDOVER", "name": "Handover (Run)", "order": 6, "layer": "pipeline", "status": "TEIL",
+      "simple": "Run-Handover beim Zusammenfassungs-Klick — wenn das Projekt via Mjölnir lief.",
+      "expert": "Run-Handover alias 'Handover Remote' (Mjölnir). Greift beim Zusammenfassungs-Klick, nur wenn via Mjölnir gestartet. Der Mjölnir-Umbau ist separat — hier nur ein Knoten." },
+    { "id": "betrieb", "phase": "BETRIEB", "name": "Betrieb / KVP", "order": 7, "layer": "betrieb", "status": "TEIL",
+      "simple": "Quer-liegend, projekt-agnostisch: nächtliche Pflege, Gates, Sync. Nicht Teil der Spine.",
+      "expert": "Overnight_Cron (Lessons-Konsolidierung, Rule-Analysis, Drift_Guard), Telegram-HITL-Gate, Sync, Ping. Läuft neben der Pipeline, nicht in ihr." }
+  ],
+  "nodes": [
+    { "id": "in.start", "stage_id": "intake", "name": "Projekt-Anfrage → Intake_MD", "type": "step", "status": "IST",
+      "simple": "Anfrage wird aufgenommen.", "expert": "Standard-Projekte: Projektanfrage → Intake_MD.", "ref": "Projektanfrage.html" },
+    { "id": "in.instanz", "stage_id": "intake", "name": "Instanz-Datei anlegen", "type": "step", "status": "TEIL",
+      "simple": "Projekt-eigene Datei aus Template.", "expert": "Früher 'Template_Bootstrap' — umbenannt (Clash mit Phase BOOTSTRAP). Zieht Basis-Templates als physische MD in den Projektordner.", "ref": "projects_template.py" },
+    { "id": "in.intent", "stage_id": "intake", "name": "Intent-Block [PLAN]", "type": "step", "status": "PLAN",
+      "simple": "Plan-Block im Projekt-Header.", "expert": "Der Intent-Block soll fest in die Instanz-Datei/Templates — noch nicht integriert." },
+
+    { "id": "re.deep", "stage_id": "research", "name": "Deep Research ×2 (seriell)", "type": "review", "status": "PLAN",
+      "simple": "Zweifacher Recherche-Durchlauf, sammelt Wissen.", "expert": "Gemini flach (spritzt frei) + Gemini tief (Skalpell), seriell. Als Standard-Muster noch nicht gebaut. Sammelt WISSEN — ≠ Plan-Validation, ≠ Final Review." },
+    { "id": "re.planval", "stage_id": "research", "name": "Plan-Validation (Heavy-Reasoning)", "type": "validation", "status": "PLAN",
+      "simple": "Stresstest des Plans.", "expert": "Adversarial Plan-Validation: isoliertes Heavy-Reasoning-Modell sucht Bias / blinde Flecken / logische Lücken im PLAN (nicht im Code). Cost-gated. Signierter Audit-Step.", "ref": "H-09" },
+    { "id": "re.hitl1", "stage_id": "research", "name": "HITL_1", "type": "hitl", "status": "IST",
+      "simple": "Dein Go nach der Recherche.", "expert": "Telegram-Gate (Long-Poll, Tailscale). UserDecisionSignal KEEP|EDIT|WAIT.", "ref": "hitl_policy" },
+
+    { "id": "bo.cost", "stage_id": "bootstrap", "name": "Pre_Task_Cost_Eval", "type": "step", "status": "IST",
+      "simple": "Kosten vorab schätzen.", "expert": "estimate_plan_cost läuft vor dem Gate.", "ref": "estimate_plan_cost" },
+    { "id": "bo.budget", "stage_id": "bootstrap", "name": "Budget_Check (Hard-Cap $42)", "type": "gate", "status": "IST",
+      "simple": "Harte Kosten-Notbremse — Überschreitung = Abbruch.", "expert": "cost_guard Model-Registry, Long-Context-Tiers, Per-Modell-Caps, $42-Notbremse gegen API-Runaway.", "ref": "cost_guard.py" },
+    { "id": "bo.adl", "stage_id": "bootstrap", "name": "ADL_Deklaration", "type": "step", "status": "PLAN",
+      "simple": "Jeder Agent deklariert Read/Write-Scopes.", "expert": "Agent Definition Language: read_set/write_set vor Start. Heute nur needs_sandbox/needs_rag/dependencies.", "ref": "H-04" },
+    { "id": "bo.dag", "stage_id": "bootstrap", "name": "DAG_Scheduling", "type": "step", "status": "TEIL",
+      "simple": "Tasks als Abhängigkeitsgraph.", "expert": "DAG aus dependencies (v1) existiert. ADL-Parse + automatische Write-Scope-Serialisierung offen.", "ref": "H-05" },
+
+    { "id": "bu.fabrik", "stage_id": "build", "name": "Multi_Agent_Fabrik", "type": "step", "status": "TEIL",
+      "simple": "Worker bauen den Code.", "expert": "Worker liefern Code — KEIN Worker-Handover. Multi-Agent v1 (DAG-Dispatch), Kollisionssicherung offen.", "ref": "H-04/05" },
+    { "id": "bu.window", "stage_id": "build", "name": "Window-Handover (Mjölnir)", "type": "step", "status": "TEIL",
+      "simple": "Bei vollem Kontext: Übergabe an Nachfolger.", "expert": "Supervisor_Window_Close @~50% → physische Übergabedatei → sequenzieller Nachfolger. Heute manuell/narrativ, kein maschinenlesbarer State_Plan.", "ref": "mjolnir/HANDOVER" },
+    { "id": "bu.kompress", "stage_id": "build", "name": "Kontext_Kompression", "type": "step", "status": "PLAN",
+      "simple": "Kontext klein halten.", "expert": "3-Stufen-Kaskade (Offload >20k / Strip @85% / Recursive Summary 9-Feld). Harness macht eigenes Compaction — als Eigenbau nicht gebaut." },
+    { "id": "bu.roadmap", "stage_id": "build", "name": "Update_Roadmap", "type": "step", "status": "TEIL",
+      "simple": "Roadmap als Anker pflegen.", "expert": "Immutable Roadmap-File als System-Anker + Token-Opt-State." },
+    { "id": "bu.audit", "stage_id": "build", "name": "Append_Audit + Local_@L", "type": "step", "status": "TEIL",
+      "simple": "Doku + lokale Lessons anhängen.", "expert": "Laufende Doku (heute manuell) + lokale Lessons. Async Auto-Anhang bei Window-Close offen." },
+
+    { "id": "rv.hitl2", "stage_id": "review", "name": "HITL_2", "type": "hitl", "status": "IST",
+      "simple": "Dein OK vor dem Final Review.", "expert": "Telegram-Gate." },
+    { "id": "rv.final", "stage_id": "review", "name": "Final Review (≥3 Modelle)", "type": "review", "status": "PLAN",
+      "simple": "Mehrere Modelle prüfen den Code.", "expert": "Code-Cat schneidet die Codebasis auf; ≥3 Modelle, ungerade Zahl (Mehrheit). Prüft CODE — ≠ Plan-Validation. Quad-Review war Hand-Event; Auto-Loop/Stern-Gate offen.", "ref": "H-08" },
+    { "id": "rv.repair", "stage_id": "review", "name": "Repair_Loop", "type": "loop", "status": "TEIL",
+      "simple": "Bei Mängeln: zurück in Build, fixen.", "expert": "Generischer Reparatur-Loop bei Bedarf — NICHT die gestrichene PACE/STRAGO-Selbstheilung. Rück-Pfeil nach BUILD." },
+    { "id": "rv.signoff", "stage_id": "review", "name": "Final_Audit_SignOff", "type": "step", "status": "TEIL",
+      "simple": "Abschluss-Audit, signiert.", "expert": "Final Audit + SignOff. Heute teils manuell." },
+
+    { "id": "ho.run", "stage_id": "handover", "name": "Run-Handover (Handover Remote)", "type": "step", "status": "TEIL",
+      "simple": "Übergabe beim Zusammenfassungs-Klick.", "expert": "Mjölnir. Greift beim Zusammenfassungs-Klick, nur wenn das Projekt via Mjölnir gestartet wurde. Mjölnir-Umbau separat.", "ref": "Mjolnir" },
+
+    { "id": "be.cron.lessons", "stage_id": "betrieb", "name": "Overnight_Cron · Lessons-Konsolidierung", "type": "step", "status": "IST",
+      "simple": "Globale @L aus Tages-Logs.", "expert": "lessons_cron 04:30 (DeepSeek). Extrahiert nächtlich globale Lessons, eliminiert RAG-Müll.", "ref": "lessons_cron" },
+    { "id": "be.cron.rules", "stage_id": "betrieb", "name": "Overnight_Cron · Rule-Analysis", "type": "step", "status": "PLAN",
+      "simple": "Regel-Evolution.", "expert": "Nächtliche Analyse nachgeschärfter Regeln → HITL-Gate vor permanentem Core-Template-Merge. Merge offen." },
+    { "id": "be.cron.drift", "stage_id": "betrieb", "name": "Overnight_Cron · Drift_Guard", "type": "step", "status": "—",
+      "simple": "Model-Collapse-Wächter.", "expert": "Embedding-Cluster-Monitoring / Entropie-Schwelle gegen Model Collapse. Bewusst gestrichen — bleibt sichtbar (killt Doppelarbeit)." },
+    { "id": "be.tggate", "stage_id": "betrieb", "name": "Telegram-HITL-Gate", "type": "hitl", "status": "TEIL",
+      "simple": "Gate für Regeln / Prompt-Patches.", "expert": "Long-Poll (Tailscale), KEEP|EDIT|WAIT. Gate für Rule- und Prompt-Patches (Patch ≠ Deploy)." },
+    { "id": "be.sync", "stage_id": "betrieb", "name": "Sync", "type": "step", "status": "IST",
+      "simple": "Sync-Vormerkung.", "expert": "Sync-Vormerkung." },
+    { "id": "be.ping", "stage_id": "betrieb", "name": "Ping", "type": "step", "status": "IST",
+      "simple": "Fertig-Benachrichtigung.", "expert": "Mikrowellen-Ping bei Fertigstellung." }
+  ],
+  "edges": [
+    { "from": "intake", "to": "research", "kind": "flow", "label": "" },
+    { "from": "research", "to": "bootstrap", "kind": "flow", "label": "" },
+    { "from": "bootstrap", "to": "build", "kind": "flow", "label": "" },
+    { "from": "build", "to": "review", "kind": "flow", "label": "" },
+    { "from": "review", "to": "handover", "kind": "flow", "label": "" },
+
+    { "from": "in.start", "to": "in.instanz", "kind": "flow", "label": "" },
+    { "from": "in.instanz", "to": "in.intent", "kind": "flow", "label": "Block in Instanz-Datei" },
+    { "from": "re.deep", "to": "re.planval", "kind": "flow", "label": "" },
+    { "from": "re.planval", "to": "re.hitl1", "kind": "flow", "label": "" },
+    { "from": "bo.cost", "to": "bo.budget", "kind": "flow", "label": "" },
+    { "from": "bo.budget", "to": "bo.adl", "kind": "gate-pass", "label": "im Budget" },
+    { "from": "bo.adl", "to": "bo.dag", "kind": "flow", "label": "" },
+    { "from": "bu.fabrik", "to": "bu.window", "kind": "flow", "label": "@~50% Fenster" },
+    { "from": "rv.hitl2", "to": "rv.final", "kind": "gate-pass", "label": "OK" },
+    { "from": "rv.final", "to": "rv.signoff", "kind": "gate-pass", "label": "≥ Schwelle (Mehrheit)" },
+
+    { "from": "re.hitl1", "to": "re.deep", "kind": "loopback", "label": "abgelehnt → nachschärfen" },
+    { "from": "bu.window", "to": "bu.fabrik", "kind": "loopback", "label": "Fenster voll → nächste Runde" },
+    { "from": "rv.hitl2", "to": "bu.fabrik", "kind": "gate-fail", "label": "abgelehnt → zurück in Build" },
+    { "from": "rv.final", "to": "rv.repair", "kind": "gate-fail", "label": "Mängel gefunden" },
+    { "from": "rv.repair", "to": "bu.fabrik", "kind": "loopback", "label": "Reparatur in Build" },
+
+    { "from": "bu.audit", "to": "be.cron.lessons", "kind": "related", "label": "Tages-Logs füttern Cron" },
+    { "from": "be.cron.lessons", "to": "in.instanz", "kind": "related", "label": "Lessons → Templates (HITL-gated)" },
+    { "from": "be.tggate", "to": "be.cron.rules", "kind": "gate-pass", "label": "Rule-Merge nur via Gate" }
+  ],
+  "fractures": [
+    { "id": "fr.supervisor-removal", "where": ["bu.fabrik", "bu.window"], "kind": "un-propagiert", "severity": "high",
+      "desc": "Entscheidung 'kein Worker-Handover, nur Window-Handover (Mjölnir)' ist nicht überall nachgezogen — Favbrik V3.14 nennt noch den Supervisor-1:1-Handover als Kern." },
+    { "id": "fr.mjolnir-handover", "where": ["ho.run", "bu.window"], "kind": "un-propagiert", "severity": "mid",
+      "desc": "mjölnir→HANDOVER-Umzug nicht durchgängig nachgezogen; Run-Handover ist hier bewusst nur ein Knoten, der Mjölnir-Umbau ist ein separater Auftrag." },
+    { "id": "fr.template-bootstrap-clash", "where": ["in.instanz"], "kind": "dublette", "severity": "mid",
+      "desc": "'Template_Bootstrap' (Namens-Clash mit Phase BOOTSTRAP) in Favbrik V3.14 + hotfix.txt noch alt benannt; in der Spine umbenannt zu 'Instanz-Datei anlegen' — Quell-Artefakte nicht nachgezogen." },
+    { "id": "fr.intent-block-missing", "where": ["in.intent"], "kind": "fehlend", "severity": "mid",
+      "desc": "Intent-Block [PLAN] noch nicht in die Templates / Instanz-Datei integriert." },
+    { "id": "fr.lessons-no-index", "where": ["bu.audit", "be.cron.lessons"], "kind": "fehlend", "severity": "mid",
+      "desc": "Lessons-Hierarchie (GLOBAL_LESSONS / LESSONS_KONSOLIDIERT / Local @L) hat keinen Index." },
+    { "id": "fr.fr-naming", "where": ["be.cron.rules"], "kind": "konflikt", "severity": "low",
+      "desc": "Konkurrierende FR-Namenskonventionen: FEATURE_REQUEST_CLAUDE_*.md vs. H-xx Hardening-IDs." }
+  ],
+  "pflege_protokoll": [
+    "Supervisor liest den Schaltplan VOR dem Bauen.",
+    "VOR dem Anlegen prüfen, ob Stage/Node schon existiert (gegen Dubletten).",
+    "NACH dem Bauen: JSON aktualisieren (SSOT). HTML zieht den Stand beim Öffnen."
+  ]
+}
