@@ -31,7 +31,7 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 ├── README.md
 ├── REPO_INDEX.md
 ├── SUPERVISOR_KODEX.md
-├── mjolnir.md
+├── HANDOVER.json
 ├── schaltplan/                (Steuer-/Plan-Files — Fabrik-Meta-Workflow)
 │   ├── fabrik_meta_workflow.json   (SSOT)
 │   └── fabrik_meta_workflow.html   (Render, zieht JSON live)
@@ -40,12 +40,16 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 │   ├── DECISIONS_TEMPLATE.md
 │   ├── DESIGN_PROJEKT_TEMPLATE.md
 │   ├── FEATURE_REQUEST_TEMPLATE.md
-│   ├── HANDOVER_TEMPLATE.md
+│   ├── HANDOVER_TEMPLATE.json        (Steuer-File: Handover/Staffelstab, SSOT)
+│   ├── HANDOVER.html                 (Render, zieht HANDOVER.json live)
+│   ├── SCHALTPLAN_PROJEKT_TEMPLATE.json  (Steuer-File: Projekt-Schaltplan/Gedächtnis, SSOT)
+│   ├── SCHALTPLAN_PROJEKT.html       (Render, zieht SCHALTPLAN_PROJEKT.json live)
+│   ├── HUMAN_TESTS_TEMPLATE.json     (Steuer-File: Mensch-Tests, SSOT)
+│   ├── HUMAN_TESTS.html              (Render, zieht HUMAN_TESTS.json live)
 │   ├── MARATHON_WORKFLOW_TEMPLATE.md
 │   ├── ROADMAP_TEMPLATE.md
 │   ├── SUPERVISOR_PROJEKT_TEMPLATE.md
 │   ├── lessons_TEMPLATE.md
-│   ├── mjolnir_TEMPLATE.md
 │   └── uebergabe_template_v1_0.md  (Conversation-Handover-Schema)
 ├── lessons/
 │   ├── INDEX.md
@@ -119,7 +123,7 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 | PROJECT_BOOTSTRAP_README.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/PROJECT_BOOTSTRAP_README.md) | md | Anleitung: frische Coda-Session setzt neues Projekt auf |
 | DECISIONS_PENDING.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/DECISIONS_PENDING.md) | md | Offene Meta-Layer-Architektur-Fragen + getroffene Entscheidungen |
 | GIST_LINK.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/GIST_LINK.md) | md | Gist-Brücke: Index-Gist + Claude-KB-Gist URLs |
-| mjolnir.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/mjolnir.md) | md | Session-Abschluss-State (Single-Slot), STATUS-Header |
+| HANDOVER.json | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/HANDOVER.json) | json | **Steuer-File.** Handover/Staffelstab: status-Kopf (überschrieben) + append-only Historie |
 | .gitignore | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/.gitignore) | config | Git-Ignore-Regeln |
 
 ### `schaltplan/`
@@ -136,10 +140,14 @@ Diese Datei wird von Coda bei Verzeichnisänderungen (Erstellen/Löschen/Verschi
 | templates/CLAUDE_PROJEKT_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/CLAUDE_PROJEKT_TEMPLATE.md) | template | Vorlage für CLAUDE_{PROJEKT}.md |
 | templates/SUPERVISOR_PROJEKT_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/SUPERVISOR_PROJEKT_TEMPLATE.md) | template | Vorlage für SUPERVISOR_{PROJEKT}.md |
 | templates/MARATHON_WORKFLOW_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/MARATHON_WORKFLOW_TEMPLATE.md) | template | Vorlage für MARATHON_WORKFLOW_{PROJEKT}.md |
-| templates/mjolnir_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/mjolnir_TEMPLATE.md) | template | Vorlage für mjolnir.md (Session-Abschluss) |
+| templates/HANDOVER_TEMPLATE.json | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/HANDOVER_TEMPLATE.json) | template | Vorlage für HANDOVER.json (Staffelstab: status-Kopf + Historie) |
+| templates/HANDOVER.html | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/HANDOVER.html) | render | Renderer für HANDOVER.json (reine Anzeige) |
+| templates/SCHALTPLAN_PROJEKT_TEMPLATE.json | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/SCHALTPLAN_PROJEKT_TEMPLATE.json) | template | Vorlage für SCHALTPLAN_PROJEKT.json (Projekt-Schaltplan/Gedächtnis: Module, Status, Brüche) |
+| templates/SCHALTPLAN_PROJEKT.html | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/SCHALTPLAN_PROJEKT.html) | render | Renderer für SCHALTPLAN_PROJEKT.json (reine Anzeige) |
+| templates/HUMAN_TESTS_TEMPLATE.json | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/HUMAN_TESTS_TEMPLATE.json) | template | Vorlage für HUMAN_TESTS.json (Mensch-Tests: Kategorien → Items) |
+| templates/HUMAN_TESTS.html | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/HUMAN_TESTS.html) | render | Renderer für HUMAN_TESTS.json (Reiter + Abhakboxen) |
 | templates/FEATURE_REQUEST_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/FEATURE_REQUEST_TEMPLATE.md) | template | Vorlage für FEATURE_REQUEST_{kurzname}.md |
-| templates/HANDOVER_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/HANDOVER_TEMPLATE.md) | template | Vorlage für HANDOVER_{PROJEKT}.md (Session-Handover) |
-| templates/uebergabe_template_v1_0.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/uebergabe_template_v1_0.md) | template | Conversation-Handover-Schema (Chat→Chat, JSON), ergänzt HANDOVER/mjolnir |
+| templates/uebergabe_template_v1_0.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/uebergabe_template_v1_0.md) | template | Conversation-Handover-Schema (Chat→Chat, JSON), ergänzt HANDOVER |
 | templates/lessons_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/lessons_TEMPLATE.md) | template | Vorlage für lessons_{PROJEKT}.md |
 | templates/DECISIONS_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/DECISIONS_TEMPLATE.md) | template | Vorlage für DECISIONS_{PROJEKT}.md |
 | templates/DESIGN_PROJEKT_TEMPLATE.md | [raw](https://raw.githubusercontent.com/Bmad82/Claude/main/templates/DESIGN_PROJEKT_TEMPLATE.md) | template | Vorlage für DESIGN_{PROJEKT}.md (projektspezifisch) |

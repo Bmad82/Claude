@@ -14,9 +14,13 @@ Dieses README sagt dir, wie du eine neue Coda-Session in einem frischen Marathon
 4. **Templates aus `C:\Users\chris\Python\Claude\templates\` kopieren:**
    - `CLAUDE_PROJEKT_TEMPLATE.md` → `CLAUDE_{PROJEKT}.md` ins neue Projekt-Root
    - `SUPERVISOR_PROJEKT_TEMPLATE.md` → `SUPERVISOR_{PROJEKT}.md` ins neue Projekt-Root
-   - `mjolnir_TEMPLATE.md` → wird am Session-Ende als `mjolnir.md` geschrieben (nicht beim Bootstrap)
+   - **Die drei Steuer-Files als physische Kopien ins Projekt-Root ziehen (ab Tag 1, leeres Skelett):**
+     - `SCHALTPLAN_PROJEKT_TEMPLATE.json` → `SCHALTPLAN_PROJEKT.json` (Projekt-Gedächtnis, Modul-/Abhängigkeitskarte)
+     - `HANDOVER_TEMPLATE.json` → `HANDOVER.json` (Staffelstab, status-Kopf + Historie)
+     - `HUMAN_TESTS_TEMPLATE.json` → `HUMAN_TESTS.json` (offene Mensch-Tests)
+     - Dazu die Renderer **unverändert** mitkopieren: `SCHALTPLAN_PROJEKT.html`, `HANDOVER.html`, `HUMAN_TESTS.html` (lesen die jeweilige JSON, reine Anzeige).
    - `FEATURE_REQUEST_TEMPLATE.md` → liegt als Referenz, Architekt/Supervisor füllen es bei Aufträgen
-5. **Alle `{PROJEKT}`-Platzhalter ersetzen** durch den tatsächlichen Projektnamen. Per `grep -r "{PROJEKT}"` verifizieren dass nichts mehr offen ist.
+5. **Alle `{PROJEKT}`- und `{YYYY-MM-DD}`-Platzhalter ersetzen** durch Projektnamen bzw. Bootstrap-Datum — auch in den drei kopierten JSONs. Per `grep -r "{PROJEKT}"` verifizieren dass nichts mehr offen ist. Die `BEISPIEL`-Nodes/-Items in Schaltplan + Human-Tests dürfen als Muster stehen bleiben (der Supervisor ersetzt sie beim ersten echten Stand) oder leer geräumt werden — nie als echten Stand interpretieren.
 6. **Skelettstruktur aufbauen:**
    - `lessons/` (kann leer starten, Coda füllt nach ≥2-Min-Stolpersteinen)
    - `bugs/` (kann leer starten)
@@ -30,7 +34,7 @@ Dieses README sagt dir, wie du eine neue Coda-Session in einem frischen Marathon
    - Implementierungs-Details NICHT fragen — die löst du selbst
 8. **Projekt-Gist erstellen (PUBLIC):**
    - Helfer: `python C:\Users\chris\Python\Claude\workflow\gist_publisher.py <staging_dir> "<beschreibung>"`
-   - Dateien im Gist: `STATUS.md` (Bibel-Einzeiler), `HANDOVER.md`, `MJOLNIR.md`, `REPO_INDEX.md`, `LESSONS.md` (optional `DECISIONS.md`)
+   - Dateien im Gist: `STATUS.md` (Bibel-Einzeiler), `HANDOVER.json`, `SCHALTPLAN_PROJEKT.json`, `REPO_INDEX.md`, `LESSONS.md` (optional `DECISIONS.md`)
    - Gist-URL in `GIST_LINK.md` ins Projekt-Root ablegen
    - Index-Gist aktualisieren (neue Zeile in `GIST_INDEX.md`) — URL des Index-Gists steht in `C:\Users\chris\Python\Claude\GIST_LINK.md`
    - Globale Konvention + Hintergrund: `C:\Users\chris\Python\Claude\GIST_LINK.md` + Sektion „Gist-Pflicht" in `CLAUDE_PROJEKT_TEMPLATE.md`
@@ -44,7 +48,7 @@ Siehe `SUPERVISOR_KODEX.md` für die vollständige Liste. Kurzform:
 
 - **Kein Terminal-Befehl für Chris.** Du machst git/pytest/pip/robocopy selbst. Auch beim Bootstrap.
 - **Worktree-Branches mergst du selbst** auf main vor Session-Ende.
-- **`mjolnir.md` schreibst du am Session-Ende** mit STATUS-Header — auch wenn nur Bootstrap passiert ist (`STATUS: FERTIG`, `AUFTRAG: bootstrap`).
+- **`HANDOVER.json` schreibst du am Session-Ende** mit STATUS-Header — auch wenn nur Bootstrap passiert ist (`STATUS: FERTIG`, `AUFTRAG: bootstrap`).
 - **Keine erfundenen Tech-Stack-Entscheidungen.** Wenn Architekt nichts gesagt hat → fragen, nicht „node + react + postgres" als Default annehmen.
 - **Kein opportunistisches Refactoring** über den Bootstrap-Scope hinaus.
 
@@ -52,9 +56,9 @@ Siehe `SUPERVISOR_KODEX.md` für die vollständige Liste. Kurzform:
 
 ## Erster Auftrag nach Bootstrap
 
-Wenn der Architekt eine `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist die deine erste Aufgabe nach dem Bootstrap. Behandle sie wie einen FEATURE_REQUEST: Schritte abarbeiten, Selbsttest bei Workflow-Themen, `mjolnir.md` am Ende, commit + push.
+Wenn der Architekt eine `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist die deine erste Aufgabe nach dem Bootstrap. Behandle sie wie einen FEATURE_REQUEST: Schritte abarbeiten, Selbsttest bei Workflow-Themen, `HANDOVER.json` am Ende, commit + push.
 
-Wenn der Architekt KEINE `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist der Bootstrap-Lauf selbst die Session — schreibe `mjolnir.md` mit `STATUS: FERTIG`, `AUFTRAG: bootstrap`, und warte auf den nächsten Auftrag per `FEATURE_REQUEST_{PROJEKT}.md`.
+Wenn der Architekt KEINE `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist der Bootstrap-Lauf selbst die Session — schreibe `HANDOVER.json` mit `STATUS: FERTIG`, `AUFTRAG: bootstrap`, und warte auf den nächsten Auftrag per `FEATURE_REQUEST_{PROJEKT}.md`.
 
 ---
 
@@ -64,7 +68,7 @@ Wenn der Architekt KEINE `PROJEKT_ANFRAGE.md` mitgeliefert hat, ist der Bootstra
 |---|---|---|
 | Faulheits-Catches | `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` | 6 Regeln + Selbsttest-Pattern + Bibel-Cheat-Sheet |
 | Supervisor-Kodex | `C:\Users\chris\Python\Claude\SUPERVISOR_KODEX.md` | NIE/IMMER für Chat-Fenster |
-| Templates | `C:\Users\chris\Python\Claude\templates\` | mjolnir, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT, HANDOVER, MARATHON_WORKFLOW, DECISIONS, DESIGN_PROJEKT, ROADMAP, lessons |
+| Templates | `C:\Users\chris\Python\Claude\templates\` | HANDOVER, SCHALTPLAN_PROJEKT, HUMAN_TESTS, FEATURE_REQUEST, CLAUDE_PROJEKT, SUPERVISOR_PROJEKT, MARATHON_WORKFLOW, DECISIONS, DESIGN_PROJEKT, ROADMAP, lessons |
 | Globale Lessons-Library | `C:\Users\chris\Python\Claude\lessons\` | Technologie-spezifische Lessons (python-fastapi, sqlite-db, ...) |
 | Pending Decisions | `C:\Users\chris\Python\Claude\DECISIONS_PENDING.md` | Konflikte/offene Fragen für den Meta-Layer |
 | Gist-Brücke | `C:\Users\chris\Python\Claude\GIST_LINK.md` | Index-Gist + Claude-KB-Gist URLs (Supervisor-Lesezugang ohne GitHub-Auth) |
@@ -78,11 +82,10 @@ ALLE projektspezifischen Files tragen `_{PROJEKT}` im Namen:
 - `CLAUDE_{PROJEKT}.md`
 - `SUPERVISOR_{PROJEKT}.md`
 - `MARATHON_WORKFLOW_{PROJEKT}.md`
-- `HANDOVER_{PROJEKT}.md`
 - `FEATURE_REQUEST_{PROJEKT}.md`
 - `lessons_{PROJEKT}.md`
 
-Ausnahme: `mjolnir.md` und `PROJECT_BOOTSTRAP_README.md` heißen immer so — sind Single-Slot bzw. Bootstrap-Anker.
+Ausnahme: die Steuer-Files `HANDOVER.json`, `SCHALTPLAN_PROJEKT.json`, `HUMAN_TESTS.json` (+ ihre `.html`-Renderer) und `PROJECT_BOOTSTRAP_README.md` heißen IMMER so — pro Projekt genau eine Datei, Verzeichnis = Kontext. (`SCHALTPLAN_PROJEKT` trägt das Wort PROJEKT fest im Namen, um es vom Meta-Workflow-Schaltplan abzugrenzen — es ist KEIN `{PROJEKT}`-Platzhalter.)
 
 Warum: Coda liest beim Start oft eine globale `CLAUDE.md`. Ohne Projektsuffix verwechselt sie die mit der projektspezifischen. (Zerberus P100)
 
@@ -107,9 +110,9 @@ Hoffnung ≠ Verifikation. Faulheits-Catch #6.
 ### Was Coda dann tut
 
 1. Liest `PROJEKT_ANFRAGE.md` — versteht: Solo-User, mobil + Browser, ~50 Weine, kein Login.
-2. Liest `GLOBAL_LESSONS.md` — versteht: kein Terminal für Chris, mjolnir.md Pflicht, Selbsttest bei Workflow-Themen.
+2. Liest `GLOBAL_LESSONS.md` — versteht: kein Terminal für Chris, HANDOVER.json Pflicht, Selbsttest bei Workflow-Themen.
 3. Liest `SUPERVISOR_KODEX.md` — bestätigt: Chat-Instanz wird Prompts liefern, keine Befehle.
-4. Zieht aus `templates/`: `CLAUDE_PROJEKT_TEMPLATE.md`, `SUPERVISOR_PROJEKT_TEMPLATE.md`, `mjolnir_TEMPLATE.md`, `FEATURE_REQUEST_TEMPLATE.md`, `MARATHON_WORKFLOW_TEMPLATE.md`, `HANDOVER_TEMPLATE.md`, `lessons_TEMPLATE.md`.
+4. Zieht aus `templates/`: `CLAUDE_PROJEKT_TEMPLATE.md`, `SUPERVISOR_PROJEKT_TEMPLATE.md`, `FEATURE_REQUEST_TEMPLATE.md`, `MARATHON_WORKFLOW_TEMPLATE.md`, `lessons_TEMPLATE.md` — und die drei Steuer-Files als physische Kopien: `SCHALTPLAN_PROJEKT.json`, `HANDOVER.json`, `HUMAN_TESTS.json` (+ Renderer `SCHALTPLAN_PROJEKT.html`, `HANDOVER.html`, `HUMAN_TESTS.html`).
 5. Ersetzt `{PROJEKT}` durch `weinkeller-manager` überall (verifiziert per `grep -r "{PROJEKT}"` → 0 Treffer).
 6. Erzeugt Skelettstruktur: `src/`, `tests/`, `docs/`, `.gitignore` (mind. `.env`, `*.log`, `__pycache__/`, `node_modules/`), `README.md` (1 Absatz), `CHANGELOG.md` (Bootstrap-Eintrag).
 7. Erzeugt `CLAUDE_weinkeller-manager.md` mit absoluten Pfaden zu globalen Files.
@@ -118,14 +121,14 @@ Hoffnung ≠ Verifikation. Faulheits-Catch #6.
    - Datenspeicherung: SQLite (lokal) oder Server-DB?
    - Bildupload für Etiketten ja/nein?
    - LLM-Integration für Wein-Empfehlungen jetzt oder Phase 2?
-9. Wartet auf Antworten in `mjolnir.md` (Chris notiert auf dem Handy per Whisper).
-10. Geht dann mit Patch 001 los — Implementierung, Tests, Commit+Push, mjolnir.md am Session-Ende.
+9. Wartet auf Antworten in `HANDOVER.json` (Chris notiert auf dem Handy per Whisper).
+10. Geht dann mit Patch 001 los — Implementierung, Tests, Commit+Push, HANDOVER.json am Session-Ende.
 
 ### Was Coda dabei NIE tut
 
 - Chris bitten `pip install` oder `npm init` selbst auszuführen (Faulheits-Catch #1).
 - Templates raten statt aus `templates/` zu ziehen (Hoffnung ≠ Verifikation, Catch #6).
-- `mjolnir.md` am Session-Ende vergessen (Catch #2).
+- `HANDOVER.json` am Session-Ende vergessen (Catch #2).
 - Tech-Stack-Defaults annehmen wenn der Architekt nichts gesagt hat — lieber fragen.
 - Bootstrap-Scope sprengen mit „ich mach gleich noch X mit" (Catch — kein opportunistisches Refactoring).
 
