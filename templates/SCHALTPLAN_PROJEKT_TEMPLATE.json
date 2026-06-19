@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "version": "1.0",
+    "updated": "{YYYY-MM-DD}",
+    "kind": "projekt-schaltplan",
+    "title": "{PROJEKT} — Projekt-Schaltplan",
+    "intent": "Die PHYSISCHE Modul-/Abhaengigkeitskarte DIESES Projekts: Module + ihre Verbindungen + Reife-Status + Bruchstellen. Das ist die PROJEKT-Sicht (was ist gebaut, was haengt woran) — NICHT die Prozess-Sicht (wie wird vorgegangen, das ist der Meta-Workflow fabrik_meta_workflow.json). Der Supervisor liest das hier VOR dem Routen und entscheidet ueber status + fractures, wohin ein Agent geschickt wird.",
+    "source": "Vom Supervisor pro Projekt kuratiert aus Code-Realitaet + Design-Entscheidungen. Kein Auto-Code-Scan. Status nur belegbar (ref-Feld).",
+    "conventions": {
+      "status": "Reife eines Moduls. Nur belegbar setzen (ref-Feld). Unklar -> nicht raten, dann PLAN oder weglassen.",
+      "honesty": "Status nur mit ref-Beleg (Datei/Commit/Test). Ohne Beleg nicht behaupten.",
+      "gestrichen": "Status '—' = bewusst verworfenes Modul/Ansatz, BLEIBT SICHTBAR (killt Doppelarbeit + verhindert versehentliche Wiederaufnahme)."
+    },
+    "legend": {
+      "status": {
+        "IST": "in Betrieb / fertig",
+        "TEIL": "v1 da, Haertung offen",
+        "PLAN": "geplant, noch nicht gebaut",
+        "—": "bewusst gestrichen/verworfen (bleibt sichtbar)"
+      },
+      "types": {
+        "modul": "interne Komponente / Code-Einheit",
+        "schnittstelle": "API / Grenze nach aussen (Frontend<->Backend, Routing)",
+        "extern": "externer Dienst / Abhaengigkeit (3rd-Party, Modell-Hub)",
+        "store": "Daten- / Modell-Speicher",
+        "infra": "Laufzeit / GPU / Deployment"
+      },
+      "edge_kinds": {
+        "depends": "braucht / haengt ab von",
+        "calls": "ruft auf / nutzt zur Laufzeit",
+        "data": "Datenfluss",
+        "ersetzt": "loest ab (Migration, alter Knoten bleibt als '—' sichtbar)"
+      },
+      "fracture_kinds": {
+        "konflikt": "konkurrierende Wahrheiten",
+        "un-propagiert": "Entscheidung nicht ueberall nachgezogen",
+        "fehlend": "geplant, noch nicht integriert",
+        "dublette": "doppelt / alt benannt"
+      }
+    }
+  },
+  "gruppen": [
+    { "id": "kern", "name": "Kern", "order": 1 },
+    { "id": "frontend", "name": "Frontend", "order": 2 },
+    { "id": "infra", "name": "Infrastruktur", "order": 3 }
+  ],
+  "nodes": [
+    { "id": "bsp.modellwahl", "gruppe": "kern", "name": "Modellwahl / Engine-Switch", "type": "modul", "status": "TEIL",
+      "simple": "BEISPIEL-NODE — Supervisor ersetzt das. Welches Modell laeuft, wie wird zur Laufzeit umgeschaltet.",
+      "expert": "BEISPIEL als Muster fuer einen echten Node: belegter Status (ref-Feld gesetzt), simple+expert getrennt, Gruppe zugeordnet. Realer Inhalt kommt vom Supervisor pro Projekt.",
+      "ref": "BEISPIEL: src/engine/switch.py" },
+    { "id": "bsp.gpu", "gruppe": "infra", "name": "GPU-Lifecycle", "type": "infra", "status": "PLAN",
+      "simple": "BEISPIEL-NODE — VRAM laden/entladen, Modell-Hot-Swap.",
+      "expert": "BEISPIEL: Status PLAN = noch nicht gebaut, daher ist kein ref noetig (nichts zu belegen). Sobald gebaut: status -> TEIL/IST + ref auf die Datei.",
+      "ref": "" }
+  ],
+  "edges": [
+    { "from": "bsp.modellwahl", "to": "bsp.gpu", "kind": "depends", "label": "BEISPIEL: Engine-Switch braucht freien VRAM-Slot" }
+  ],
+  "fractures": [
+    { "id": "fr.bsp", "where": ["bsp.gpu"], "kind": "fehlend", "severity": "mid",
+      "desc": "BEISPIEL-Bruchstelle — Supervisor traegt echte ein. GPU-Lifecycle ist geplant aber noch nicht integriert; bis dahin kein Hot-Swap moeglich." }
+  ],
+  "pflege_protokoll": [
+    "Supervisor liest den Schaltplan VOR dem Routen — fractures + status entscheiden, wohin der naechste Agent geht.",
+    "VOR dem Anlegen pruefen ob Modul/Node schon existiert (gegen Dubletten).",
+    "Am Fenster-Ende: JSON aktualisieren (SSOT). Gestrichenes ('—') sichtbar lassen, nicht loeschen.",
+    "Dauerhaftes (Modul-Status, verworfene Ansaetze, Bruchstellen) gehoert HIERHER — nicht in den Handover.",
+    "Status nur mit ref-Beleg. Unklar -> PLAN oder weglassen, nicht raten.",
+    "SCHALTPLAN_PROJEKT.html zieht diese JSON beim Oeffnen — JSON ist SSOT, HTML mischt nichts dazu."
+  ]
+}
