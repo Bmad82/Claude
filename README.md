@@ -25,19 +25,23 @@ Architekt fasst kein Terminal an. Supervisor schickt keinen Inline-Befehl. Coda 
 |---|---|
 | [`README.md`](README.md) | Diese Datei — Einstieg, Drei-Rollen-Modell, Verzeichniserklärung |
 | [`REPO_INDEX.md`](REPO_INDEX.md) | Auto-gepflegtes Verzeichnis mit Raw-Links für Supervisor-Navigation |
-| [`DESIGN.md`](DESIGN.md) | Globale UI-Layer-Referenz (Farben, Typografie, Komponenten, Mobile-Regeln) |
+| [`INVENTORY.md`](INVENTORY.md) | Bestandsaufnahme + Aufräum-Mapping (ordner-cleanup, 2026-06-19) |
+| [`DESIGN.md`](DESIGN.md) / [`DESIGN_KINTSUGI.md`](DESIGN_KINTSUGI.md) | Globale UI-Referenz (Schema) + befülltes Kintsugi-Designsystem |
+| [`Projektanfrage.html`](Projektanfrage.html) | Intake-Formular — Pipeline-Einstieg (Schaltplan-Knoten `in.start`) |
 | [`GLOBAL_LESSONS.md`](GLOBAL_LESSONS.md) | Universelle Lessons: 6 Faulheits-Catches, Selbsttest-Pattern, Bibel-Format |
 | [`SUPERVISOR_KODEX.md`](SUPERVISOR_KODEX.md) | NIE/IMMER-Listen für Chat-Supervisor (gilt projektübergreifend) |
 | [`PROJECT_BOOTSTRAP_README.md`](PROJECT_BOOTSTRAP_README.md) | Anleitung: frische Coda-Session setzt neues Projekt auf |
 | [`DECISIONS_PENDING.md`](DECISIONS_PENDING.md) | Offene Meta-Layer-Architektur-Fragen + getroffene Entscheidungen |
+| [`GIST_LINK.md`](GIST_LINK.md) | Gist-Brücke: Index- + Claude-KB-Gist-URLs (Supervisor-Lesezugang) |
 | [`mjolnir.md`](mjolnir.md) | Session-Abschluss-State (Single-Slot, STATUS-Header) |
+| [`schaltplan/`](schaltplan/) | **Steuer-/Plan-Files** — Fabrik-Meta-Workflow als JSON (SSOT) + HTML-Render |
 | [`workflow/`](workflow/) | Marathon-Workflow-Dokumentation (Rollen, Datei-Hierarchie, Session-Zyklus, Catches) |
-| [`templates/`](templates/) | Bootstrap-Vorlagen für neue Projekte (CLAUDE, SUPERVISOR, mjolnir, FEATURE_REQUEST u.a.) |
+| [`templates/`](templates/) | Bootstrap-Vorlagen für neue Projekte (CLAUDE, SUPERVISOR, mjolnir, FEATURE_REQUEST, Übergabe u.a.) |
 | [`lessons/`](lessons/) | Technologie-spezifische Lessons (siehe [`lessons/INDEX.md`](lessons/INDEX.md) für Hierarchie) |
+| [`concepts/`](concepts/) | Konzept-/Strategie-Dokumente (Faulheits-Catch-Ursprung, Orchestrator-Konzept, Token-Opt) |
 | [`bugs/`](bugs/) | Projektspezifische Bug-Tracker (pro Projekt ein Unterordner) |
-| [`concepts/`](concepts/) | Historische Konzept-Dokumente (Ursprünge, Architektur-Skizzen) |
 | [`_erledigt/`](_erledigt/) | Archiv erledigter FEATURE_REQUEST-Aufträge (Audit-Historie, nicht löschen) |
-| [`_drafts_gist/`](_drafts_gist/) | Konzept-Entwürfe für Phase-3-Gist-Migration (nicht aktiv) |
+| [`_archive/`](_archive/) | Abgelöste/veraltete Inhalts- & Struktur-Dateien (Audit, nicht live — siehe [`_archive/README.md`](_archive/README.md)) |
 
 ## Einbindung in Projekte
 

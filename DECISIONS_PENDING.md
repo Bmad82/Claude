@@ -12,7 +12,28 @@ Optionen|A) Eigener FEATURE_REQUEST `lessons-konsolidierung` mit Phase A-D Selbs
 Blockiert|nichts unmittelbar — die Dubletten sind nicht schädlich, nur redundant. Eskalation wenn das Volumen weiter wächst.
 Eingetragen|2026-05-17 (aufraeumarbeiten-post-catch verschoben)
 
+### 2026-06-19 | Deferred aus ordner-cleanup: Design/Intake-Ablage + LESSONS_KONSOLIDIERT-Extraktion
+Frage|(a) Sollen `DESIGN.md`, `DESIGN_KINTSUGI.md`, `Projektanfrage.html` in eigene Ordner `design/` bzw. `intake/`? (b) Sollen die unique alten Lessons aus `_archive/LESSONS_KONSOLIDIERT.md` (PWA, CSS-Industriepanel, Claude-Design-Workflow) nach `lessons/` extrahiert werden, bevor die Datei rein archiviert bleibt?
+Hintergrund|ordner-cleanup hat den unstrittigen Teil ausgeführt. (a) wurde NICHT gemacht, weil `DESIGN.md` per HARTEM Absolutpfad in Templates verdrahtet ist (DESIGN_PROJEKT_TEMPLATE u.a.) — verschieben bräuchte ein Template-Referenz-Update, und die drei Design/Intake-Files bilden eine Gruppe, die man zusammen bewegen sollte. (b) Extraktion einzelner Lessons ist Inhalts-Arbeit mit Verlust-Risiko → nicht im Cleanup geraten. LESSONS_KONSOLIDIERT liegt jetzt vollständig in `_archive/` (nichts verloren).
+Optionen|A) So lassen (Design-Files am Root, KONSOLIDIERT nur archiviert) | B) `design/` + `intake/` anlegen und alle DESIGN.md-Referenzen in Templates nachziehen | C) Eigener Mini-FR `lessons-konsolidierung` der KONSOLIDIERT + Zerberus-Lessons gemeinsam gegen GLOBAL_LESSONS abgleicht
+Blockiert|nichts — rein kosmetisch/optional.
+Eingetragen|2026-06-19 (ordner-cleanup)
+
 ## Getroffene Entscheidungen
+
+### 2026-06-19 | Ordner-Cleanup ausgeführt (Mapping aus INVENTORY)
+Entscheidung|Zielstruktur Templates/ Lessons/ Workflow/ + neue `schaltplan/`-Ablage hergestellt. Neu: `schaltplan/` (fabrik_meta_workflow.json+html), `_archive/` (abgelöste/veraltete Files). `_drafts_gist/` aufgelöst. Verschoben: 3 Root-FR-Archive → `_erledigt/`, Einmal-Reports (REPO_INVENTORY/SUPERVISOR_BRIEFING/GIT_DIAGNOSE) + Gist-Drafts + LESSONS_KONSOLIDIERT + GLOBAL_LESSONS_KONTEXT → `_archive/`, WORKFLOW_SUMMARY → `workflow/`, ORCHESTRATOR_KONZEPT_v2 + TOKEN_OPT_RULES → `concepts/`, uebergabe_template_v1_0 → `templates/`. `workflow/__pycache__/*.pyc` gelöscht (regenerierbar, gitignored).
+Begründung|Root war auf ~28 lose Files gewachsen (Unübersichtlichkeit). Mapping kam aus der Phase-1-`INVENTORY.md`. Reversibilität gewahrt: eigener Branch `cleanup/ordner-cleanup` + Baseline-Commit als Restore-Punkt; `git mv` statt rm; Löschen nur beim regenerierbaren `.pyc`.
+Alternativen|A) Alles am Root lassen — Status quo, unübersichtlich | B) Hart löschen statt archivieren — irreversibel, verwirft Audit-Historie
+Konsequenz|Absolutpfad-gepinnte Files (GLOBAL_LESSONS, SUPERVISOR_KODEX, DECISIONS_PENDING, PROJECT_BOOTSTRAP_README, GIST_LINK, DESIGN) bewusst am Root belassen — kein Template-Pfad gebrochen. `FEATURE_REQUEST_CLAUDE_ERLEDIGT.md` (Root, Auftrag mw-v2a) kollidierte beim Move mit der gleichnamigen Datei in `_erledigt/` (Auftrag faulheits-catch-integration) — kollisionssicher umbenannt zu `FEATURE_REQUEST_mw-v2a-kontextentlastung_ERLEDIGT.md`. REPO_INDEX + README + GLOBAL_LESSONS aktualisiert. `FEATURE_REQUEST_supervisor-aufbau.md` (separater, noch nicht gestarteter Auftrag) bewusst untracked liegen gelassen.
+Patch-Referenz|ordner-cleanup (2026-06-19)
+
+### 2026-06-19 | GLOBAL_LESSONS_KONTEXT in GLOBAL_LESSONS zurückgemergt, dann archiviert
+Entscheidung|Die fünf nur im KONTEXT-Zwilling vorhandenen „Anlass/Lesson generalisierbar"-Prosablöcke (Progressive Disclosure, Lessons-Retrieval, Stand-Anker, Session-End-Mechanik, Session-Auffüll-Regel) in `GLOBAL_LESSONS.md` zurückgeführt. KONTEXT dann nach `_archive/` verschoben.
+Begründung|Zwei konkurrierende „globale Lessons"-Wahrheiten sind das Anti-Pattern, das der Workflow killt. KONTEXT war älter (fehlende 5 neueste Lessons), aber prosareicher. Merge holt die Reasoning-Prosa zurück, ohne die neueren Lessons zu verlieren.
+Alternativen|A) KONTEXT hart löschen — Prosa-Verlust | B) Beide behalten — Drift-Risiko bleibt
+Konsequenz|Verifiziert per `comm -23` der `##`-Header: keine KONTEXT-Sektion fehlt in GLOBAL_LESSONS (21 vs 16 Sektionen, Anlass-Blöcke 10→15). KONTEXT bleibt als historischer Beleg in `_archive/`.
+Patch-Referenz|ordner-cleanup (2026-06-19)
 
 ### 2026-05-21 | v2b-Paket 1 Hooks bleiben opt-in (settings.json NICHT committed)
 Entscheidung|Die drei Hook-Scripts (`scripts/lessons_lookup_auto.py`, `scripts/validate_edit.py`, `scripts/session_end_check.py`) sind im Zerberus-Repo committed und verifiziert. Die Verdrahtung in `.claude/settings.json` wird NICHT committed. Chris aktiviert sie nach Bedarf in `.claude/settings.local.json` (Variante B aus `scripts/HOOK_SETUP.md`).

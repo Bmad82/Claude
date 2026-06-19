@@ -1,52 +1,33 @@
 # mjolnir.md — Claude (Meta-Repo)
 
 ```
-STATUS|FERTIG|AUFTRAG: orchestrator-konsolidierung|FORTSCHRITT: 3 von 3 Paketen | EINE Coding-Session|NÄCHSTE SESSION: BACKLOG/Auffüll — keine FR offen
+STATUS|FERTIG|AUFTRAG: ordner-cleanup|FORTSCHRITT: 6/6 Schritte | EINE Session|NÄCHSTE SESSION: FEATURE_REQUEST_supervisor-aufbau.md liegt bereit (untracked, separater Auftrag)
 ```
 
 **STATUS:** FERTIG
-**AUFTRAG:** `FEATURE_REQUEST_CLAUDE.md` orchestrator-konsolidierung (Drei Arbeitspakete: GLOBAL_LESSONS-Updates, ORCHESTRATOR_KONZEPT_v2-Korrekturen, Template-Check). Umbenannt zu `FEATURE_REQUEST_CLAUDE_orchestrator-konsolidierung_ERLEDIGT.md`.
-**FORTSCHRITT:** Alle drei Pakete in EINER Coding-Session. Paket 2 (ORCHESTRATOR_KONZEPT_v2.md) — `--bare` durch `--settings ./worker-config.json` ersetzt mit OAuth-Begründung, Agent-Teams-Billing als geklärt markiert, Weg-B-Status aktualisiert, Empfohlene Reihenfolge entsprechend angepasst. Paket 1 (GLOBAL_LESSONS.md) — 4 neue Lessons oben angehängt: `--bare` bricht OAuth, Billing-Split-Faustformel, Credits verfallen ohne Claim, Model-IDs mit Datum-Suffix sterben (alle im Bibel-Format + Anlass-Prosa). Paket 3 (Templates) — `grep "20250514"` über `templates/` = 0 Treffer (sauber), Billing-Kommentar als HTML-Block in `CLAUDE_PROJEKT_TEMPLATE.md` eingefügt; FEATURE_REQUEST_TEMPLATE nicht angefasst (Billing-Relevanz wäre Overengineering, ist globale Lesson). Claude-KB-Gist (`48b997e5...`) per `gist_publisher.py --patch` aktualisiert mit neuer GLOBAL_LESSONS. REPO_INDEX.md minimal-Update (Datum + Drift-Hinweis), kein voller Re-Sync.
-**NÄCHSTE SESSION:** Keine FR offen. Auffüll-Regel greift falls Token-Budget. REPO_INDEX hat seit 2026-05-18 erheblichen Drift (mw-v2a/v2b, Kintsugi, Orchestrator-Konzept) — als eigener Auftrag vorgemerkt, nicht hier gefixt um Diff-Noise zu vermeiden.
+**AUFTRAG:** `ordner-cleanup` — INVENTORY-Mapping ausgeführt (gated, reversibel). FR umbenannt zu `_erledigt/FEATURE_REQUEST_ordner-cleanup_ERLEDIGT.md`.
+**FORTSCHRITT:** Alle 6 Schritte in EINER Session. Restore-Punkt → GLOBAL_LESSONS-Merge → Absolutpfad-Gate → Moves → REPO_INDEX/README/DECISIONS nachgezogen → commit/push → mjolnir.
+**NÄCHSTE SESSION:** `FEATURE_REQUEST_supervisor-aufbau.md` ist der nächste, eigenständige Auftrag (liegt untracked im Root, bewusst nicht angefasst). Optional offen: Design/Intake-Ablage + LESSONS_KONSOLIDIERT-Extraktion (siehe DECISIONS_PENDING).
 
 ---
 
-## Was diese Session war
+## Restore-Punkt (Reversibilität)
 
-Coda hat `FEATURE_REQUEST_CLAUDE.md` (orchestrator-konsolidierung) als Sammel-Auftrag mit drei Paketen abgearbeitet. Anlass: ORCHESTRATOR_KONZEPT_v2 hatte `--bare` als Worker-Isolation empfohlen — Web-Recherche zur Verifikation zeigte OAuth-Bruch. Gleichzeitig drei neue Anthropic-Billing-/Modell-Themen (Billing-Split ab 15.06., Credit-Claim, Modell-ID-Retirement) als globale Lessons hinterlegen, damit sie projektübergreifend gelten.
+- Branch `cleanup/ordner-cleanup`, ff-gemergt auf `main`.
+- Pre-Cleanup `main` = `4321adb`. Baseline-Commit (Ist-Stand vor Moves) = `408ec48`.
+- Vollständiger Rückbau: `git reset --hard 4321adb` (verwirft den gesamten Cleanup).
+- Es wurde nur EIN File hart gelöscht: `workflow/__pycache__/*.pyc` (regenerierbar, gitignored). Alles andere ist verschoben/archiviert, nichts verloren.
 
-## Was geliefert wurde
+---
 
-**Paket 2 — `ORCHESTRATOR_KONZEPT_v2.md` korrigiert (Claude-Repo)**
-- Sektion „Was sich NICHT ändert": `--bare` ersetzt durch `--settings ./worker-config.json` mit `{"disableAllHooks": true}`. OAuth-Bruch erklärt, Issue #48840 verlinkt.
-- Tabelle „Technische Schlüssel-Findings": Zwei Zeilen — saubere Hook-Isolation (Abo-tauglich) + `--bare` mit Warnhinweis.
-- „Offene Punkte" Punkt 1: Agent-Teams-Billing als ✅ GEKLÄRT markiert (interaktiv = Abo, aber Rate-Limit proportional).
-- „Drei Lösungswege" Weg B: Offene Frage → Geklärt, als mittelfristige Option.
-- „Empfohlene Reihenfolge": Weg A jetzt sofort, Weg B mittelfristig, Weg C Endgame.
+## Was Chris physisch prüfen sollte (Stichprobe)
 
-**Paket 1 — `GLOBAL_LESSONS.md` (Claude-Repo)**
-Vier neue Sektionen oben angehängt (nach Header-Block), jeweils im Bibel-Format (Pipe-Line) + Anlass-Block (fett-prosaisch) + Generalisierung:
-- `--bare` bricht OAuth (2026-05-23, Orchestrator-Konzept)
-- Billing-Split-Faustformel (2026-05-23, Anthropic Billing)
-- Credits verfallen ohne Claim (2026-05-23, Anthropic Billing)
-- Model-IDs mit Datum-Suffix sterben (2026-05-23, Anthropic)
+- Root ist von ~28 auf 13 Dateien runter — kurz drüberschauen ob die Struktur passt.
+- `schaltplan/fabrik_meta_workflow.html` im Browser öffnen: lädt es die JSON noch (relativer fetch, beide liegen jetzt zusammen in `schaltplan/`)? Sollte unverändert funktionieren.
+- Gist-Abgleich (Claude-KB-Gist) bewusst NICHT angefasst — laut FR macht Chris den Repo/Gist-Abgleich später selbst.
 
-**Paket 3 — Template-Check (Claude-Repo)**
-- 3a: `CLAUDE_PROJEKT_TEMPLATE.md` mit HTML-Kommentar-Block zur Billing-Split-Warnung versehen (oben nach dem TEMPLATE-Kommentar).
-- 3b: `FEATURE_REQUEST_TEMPLATE.md` — KEINE Änderung (Empfehlung aus FR: Overengineering vermeiden, Billing ist globale Lesson).
-- 3c: `grep "20250514" templates/` — 0 Treffer, sauber.
+---
 
-**Gist-Sync:** Claude-KB-Gist (`48b997e53ff331eeefef53c810ee7331`) per `python workflow/gist_publisher.py --patch ... /tmp/claude_kb_staging` → `PATCHED=GLOBAL_LESSONS.md`. Index-Gist + Projekt-Gists nicht betroffen.
+## Auftragshistorie (kurz)
 
-**REPO_INDEX.md:** Minimal-Update (Datum + Drift-Hinweis). Voller Re-Sync ist Folge-Auftrag.
-
-## Bekannte Limitations
-
-- REPO_INDEX hat erheblichen Drift (Stand 2026-05-18 vs. aktueller Repo-Stand). Neue Dateien wie `DESIGN_KINTSUGI.md`, `GLOBAL_LESSONS_KONTEXT.md`, `ORCHESTRATOR_KONZEPT_v2.md`, `Projektanfrage.html`, `mjolnir.md`, `scripts/`, `_drafts_gist/WORKFLOW_SUMMARY.md` fehlen im Tree.
-- `--settings`-Worker-Config-Beispiel im ORCHESTRATOR_KONZEPT_v2.md ist nur Snippet `{"disableAllHooks": true}` — falls weitere Felder (z.B. `disableAllSkills`) erwünscht sind, müssten die in einer Follow-up-Session ergänzt werden.
-
-## Was Chris noch machen muss (physisch)
-
-- **Vor dem 15. Juni 2026:** Anthropic-Aktivierungs-Mail abwarten (~8. Juni) und auf den Claim-Link klicken, sonst verfallen die monatlichen Agent-SDK-Credits.
-- **Optional:** Mjölnir-Backend von `claude -p` auf interaktiven Startweg umstellen (siehe ORCHESTRATOR_KONZEPT_v2 Weg A — Bildschirm-Klick via RustDesk). Eigene FR sinnvoll.
-- **Optional:** `grep -r "20250514" .` über alle weiteren Projekt-Repos laufen lassen (außerhalb des Claude-Repos prüfen).
+INVENTORY-Mapping ausgeführt: Schaltplan-Ablage `schaltplan/` neu, `_archive/` für abgelöste Files neu, `_drafts_gist/` aufgelöst. 17 `git mv`-Moves (History erhalten), 1 `.pyc` gelöscht. GLOBAL_LESSONS_KONTEXT-Prosa in GLOBAL_LESSONS zurückgemergt (per `comm -23` verifiziert, keine Lesson verloren), dann KONTEXT archiviert. Namens-Kollision abgefangen: Root-`FEATURE_REQUEST_CLAUDE_ERLEDIGT.md` (mw-v2a) hätte die gleichnamige `_erledigt/`-Datei (faulheits-catch) überschrieben → kollisionssicher zu `FEATURE_REQUEST_mw-v2a-kontextentlastung_ERLEDIGT.md` umbenannt. Absolutpfad-gepinnte Files (GLOBAL_LESSONS, KODEX, DECISIONS_PENDING, BOOTSTRAP, GIST_LINK, DESIGN) am Root belassen → kein Template-Pfad gebrochen. REPO_INDEX voll re-synct (alte Drift mitgeheilt), README-Struktur + DECISIONS_PENDING aktualisiert.
