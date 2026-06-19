@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human-Tests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#08080c;--ember:#c4622d;--gold:#d4a843;--surface:#0f0f16;--mist:#12121a;
+  --border:#1e1e2e;--text:#c8c8d8;--text-dim:#6b6b8a;--warn:#ef4444;--pass:#4caf72;--open:#6b6b8a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--text);font-family:'Crimson Pro',serif;font-weight:300;padding-bottom:80px;}
+.wrap{max-width:920px;margin:0 auto;padding:48px 28px 0;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ember);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,60px);font-weight:900;letter-spacing:-2px;line-height:1;}
+h1 em{font-style:italic;font-weight:400;color:var(--gold);}
+.sub{font-size:17px;color:var(--text-dim);line-height:1.6;margin-top:16px;max-width:640px;}
+.sub strong{color:var(--text);font-weight:400;}
+.meta-line{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-top:18px;}
+.meta-line span{color:var(--gold);}
+.summary{display:flex;gap:18px;margin-top:22px;flex-wrap:wrap;}
+.sm{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);}
+.sm b{font-family:'Playfair Display',serif;font-size:20px;}
+.sm.offen b{color:var(--open);}.sm.getestet b{color:var(--pass);}.sm.fehlgeschlagen b{color:var(--warn);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3;margin:36px 0 28px;}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.tab{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;padding:11px 16px;cursor:pointer;color:var(--text-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab .cnt{font-size:10px;opacity:0.7;margin-left:6px;}
+
+.item{border:1px solid var(--border);border-radius:3px;background:var(--surface);padding:16px 18px;margin-bottom:10px;display:grid;grid-template-columns:28px 1fr;gap:14px;border-left:3px solid var(--border);}
+.item.st-getestet{border-left-color:var(--pass);}
+.item.st-fehlgeschlagen{border-left-color:var(--warn);}
+.item.st-offen{border-left-color:var(--open);}
+.box{font-size:20px;line-height:1;padding-top:2px;}
+.item.st-offen .box{color:var(--open);}
+.item.st-getestet .box{color:var(--pass);}
+.item.st-fehlgeschlagen .box{color:var(--warn);}
+.item-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px;}
+.item-id{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);background:#d4a84310;padding:2px 7px;border-radius:2px;}
+.item-st{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.st-offen .item-st{color:var(--open);border:1px solid var(--border);}
+.st-getestet .item-st{color:var(--pass);border:1px solid #4caf7230;}
+.st-fehlgeschlagen .item-st{color:var(--warn);border:1px solid #ef444540;}
+.item-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:auto;}
+.item-desc{font-size:16px;color:var(--text);line-height:1.5;}
+.item-note{font-size:14px;color:var(--text-dim);line-height:1.5;margin-top:6px;border-top:1px solid #ffffff08;padding-top:6px;}
+.empty{font-size:15px;color:var(--text-dim);font-style:italic;}
+
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ember);letter-spacing:4px;text-transform:uppercase;margin:36px 0 16px;display:flex;align-items:center;gap:14px;}
+.sec-label::after{content:'';height:1px;flex:1;background:var(--ember);opacity:0.3;}
+.protokoll li{font-size:15px;color:var(--text-dim);line-height:1.55;margin-bottom:9px;list-style:none;padding-left:20px;position:relative;}
+.protokoll li::before{content:'·';position:absolute;left:6px;color:var(--gold);font-size:20px;line-height:1;}
+footer{max-width:920px;margin:40px auto 0;padding:24px 28px 0;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:2px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+footer span{color:var(--gold);}
+.src-pill{font-size:9px;padding:3px 8px;border:1px solid var(--border);border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Nur ein Mensch kann das</div>
+  <h1>Human-<em>Tests.</em></h1>
+  <p class="sub">Tests, die kein Skript erreicht: echte Geräte, Mikrofon, Touch, VRAM. <strong>Laufend gepflegt</strong> — Items kommen dazu, werden abgehakt, nichts geht unter.</p>
+  <div class="meta-line">PROJEKT: <span id="m-proj"></span> · AKTUALISIERT: <span id="m-date"></span> · SSOT: <span>HUMAN_TESTS.json</span></div>
+  <div class="summary" id="summary"></div>
+
+  <div class="divider"></div>
+  <div class="tabs" id="tabs"></div>
+  <div id="items"></div>
+
+  <div class="sec-label">Pflege-Protokoll</div>
+  <ul class="protokoll" id="protokoll"></ul>
+</div>
+<footer>
+  <div>HUMAN-TESTS — <span>Abnahme-Liste</span></div>
+  <div>Daten: <span class="src-pill" id="src"></span></div>
+</footer>
+
+<script>
+const FALLBACK={"schema":"human-tests/v1","projekt":"{PROJEKT}","aktualisiert":"{YYYY-MM-DD}","legend":{"status":{"offen":"noch nicht getestet","getestet":"OK","fehlgeschlagen":"NICHT OK"}},"kategorien":[{"id":"audio","name":"Audio / Mikrofon","items":[{"id":"AUD-01","beschreibung":"BEISPIEL — Mikrofon-Aufnahme startet bei Tastendruck.","status":"getestet","datum":"{YYYY-MM-DD}","notiz":"BEISPIEL: lief auf Pixel 7."},{"id":"AUD-02","beschreibung":"BEISPIEL — Transkription < 2s.","status":"offen","datum":"","notiz":""}]},{"id":"ui","name":"UI / Touch","items":[{"id":"UI-01","beschreibung":"BEISPIEL — Engine-Switch-Reiter wechselt Modell.","status":"fehlgeschlagen","datum":"{YYYY-MM-DD}","notiz":"BEISPIEL: altes Modell bleibt bis Reload aktiv."}]}],"pflege_protokoll":["Neuer Mensch-Test -> sofort als Item 'offen'.","fehlgeschlagen -> Bruchstelle im SCHALTPLAN."]};
+
+let DATA=null,active=0;
+function esc(t){const d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+const BOX={offen:'☐',getestet:'☑',fehlgeschlagen:'☒'};
+
+async function load(){
+  if(location.protocol!=='file:'){
+    try{const r=await fetch('HUMAN_TESTS.json',{cache:'no-store'});if(r.ok)return{data:await r.json(),source:'HUMAN_TESTS.json (live)'};}catch(e){}
+  }
+  return{data:FALLBACK,source:'eingebettet (Template)'};
+}
+
+function allItems(){return (DATA.kategorien||[]).flatMap(k=>k.items||[]);}
+
+function render({data,source}){
+  DATA=data;
+  document.getElementById('m-proj').textContent=data.projekt||'—';
+  document.getElementById('m-date').textContent=data.aktualisiert||'—';
+  document.getElementById('src').textContent=source;
+
+  const items=allItems();
+  const cnt=s=>items.filter(i=>i.status===s).length;
+  document.getElementById('summary').innerHTML=
+    '<div class="sm offen"><b>'+cnt('offen')+'</b> offen</div>'+
+    '<div class="sm getestet"><b>'+cnt('getestet')+'</b> getestet</div>'+
+    '<div class="sm fehlgeschlagen"><b>'+cnt('fehlgeschlagen')+'</b> fehlgeschlagen</div>';
+
+  const tabs=document.getElementById('tabs');tabs.innerHTML='';
+  (data.kategorien||[]).forEach((k,i)=>{
+    const t=document.createElement('div');t.className='tab'+(i===active?' active':'');
+    t.innerHTML=esc(k.name)+'<span class="cnt">'+(k.items||[]).length+'</span>';
+    t.addEventListener('click',()=>{active=i;renderItems();[...tabs.children].forEach((c,j)=>c.classList.toggle('active',j===i));});
+    tabs.appendChild(t);
+  });
+  renderItems();
+
+  document.getElementById('protokoll').innerHTML=(data.pflege_protokoll||[]).map(p=>'<li>'+esc(p)+'</li>').join('');
+}
+
+function renderItems(){
+  const k=(DATA.kategorien||[])[active];
+  const root=document.getElementById('items');
+  if(!k||!(k.items||[]).length){root.innerHTML='<div class="empty">— keine Items in dieser Kategorie —</div>';return;}
+  root.innerHTML=k.items.map(it=>{
+    const st=it.status||'offen';
+    return '<div class="item st-'+st+'">'+
+      '<div class="box">'+(BOX[st]||'☐')+'</div>'+
+      '<div><div class="item-top">'+
+        '<span class="item-id">'+esc(it.id||'')+'</span>'+
+        '<span class="item-st">'+esc(st)+'</span>'+
+        (it.datum?'<span class="item-date">'+esc(it.datum)+'</span>':'')+
+      '</div>'+
+      '<div class="item-desc">'+esc(it.beschreibung||'')+'</div>'+
+      (it.notiz?'<div class="item-note">'+esc(it.notiz)+'</div>':'')+
+      '</div></div>';
+  }).join('');
+}
+
+load().then(render);
+</script>
+</body>
+</html>

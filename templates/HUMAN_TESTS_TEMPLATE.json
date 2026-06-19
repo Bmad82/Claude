@@ -1,0 +1,45 @@
+{
+  "schema": "human-tests/v1",
+  "kind": "human-tests",
+  "_zweck": "Strukturierte Sammlung der Tests die NUR ein Mensch ausfuehren kann: echte Geraete, Mikrofon, Kamera, UI-Klicks die kein Skript erreicht, VRAM-Messung, App-Store-Push, Hardware-Reset. Wird LAUFEND gepflegt — Items kommen dazu und werden abgehakt. Nichts darf untergehen.",
+  "projekt": "{PROJEKT}",
+  "aktualisiert": "{YYYY-MM-DD}",
+  "legend": {
+    "status": {
+      "offen": "noch nicht von Chris getestet",
+      "getestet": "von Chris ausgefuehrt, Ergebnis OK",
+      "fehlgeschlagen": "von Chris ausgefuehrt, Ergebnis NICHT OK — Notiz erklaert was"
+    }
+  },
+  "kategorien": [
+    {
+      "id": "audio",
+      "name": "Audio / Mikrofon",
+      "items": [
+        { "id": "AUD-01", "beschreibung": "BEISPIEL — Mikrofon-Aufnahme startet bei Tastendruck, Pegel sichtbar.", "status": "getestet", "datum": "{YYYY-MM-DD}", "notiz": "BEISPIEL: lief auf Pixel 7, Pegel reagiert." },
+        { "id": "AUD-02", "beschreibung": "BEISPIEL — Transkription erscheint < 2s nach Sprech-Ende.", "status": "offen", "datum": "", "notiz": "" }
+      ]
+    },
+    {
+      "id": "ui",
+      "name": "UI / Touch",
+      "items": [
+        { "id": "UI-01", "beschreibung": "BEISPIEL — Engine-Switch-Reiter wechselt sichtbar das aktive Modell.", "status": "fehlgeschlagen", "datum": "{YYYY-MM-DD}", "notiz": "BEISPIEL: Reiter wechselt, aber altes Modell bleibt aktiv bis Reload — Bug. Supervisor traegt echten Stand ein." }
+      ]
+    },
+    {
+      "id": "hardware",
+      "name": "Hardware / GPU",
+      "items": [
+        { "id": "HW-01", "beschreibung": "BEISPIEL — VRAM-Verbrauch nach Modell-Load unter 8 GB (nvidia-smi).", "status": "offen", "datum": "", "notiz": "" }
+      ]
+    }
+  ],
+  "pflege_protokoll": [
+    "Neuer Mensch-Test entdeckt -> sofort als Item mit status 'offen' anlegen, nicht im Handover vergessen.",
+    "Chris hat getestet -> status + datum + notiz setzen (getestet | fehlgeschlagen).",
+    "fehlgeschlagen -> Bruchstelle/Bug-Node im SCHALTPLAN ergaenzen, Item bleibt bis Re-Test.",
+    "Kategorien (Reiter) frei erweiterbar. Flache Keys halten, damit HUMAN_TESTS.html sie als Reiter + Abhakboxen rendern kann.",
+    "HUMAN_TESTS.html zieht diese JSON beim Oeffnen — JSON ist SSOT, HTML mischt nichts dazu."
+  ]
+}
