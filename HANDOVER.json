@@ -1,0 +1,43 @@
+{
+  "schema": "handover/v1",
+  "kind": "handover",
+  "projekt": "Claude (Meta-Repo)",
+  "aktualisiert": "2026-06-19",
+  "status": {
+    "status": "FERTIG",
+    "auftrag": "supervisor-aufbau — Handover-JSON, Projekt-Schaltplan, Human-Test-Liste, Kodex- & Bootstrap-Integration",
+    "fortschritt": "8 von 8 Schritten, eine Session. Selbsttest A–D durch (B grün; C bestätigte die Falle 'verworfener Ansatz nur im Handover' → Guard gehärtet). 4 Commits auf main.",
+    "naechste_session": "entfällt (FERTIG). Optional: Folge-Aufgaben aus DECISIONS_PENDING (Hook-Scripts im Zerberus-Repo auf HANDOVER.json umstellen; Fracture fr.mjolnir-handover im Meta-Workflow schließen).",
+    "warnung": null,
+    "chris_physisch": [
+      "C:-Laufwerk war während des Laufs zeitweise zu 100% voll (0–444 MB frei, jetzt ~2.5 GB) — Speicher freiräumen, sonst brechen künftige Writes/Commits ab.",
+      "Optional visuell prüfen: templates/HANDOVER.html, SCHALTPLAN_PROJEKT.html, HUMAN_TESTS.html im Browser öffnen (ziehen ihre JSON live, Fallback eingebettet).",
+      "Untracked AUFTRAG_ANTIGRAVITY.md im Root tauchte während der Session auf — nicht von diesem Auftrag, bewusst nicht angefasst."
+    ]
+  },
+  "historie": [
+    {
+      "datum": "2026-06-19",
+      "auftrag": "ordner-cleanup",
+      "ergebnis_kurz": "Root von ~28 auf 13 Files; schaltplan/ + _archive/ neu; GLOBAL_LESSONS-Merge. (Übernommen aus altem mjolnir.md — erster Eintrag des neuen HANDOVER.json.)"
+    },
+    {
+      "datum": "2026-06-19",
+      "auftrag": "supervisor-aufbau",
+      "ergebnis_kurz": "mjolnir→Handover (JSON) umbenannt+umgebaut; SCHALTPLAN_PROJEKT- & HUMAN_TESTS-Templates + 3 HTML-Renderer; Kodex Steuer-Files/Routing/Gedächtnis-vs-Staffelstab; Bootstrap zieht die 3 Files ab Tag 1; Selbsttest A–D; 4 Commits. Bibel-Detail-Handover abgelöst → _archive. Orchestrator-Software 'Mjölnir' behält Namen. Decisions dokumentiert."
+    }
+  ],
+  "lifecycle": {
+    "FERTIG": "Nächster Session-Start: Handover lesen, status-Kopf = FERTIG -> Auftrag durch. FEATURE_REQUEST_supervisor-aufbau.md -> _erledigt/..._ERLEDIGT.md. historie bleibt (append-only).",
+    "IN_ARBEIT": "fortsetzen, FEATURE_REQUEST nicht umbenennen, abweichender neuer FR -> _QUEUED.md.",
+    "BLOCKIERT": "DECISIONS_PENDING.md prüfen, Blocker auflösen/eskalieren.",
+    "_single_slot": "status = Single-Slot (überschrieben). historie = Audit-Faden (akkumuliert)."
+  },
+  "pflege_protokoll": [
+    "status-Objekt am Fenster-Ende KOMPLETT neu schreiben (überschreiben, nicht mergen).",
+    "historie: pro Lauf GENAU EINEN Eintrag anhängen (append-only).",
+    "Dauerhaftes (Modul-Status, verworfene Ansätze, Brüche) -> SCHALTPLAN, NICHT in den Handover.",
+    "chris_physisch: '— nichts —' wenn leer, Sektion nie löschen.",
+    "HANDOVER.html zieht diese JSON beim Öffnen — JSON ist SSOT."
+  ]
+}
