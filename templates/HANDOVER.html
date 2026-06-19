@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handover — Staffelstab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#08080c; --ember:#c4622d; --gold:#d4a843; --surface:#0f0f16; --mist:#12121a;
+  --border:#1e1e2e; --text:#c8c8d8; --text-dim:#6b6b8a;
+  --warn:#ef4444; --pass:#4caf72; --inwork:#d4a843;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--text);font-family:'Crimson Pro',serif;font-weight:300;padding:0 0 80px;}
+.wrap{max-width:880px;margin:0 auto;padding:48px 28px 0;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ember);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,56px);font-weight:900;letter-spacing:-2px;line-height:1;}
+h1 em{font-style:italic;font-weight:400;color:var(--gold);}
+.sub{font-size:17px;color:var(--text-dim);line-height:1.6;margin-top:14px;max-width:620px;}
+.sub strong{color:var(--text);font-weight:400;}
+.meta-line{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-top:18px;}
+.meta-line span{color:var(--gold);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3;margin:40px 0;}
+
+.statuscard{border:1px solid var(--border);border-radius:4px;background:var(--surface);padding:28px 30px;position:relative;overflow:hidden;}
+.statuscard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.statuscard.s-FERTIG::before{background:var(--pass);}
+.statuscard.s-IN_ARBEIT::before{background:var(--inwork);}
+.statuscard.s-BLOCKIERT::before{background:var(--warn);}
+.status-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+.badge{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;padding:6px 14px;border-radius:3px;font-weight:500;}
+.badge.s-FERTIG{background:#2a5c3a22;color:var(--pass);border:1px solid #4caf7240;}
+.badge.s-IN_ARBEIT{background:#d4a84314;color:var(--inwork);border:1px solid #d4a84340;}
+.badge.s-BLOCKIERT{background:#ef444414;color:var(--warn);border:1px solid #ef444455;}
+.auftrag{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1.2;}
+.field{display:grid;grid-template-columns:160px 1fr;gap:10px;padding:11px 0;border-top:1px solid var(--border);}
+.field-k{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;padding-top:3px;}
+.field-v{font-size:16px;color:var(--text);line-height:1.5;}
+.warnbox{margin-top:18px;border:1px solid #ef444455;background:#ef44440c;border-radius:3px;padding:14px 18px;color:#ff8a8a;font-size:15px;line-height:1.5;display:flex;gap:10px;}
+.warnbox b{color:var(--warn);}
+.physisch{margin-top:18px;}
+.physisch-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ember);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.physisch ul{list-style:none;}
+.physisch li{font-size:16px;color:var(--text);line-height:1.5;padding:7px 0 7px 24px;position:relative;border-bottom:1px solid #ffffff08;}
+.physisch li::before{content:'☐';position:absolute;left:0;color:var(--gold);}
+.physisch li.none{color:var(--text-dim);}
+.physisch li.none::before{content:'—';}
+
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ember);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:14px;}
+.sec-label::after{content:'';height:1px;flex:1;background:var(--ember);opacity:0.3;}
+.hist-item{border:1px solid var(--border);border-left:2px solid var(--gold);border-radius:0 3px 3px 0;background:#ffffff03;padding:16px 20px;margin-bottom:10px;}
+.hist-top{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+.hist-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:1px;}
+.hist-auftrag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);background:#d4a84310;padding:2px 8px;border-radius:2px;}
+.hist-text{font-size:15px;color:var(--text-dim);line-height:1.55;}
+.protokoll li,.lifecycle li{font-size:15px;color:var(--text-dim);line-height:1.55;margin-bottom:9px;list-style:none;padding-left:20px;position:relative;}
+.protokoll li::before{content:'·';position:absolute;left:6px;color:var(--gold);font-size:20px;line-height:1;}
+.lifecycle li b{color:var(--text);font-weight:500;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;}
+footer{max-width:880px;margin:48px auto 0;padding:24px 28px 0;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:2px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+footer span{color:var(--gold);}
+.src-pill{font-size:9px;padding:3px 8px;border:1px solid var(--border);border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Staffelstab · heißer In-Flight-Kontext</div>
+  <h1>Handover.<br><em>Was jetzt läuft.</em></h1>
+  <p class="sub">Single-Slot-Status + akkumulierte Historie. <strong>Dauerhaftes lebt im Schaltplan</strong> — hier steht nur, was der Nachfolger als Erstes wissen muss.</p>
+  <div class="meta-line">PROJEKT: <span id="m-proj"></span> · AKTUALISIERT: <span id="m-date"></span> · SSOT: <span>HANDOVER.json</span></div>
+
+  <div class="divider"></div>
+  <div id="statusroot"></div>
+
+  <div class="divider"></div>
+  <div class="sec-label">Historie · append-only</div>
+  <div id="histroot"></div>
+
+  <div class="divider"></div>
+  <div class="sec-label">Lifecycle</div>
+  <ul class="lifecycle" id="lifecycleroot"></ul>
+
+  <div class="sec-label" style="margin-top:32px">Pflege-Protokoll</div>
+  <ul class="protokoll" id="protokollroot"></ul>
+</div>
+<footer>
+  <div>HANDOVER — <span>Staffelstab</span></div>
+  <div>Daten: <span class="src-pill" id="src"></span></div>
+</footer>
+
+<script>
+const FALLBACK = {"schema":"handover/v1","kind":"handover","projekt":"{PROJEKT}","aktualisiert":"{YYYY-MM-DD}","status":{"status":"IN_ARBEIT","auftrag":"{Kurzname} — {1 Satz}","fortschritt":"{X von Y Sessions} | {Phasen-Stand}","naechste_session":"{was zuerst dran ist}","warnung":"KEINEN NEUEN FEATURE_REQUEST SCHICKEN — laufender Auftrag noch nicht durch","chris_physisch":["— nichts —"]},"historie":[{"datum":"{YYYY-MM-DD}","auftrag":"{Kurzname}","ergebnis_kurz":"{1-2 Saetze}"}],"lifecycle":{"FERTIG":"Auftrag durch. FEATURE_REQUEST -> _ERLEDIGT.md.","IN_ARBEIT":"Auftrag laeuft. FEATURE_REQUEST NICHT umbenennen.","BLOCKIERT":"DECISIONS_PENDING.md pruefen."},"pflege_protokoll":["status ueberschreiben, historie anhaengen.","Dauerhaftes -> SCHALTPLAN."]};
+
+function esc(t){const d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+
+async function load(){
+  if(location.protocol!=='file:'){
+    try{const r=await fetch('HANDOVER.json',{cache:'no-store'});if(r.ok)return{data:await r.json(),source:'HANDOVER.json (live)'};}catch(e){}
+  }
+  return{data:FALLBACK,source:'eingebettet (Template)'};
+}
+
+function render({data,source}){
+  const st=data.status||{};
+  const cls='s-'+(st.status||'IN_ARBEIT');
+  document.getElementById('m-proj').textContent=data.projekt||'—';
+  document.getElementById('m-date').textContent=data.aktualisiert||'—';
+  document.getElementById('src').textContent=source;
+
+  // status card
+  let phys=(st.chris_physisch&&st.chris_physisch.length?st.chris_physisch:['— nichts —']);
+  const physHtml=phys.map(p=>{
+    const none=/^\s*—\s*nichts\s*—\s*$/.test(p);
+    return '<li'+(none?' class="none"':'')+'>'+esc(p)+'</li>';
+  }).join('');
+  const warn=st.warnung&&String(st.warnung).trim()&&st.warnung!=='null'
+    ? '<div class="warnbox"><b>⚠</b><div>'+esc(st.warnung)+'</div></div>' : '';
+  document.getElementById('statusroot').innerHTML=
+    '<div class="statuscard '+cls+'">'+
+      '<div class="status-top">'+
+        '<span class="badge '+cls+'">'+esc(st.status||'—')+'</span>'+
+        '<span class="auftrag">'+esc(st.auftrag||'—')+'</span>'+
+      '</div>'+
+      '<div class="field"><div class="field-k">Fortschritt</div><div class="field-v">'+esc(st.fortschritt||'—')+'</div></div>'+
+      '<div class="field"><div class="field-k">Nächste Session</div><div class="field-v">'+esc(st.naechste_session||'—')+'</div></div>'+
+      warn+
+      '<div class="physisch"><div class="physisch-title">Was Chris physisch tun muss</div><ul>'+physHtml+'</ul></div>'+
+    '</div>';
+
+  // historie (neueste zuerst)
+  const hist=(data.historie||[]).slice().reverse();
+  document.getElementById('histroot').innerHTML=hist.length?hist.map(h=>
+    '<div class="hist-item"><div class="hist-top">'+
+      '<span class="hist-date">'+esc(h.datum||'')+'</span>'+
+      '<span class="hist-auftrag">'+esc(h.auftrag||'')+'</span>'+
+    '</div><div class="hist-text">'+esc(h.ergebnis_kurz||'')+'</div></div>'
+  ).join(''):'<div class="hist-text">— noch keine Eintraege —</div>';
+
+  // lifecycle
+  const lc=data.lifecycle||{};
+  document.getElementById('lifecycleroot').innerHTML=Object.keys(lc)
+    .filter(k=>!k.startsWith('_'))
+    .map(k=>'<li><b>'+esc(k)+'</b> — '+esc(lc[k])+'</li>').join('');
+
+  // pflege
+  document.getElementById('protokollroot').innerHTML=(data.pflege_protokoll||[])
+    .map(p=>'<li>'+esc(p)+'</li>').join('');
+}
+
+load().then(render);
+</script>
+</body>
+</html>

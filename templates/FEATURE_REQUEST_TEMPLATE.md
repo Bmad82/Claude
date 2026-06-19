@@ -25,7 +25,7 @@ Quelle (falls vorhanden): `{Pfad zur Konzept-Datei}`
 - [ ] {Kriterium N — binär abprüfbar}
 - [ ] Selbsttest A-D durchgelaufen (bei Workflow-Themen Pflicht)
 - [ ] Commit + Push erfolgt, `$LASTEXITCODE = 0` verifiziert
-- [ ] `mjolnir.md` mit STATUS-Header geschrieben
+- [ ] `HANDOVER.json` mit STATUS-Header geschrieben
 
 ---
 
@@ -65,26 +65,26 @@ Commits idealerweise getrennt:
 2. ...
 
 Push auf `origin/{branch}`. Verifiziere `$LASTEXITCODE = 0`.
-Bei Fehler: in mjolnir.md unter BLOCKIERT dokumentieren, auf Deutsch.
+Bei Fehler: in HANDOVER.json unter BLOCKIERT dokumentieren, auf Deutsch.
 
 ---
 
-## Schritt 0L — mjolnir.md schreiben
+## Schritt 0L — HANDOVER.json schreiben
 
-Überschreibe `{Projekt-Root}/mjolnir.md` mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) + Fortschritt + Was-Chris-physisch-tun-muss + Auftragshistorie.
+Überschreibe `{Projekt-Root}/HANDOVER.json` mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) + Fortschritt + Was-Chris-physisch-tun-muss + Auftragshistorie.
 
-Vorlage: `C:\Users\chris\Python\Claude\templates\mjolnir_TEMPLATE.md`
+Vorlage: `C:\Users\chris\Python\Claude\templates\HANDOVER_TEMPLATE.json`
 
 ---
 
 ## Wichtige Hinweise
 
 - **Bibel-Format nutzen** für alle Maschinen-Files. **Prosa nutzen** für alle Menschen-Files. **Niemals mischen** innerhalb einer Datei.
-- **Bei Konflikten oder Unklarheiten:** Nicht raten. In `DECISIONS_PENDING.md` festhalten und in mjolnir.md unter BLOCKIERT verweisen.
+- **Bei Konflikten oder Unklarheiten:** Nicht raten. In `DECISIONS_PENDING.md` festhalten und in HANDOVER.json unter BLOCKIERT verweisen.
 - **Quellen-Files** bleiben unverändert liegen. Verteilung geschieht über GLOBAL_LESSONS.md, SUPERVISOR_KODEX.md, templates/ — nicht durch Verschieben der Ursprungsdatei.
 
 ---
 
 ```
-LIFECYCLE|FERTIG: rename zu *_ERLEDIGT.md|IN_ARBEIT: Datei bleibt, mjolnir.md trägt STATUS|BLOCKIERT: Datei bleibt + Grund in DECISIONS_PENDING.md|QUEUED-Fall: neuer FEATURE_REQUEST während IN_ARBEIT → _QUEUED.md
+LIFECYCLE|FERTIG: rename zu *_ERLEDIGT.md|IN_ARBEIT: Datei bleibt, HANDOVER.json trägt STATUS|BLOCKIERT: Datei bleibt + Grund in DECISIONS_PENDING.md|QUEUED-Fall: neuer FEATURE_REQUEST während IN_ARBEIT → _QUEUED.md
 ```

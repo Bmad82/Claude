@@ -9,16 +9,16 @@ Status-Symbole: ⬜ offen · 🔄 in Arbeit · ✅ fertig · ⏸ blockiert · �
 Siehe `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` Sektion „Die 6 Faulheits-Catches — Quick Reference".
 
 ## Session-Zyklus (PFLICHT)
-1. **Konflikt-Check:** `mjolnir.md` mit `STATUS: IN_ARBEIT` + abweichender FEATURE_REQUEST-Kurzname → QUEUED-Pattern (siehe CLAUDE_{PROJEKT}.md Session-Start-Pflicht).
+1. **Konflikt-Check:** `HANDOVER.json` mit `STATUS: IN_ARBEIT` + abweichender FEATURE_REQUEST-Kurzname → QUEUED-Pattern (siehe CLAUDE_{PROJEKT}.md Session-Start-Pflicht).
 2. `FEATURE_REQUEST_{kurzname}.md` prüfen | existiert? → abarbeiten | bei STATUS=FERTIG umbenennen zu `_ERLEDIGT.md`.
-3. `mjolnir.md` einlesen (STATUS-Header zuerst), dann löschen (Single-Slot).
-4. `HANDOVER_{PROJEKT}.md` lesen.
+3. `HANDOVER.json` einlesen (STATUS-Header zuerst), Datei NICHT löschen (status wird überschrieben, historie ist append-only).
+4. `SCHALTPLAN_PROJEKT.json` lesen (Projekt-Gedächtnis: Module, Status, Brüche).
 5. `python scripts/lessons_lookup.py --task '<aufgabe>'` (TF-IDF Top-3, mw-v2a Paket 1) | globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md` | task-spezifische Regeln aus `playbooks/`, pfadspezifische aus `.claude/rules/` (mw-v2b Paket 2).
 6. Nächsten ⬜-Eintrag aus Workflow ziehen.
 7. Patch durchführen | Status updaten.
 8. Doku-Pflicht (CLAUDE/SUPERVISOR/CHANGELOG/lessons) | git commit+push (Coda macht SELBST, kein Auftrag an Chris).
 9. **Auffüll-Check** (siehe Session-Auffüll-Regel unten): Auftrag erledigt UND < 300k Token verbraucht → nächstes Item aus FEATURE_REQUEST/Workflow/BACKLOG nehmen statt abzuschließen.
-10. `mjolnir.md` mit STATUS-Header schreiben (Session-Ende, ausnahmslos).
+10. `HANDOVER.json` mit STATUS-Header schreiben (Session-Ende, ausnahmslos).
 
 ## Session-Auffüll-Regel (2026-05-21)
 

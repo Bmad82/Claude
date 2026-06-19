@@ -1,0 +1,39 @@
+{
+  "schema": "handover/v1",
+  "kind": "handover",
+  "_zweck": "Heißer In-Flight-Staffelstab zwischen Supervisor-Sessions. NUR aktueller Kontext. Dauerhaftes (Modul-Status, verworfene Ansätze, Bruchstellen) gehört in den SCHALTPLAN, NICHT hierher. Nachfolger liest: SCHALTPLAN (volle Wahrheit) + die letzten 1-2 historie-Eintraege.",
+  "projekt": "{PROJEKT}",
+  "aktualisiert": "{YYYY-MM-DD}",
+  "status": {
+    "_regel": "Dieses Objekt wird bei JEDEM Lauf KOMPLETT ueberschrieben (Single-Slot). Kein Anhaengen, kein Mergen.",
+    "status": "IN_ARBEIT",
+    "auftrag": "{Kurzname} — {1 Satz worum es geht}",
+    "fortschritt": "{X von Y Sessions} | {Phasen-Stand}",
+    "naechste_session": "{was zuerst dran ist}",
+    "warnung": "KEINEN NEUEN FEATURE_REQUEST SCHICKEN — laufender Auftrag noch nicht durch",
+    "chris_physisch": [
+      "— nichts —"
+    ]
+  },
+  "historie": [
+    {
+      "datum": "{YYYY-MM-DD}",
+      "auftrag": "{Kurzname}",
+      "ergebnis_kurz": "{1-2 Saetze: was lief, was nicht. Supervisor-zu-Supervisor-Faden, KEIN _ERLEDIGT.md-Ersatz}"
+    }
+  ],
+  "lifecycle": {
+    "FERTIG": "Naechster Session-Start: Handover lesen, status-Kopf = FERTIG -> Auftrag durch. FEATURE_REQUEST_{kurzname}.md -> _erledigt/..._ERLEDIGT.md umbenennen. historie bleibt (append-only). naechste_session = 'entfaellt (FERTIG)', warnung = null.",
+    "IN_ARBEIT": "Naechster Session-Start: Handover lesen, fortschritt pruefen, laufenden Auftrag fortsetzen. FEATURE_REQUEST NICHT umbenennen. Neuer FEATURE_REQUEST mit abweichendem Kurznamen -> _QUEUED.md, alter bleibt.",
+    "BLOCKIERT": "Naechster Session-Start: Handover lesen, DECISIONS_PENDING.md pruefen, Blocker aufloesen oder eskalieren. FEATURE_REQUEST NICHT umbenennen.",
+    "_single_slot": "status = Single-Slot (genau EIN aktueller Stand, wird ueberschrieben). historie = Audit-Faden (akkumuliert). _ERLEDIGT.md (FR-Lifecycle-Log) bleibt davon unberuehrt."
+  },
+  "pflege_protokoll": [
+    "status-Objekt am Fenster-Ende KOMPLETT neu schreiben (ueberschreiben, nicht mergen).",
+    "historie: pro Lauf GENAU EINEN Eintrag anhaengen (append-only, alte Eintraege nie aendern).",
+    "Dauerhaftes (Modul-Status, verworfene Ansaetze, Bruchstellen) -> SCHALTPLAN, NICHT in den Handover.",
+    "HART: jeder im Handover erwaehnte verworfene Ansatz MUSS vor dem Finalisieren als '—'-Node (oder fracture) im SCHALTPLAN gespiegelt werden. Die historie rotiert (Nachfolger liest nur die letzten 1-2 Eintraege) — was nur im Handover steht, ist beim naechsten Fenster weg und wird erneut gestartet.",
+    "chris_physisch: '— nichts —' wenn leer, Sektion nie loeschen.",
+    "HANDOVER.html zieht diese JSON beim Oeffnen — JSON ist SSOT, HTML mischt nichts dazu."
+  ]
+}

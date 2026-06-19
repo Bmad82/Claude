@@ -48,7 +48,7 @@ Kontext eindeutig → still korrigieren | echte Mehrdeutigkeit → nachfragen | 
 
 ## Multi-Session-Bewusstsein
 Wenn ein Auftrag voraussichtlich länger als eine Coda-Session dauert:
-- Prompt erlaubt `STATUS: IN_ARBEIT` in mjolnir.md am Session-Ende
+- Prompt erlaubt `STATUS: IN_ARBEIT` in HANDOVER.json am Session-Ende
 - FEATURE_REQUEST wird NICHT umbenannt bis STATUS=FERTIG
 - Bei Folge-Aufträgen mit anderem Kurznamen: QUEUED-Pattern erwarten
 
@@ -90,7 +90,7 @@ Architekt arbeitet primär mobil | kurze Absätze | keine verschachtelten Listen
 Chris/Supervisor trägt Wünsche in `FEATURE_REQUEST_{kurzname}.md` ein (Kurzname aus Frontmatter, kebab-case, NIE Projektname).
 Lifecycle:
 - STATUS=FERTIG → Coda renamed zu `FEATURE_REQUEST_{kurzname}_ERLEDIGT.md`
-- STATUS=IN_ARBEIT → Datei bleibt, mjolnir.md trägt Status
+- STATUS=IN_ARBEIT → Datei bleibt, HANDOVER.json trägt Status
 - STATUS=BLOCKIERT → Datei bleibt + Grund in `DECISIONS_PENDING.md`
 - QUEUED-Fall → neuer Request während IN_ARBEIT wird zu `FEATURE_REQUEST_{kurzname}_QUEUED.md`
 
@@ -104,7 +104,7 @@ Lifecycle:
 ## Gist-Navigation
 - Index-Gist: `{INDEX_GIST_URL}` (beim Bootstrap eintragen, Quelle: `GIST_LINK.md` im Claude-Repo)
 - Projekt-Gist: `{PROJEKT_GIST_URL}` (beim Bootstrap eintragen, Quelle: `GIST_LINK.md` im Projekt-Repo)
-- Der Supervisor fetcht bei Session-Start den Projekt-Gist für aktuellen Stand (STATUS, MJOLNIR, HANDOVER, REPO_INDEX).
+- Der Supervisor fetcht bei Session-Start den Projekt-Gist für aktuellen Stand (STATUS, HANDOVER, SCHALTPLAN, REPO_INDEX).
 - Vorteil ggü. Raw-Link: Supervisor-Instanz (claude.ai Chat) kann Gists fetchen, aber keine GitHub-Raw-Links — keine Auth/Token im Chat nötig.
 - Kein manuelles Link-Relaying durch den Architekten nötig.
 - Bei Unklarheiten: Index-Gist fetchen → Projekt-Gist-URL extrahieren → Projekt-Gist fetchen → konkrete Dateien lesen.

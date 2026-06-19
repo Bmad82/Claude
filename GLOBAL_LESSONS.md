@@ -5,6 +5,8 @@ Projekt-spezifische Lessons gehören in `lessons/<projekt>_lessons.md`. Diese Da
 
 Format: jede Lesson eine `##` Sektion mit Datum + Anlass-Patch im Titel. Inhalt in Pipe-Format (`|`-getrennte Punkte), ggf. mit Begründung darunter. Nicht löschen — historische Lessons bleiben, neue oben anhängen.
 
+> **NAMENS-HINWEIS (2026-06-19, FR supervisor-aufbau):** Das Übergabedokument hieß früher `mjolnir.md` und heißt ab jetzt `HANDOVER.json` (JSON statt Prosa, status-Kopf + append-only Historie). Ältere Lessons unten nennen noch `mjolnir.md` — historisch belassen, die Regeln gelten sinngemäß für `HANDOVER.json`. Dauerhaftes (Modul-Status, verworfene Ansätze, Brüche) gehört NICHT mehr in den Handover, sondern in `SCHALTPLAN_PROJEKT.json`. Details: `SUPERVISOR_KODEX.md` Sektion „Steuer-Files". Der Orchestrator-/Cockpit-Bau „Mjölnir/Hammerfall" (Software) behält seinen Namen — nur das Dokument wurde umbenannt.
+
 ---
 
 ---

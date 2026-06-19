@@ -34,7 +34,7 @@
 
 | Datei | Was tatsächlich drinsteht | Kat. | Größe | Geändert | Dup | Empfehlung |
 |---|---|---|---|---|---|---|
-| [uebergabe_template_v1_0.md](uebergabe_template_v1_0.md) | **Template** für Conversation-Handover-JSONs (Chat→Chat-Fenster bei ~50% Kontext). Annotiertes JSON-Skeleton: `meta/register/wer_minimal/spine/fractures/ressourcen_referenzen/sensibel_nicht_aufgreifen/letzter_stand` + Generier-Disziplin. | **Template** | 6.4 KB | 2026-06-19 | ⊕ | **ANPASSEN + verschieben** → `templates/`. Verhältnis zu `HANDOVER_TEMPLATE.md` (Session-Handover) und `mjolnir_TEMPLATE.md` im Kopf klären (3 Handover-Arten). |
+| [uebergabe_template_v1_0.md](uebergabe_template_v1_0.md) | **Template** für Conversation-Handover-JSONs (Chat→Chat-Fenster bei ~50% Kontext). Annotiertes JSON-Skeleton: `meta/register/wer_minimal/spine/fractures/ressourcen_referenzen/sensibel_nicht_aufgreifen/letzter_stand` + Generier-Disziplin. | **Template** | 6.4 KB | 2026-06-19 | ⊕ | **ANPASSEN + verschieben** → `templates/`. Verhältnis zu `HANDOVER_TEMPLATE.md` (Session-Handover) und `HANDOVER_TEMPLATE.json` im Kopf klären (3 Handover-Arten). |
 | [TOKEN_OPT_RULES.md](TOKEN_OPT_RULES.md) | Vier Stilstufen (ultra-knapp/knapp/kurz/prosaisch) für token-sparsame LLM-Ausgaben: Floskeln raus, Pipe-Format, max 3 Reasoning-Schritte, Abkürzungs-Dict. Reines Referenz-/Regelblatt. | **Concept** (Reference) | 3.1 KB | 2026-06-13 | | **Behalten**, verschieben → `concepts/` oder `reference/`. Steht thematisch nah am „Bibel-Format". |
 
 ### 1.3 Root — Governance / „Verfassung" (per Absolutpfad referenziert ⚠️)
@@ -44,7 +44,7 @@
 | Datei | Was tatsächlich drinsteht | Kat. | Größe | Geändert | Dup | Empfehlung |
 |---|---|---|---|---|---|---|
 | [GLOBAL_LESSONS.md](GLOBAL_LESSONS.md) | **Operative** globale Lessons-Quelle: 6 Faulheits-Catches, Selbsttest-Pattern A–D, Bibel-Format-Cheat-Sheet, mw-v2a/v2b-Pakete, Billing-/Cost-Guard-Lessons (neueste: Cost Guard 2026-06-13). | **Lesson** | 15.9 KB | 2026-06-13 | ⊕ | **Behalten** (kanonisch). Root-pinned. |
-| [GLOBAL_LESSONS_KONTEXT.md](GLOBAL_LESSONS_KONTEXT.md) | **Älterer, ausführlicherer Zwilling** von GLOBAL_LESSONS.md: gleiche Sektionen, aber mit „Lesson generalisierbar"-Prosa. **Fehlen** die 5 neuesten Lessons (Cost-Guard, --bare/OAuth, Billing-Split, Credits, Model-IDs). Nur in `mjolnir.md` + 1 historischem FR referenziert. | **Lesson** | 25.6 KB | 2026-05-21 | ⊕⊕ | **MERGEN dann archivieren/löschen.** Reichere Prosa in GLOBAL_LESSONS zurückführen, dann diese veraltete Kopie weg (sonst Zwei-Wahrheiten). Siehe §2-A. |
+| [GLOBAL_LESSONS_KONTEXT.md](GLOBAL_LESSONS_KONTEXT.md) | **Älterer, ausführlicherer Zwilling** von GLOBAL_LESSONS.md: gleiche Sektionen, aber mit „Lesson generalisierbar"-Prosa. **Fehlen** die 5 neuesten Lessons (Cost-Guard, --bare/OAuth, Billing-Split, Credits, Model-IDs). Nur in `HANDOVER.json` + 1 historischem FR referenziert. | **Lesson** | 25.6 KB | 2026-05-21 | ⊕⊕ | **MERGEN dann archivieren/löschen.** Reichere Prosa in GLOBAL_LESSONS zurückführen, dann diese veraltete Kopie weg (sonst Zwei-Wahrheiten). Siehe §2-A. |
 | [SUPERVISOR_KODEX.md](SUPERVISOR_KODEX.md) | NIE/IMMER-Listen für jede Chat-Supervisor-Instanz (projektübergreifend), Prompt-Skelett, Eskalations-Regel. | **Workflow** (Governance) | 6.6 KB | 2026-05-17 | | **Behalten**, root-pinned. |
 | [DECISIONS_PENDING.md](DECISIONS_PENDING.md) | Meta-Layer-Entscheidungslog: 1 offene Frage (Zerberus-Lessons-Konsolidierung) + 7 getroffene Entscheidungen mit Datum/Begründung. | **Workflow** (Governance) | 9.4 KB | 2026-05-21 | | **Behalten**, root-pinned. |
 | [PROJECT_BOOTSTRAP_README.md](PROJECT_BOOTSTRAP_README.md) | Schritt-für-Schritt-Anleitung für Coda, um ein frisches Marathon-Projekt aufzusetzen (Templates ziehen, Skelett, Gist anlegen, Walkthrough). | **Workflow** | 8.0 KB | 2026-05-18 | | **Behalten**, root-pinned. Entspricht genau dem „Bootstrap-LLM zieht Templates"-Schritt aus dem Kontext. |
@@ -86,7 +86,7 @@
 
 | Datei | Was tatsächlich drinsteht | Kat. | Größe | Geändert | Dup | Empfehlung |
 |---|---|---|---|---|---|---|
-| [mjolnir.md](mjolnir.md) | Single-Slot-Session-Status (STATUS=FERTIG, Auftrag orchestrator-konsolidierung). Letzter Stand des Meta-Repos selbst. | **Workflow** (State) | 4.9 KB | 2026-05-24 | | **Behalten** am Root (Konvention). Inhaltlich veraltet — wird ohnehin beim nächsten Lauf überschrieben. |
+| [HANDOVER.json](HANDOVER.json) | Single-Slot-Session-Status (STATUS=FERTIG, Auftrag orchestrator-konsolidierung). Letzter Stand des Meta-Repos selbst. | **Workflow** (State) | 4.9 KB | 2026-05-24 | | **Behalten** am Root (Konvention). Inhaltlich veraltet — wird ohnehin beim nächsten Lauf überschrieben. |
 
 ### 1.9 `templates/` — Bootstrap-Vorlagen (Kern-Bucket)
 
@@ -97,7 +97,7 @@
 | [MARATHON_WORKFLOW_TEMPLATE.md](templates/MARATHON_WORKFLOW_TEMPLATE.md) | Aufgabenlisten-Vorlage mit Status-Symbolen + Session-Zyklus + Auffüll-Regel. | **Template** | 3.4 KB | 2026-05-21 | ⊕ | **Behalten.** Auffüll-Regel-Block ist Wiederholung (s. §2-C). |
 | [FEATURE_REQUEST_TEMPLATE.md](templates/FEATURE_REQUEST_TEMPLATE.md) | Auftrags-Vorlage (Header, Akzeptanzkriterien, Schritte, Selbsttest A–D, Lifecycle). | **Template** | 2.8 KB | 2026-05-17 | | **Behalten.** |
 | [HANDOVER_TEMPLATE.md](templates/HANDOVER_TEMPLATE.md) | Session-Handover-Vorlage (Stand, offen, Bugs, Tests, nächster Patch). | **Template** | 1.1 KB | 2026-05-17 | ⊕ | **Behalten.** Abgrenzung zu `uebergabe_template_v1_0.md` dokumentieren. |
-| [mjolnir_TEMPLATE.md](templates/mjolnir_TEMPLATE.md) | mjolnir.md-Vorlage (STATUS-Header, was-Chris-physisch-tun-muss, Lifecycle-Notiz). | **Template** | 1.8 KB | 2026-05-17 | | **Behalten.** |
+| [HANDOVER_TEMPLATE.json](templates/HANDOVER_TEMPLATE.json) | HANDOVER.json-Vorlage (STATUS-Header, was-Chris-physisch-tun-muss, Lifecycle-Notiz). | **Template** | 1.8 KB | 2026-05-17 | | **Behalten.** |
 | [DECISIONS_TEMPLATE.md](templates/DECISIONS_TEMPLATE.md) | Projekt-Entscheidungslog-Vorlage. | **Template** | 1.0 KB | 2026-05-17 | | **Behalten.** |
 | [DESIGN_PROJEKT_TEMPLATE.md](templates/DESIGN_PROJEKT_TEMPLATE.md) | Projekt-Designdokument-Vorlage (Prosa, verweist auf globale DESIGN.md). | **Template** | 1.5 KB | 2026-05-17 | | **Behalten.** |
 | [ROADMAP_TEMPLATE.md](templates/ROADMAP_TEMPLATE.md) | Roadmap-Vorlage (Vision-Horizont, nicht Patch-Tracker). | **Template** | 1.0 KB | 2026-05-17 | | **Behalten.** |
@@ -126,7 +126,7 @@
 
 | Datei | Was tatsächlich drinsteht | Kat. | Größe | Geändert | Dup | Empfehlung |
 |---|---|---|---|---|---|---|
-| [MARATHON_WORKFLOW.md](workflow/MARATHON_WORKFLOW.md) | Volltext-Architektur des Marathon-Workflows (3 Rollen, Datei-Hierarchie, Session-Zyklus, 6 Catches, Mjölnir-Round-Trip, Gist-Brücke). | **Workflow** | 8.8 KB | 2026-05-21 | ⊕ | **Behalten** (kanonische Ablaufbeschreibung). |
+| [MARATHON_WORKFLOW.md](workflow/MARATHON_WORKFLOW.md) | Volltext-Architektur des Marathon-Workflows (3 Rollen, Datei-Hierarchie, Session-Zyklus, 6 Catches, Handover-Round-Trip, Gist-Brücke). | **Workflow** | 8.8 KB | 2026-05-21 | ⊕ | **Behalten** (kanonische Ablaufbeschreibung). |
 | [gist_publisher.py](workflow/gist_publisher.py) | Python-Helfer: PUBLIC-Gist erstellen/patchen via GitHub-REST, Token aus `git credential`. | **Workflow** (Tool) | 4.2 KB | 2026-05-21 | | **Behalten.** Einziges echtes Skript lokal. |
 | workflow/__pycache__/gist_publisher.cpython-310.pyc | Kompiliertes Bytecode-Artefakt von `gist_publisher.py`. Regenerierbar, von `.gitignore` (`__pycache__/`) abgedeckt. | **Müll-Verdacht** | 2.9 KB | 2026-05-21 | | **Löschen.** Build-Artefakt, kein Quelltext. |
 
@@ -190,7 +190,7 @@ In `GLOBAL_LESSONS.md`, `GLOBAL_LESSONS_KONTEXT.md`, `workflow/MARATHON_WORKFLOW
 KONSOLIDIERT ist ein P49-Snapshot (2026-05-15) aus Supervisor-Chats mit **einigen unique alten Lessons** (PWA, CSS-Industriepanel, Claude-Design-Workflow), die nicht in GLOBAL_LESSONS stehen. DECISIONS_PENDING führt die Konsolidierung als offen. → Unique-Items extrahieren (ggf. nach `lessons/`), dann archivieren.
 
 **F) Drei „Handover"-Schemata nebeneinander (konzeptuell verwandt, NICHT identisch — kein Löschkandidat, nur dokumentieren).**
-`templates/mjolnir_TEMPLATE.md` (Single-Slot-Status), `templates/HANDOVER_TEMPLATE.md` (Detail-Session-Handover, Bibel-MD), `uebergabe_template_v1_0.md` (Conversation/Chat-Fenster-Handover, JSON). Verhältnis in einem kurzen Kopf-Block klären, damit niemand sie verwechselt.
+`templates/HANDOVER_TEMPLATE.json` (Single-Slot-Status), `templates/HANDOVER_TEMPLATE.md` (Detail-Session-Handover, Bibel-MD), `uebergabe_template_v1_0.md` (Conversation/Chat-Fenster-Handover, JSON). Verhältnis in einem kurzen Kopf-Block klären, damit niemand sie verwechselt.
 
 **G) `fabrik_meta_workflow.json` ⟷ `.html`.**
 Kein Fehler — die HTML ist die Visualisierung. Risiko nur, falls die HTML Werte hartkodiert statt aus der JSON zu lesen (Drift). Beim Aufräumen verifizieren.
@@ -208,7 +208,7 @@ Kern laut Auftrag: **`templates/` · `lessons/` · `workflow/` + eigene Schaltpl
 Claude/
 ├── README.md                      ← Einstieg (Ordnerstruktur-Tabelle nachziehen)
 ├── REPO_INDEX.md                  ← auto, root-pinned (Re-Sync nötig)
-├── mjolnir.md                     ← Single-Slot, root-pinned
+├── HANDOVER.json                     ← Single-Slot, root-pinned
 ├── .gitignore
 │
 ├── governance/   (NEU, optional)  ← die „Verfassung" — ⚠️ nur mit Referenz-Update verschiebbar
@@ -264,8 +264,8 @@ Claude/
 
 ## 4. Pro-Datei-Empfehlung — Kurzfassung
 
-- **Behalten unverändert:** alle `templates/*` (10), alle `lessons/*` außer zerberus_lessons (Frage offen), `workflow/MARATHON_WORKFLOW.md`, `workflow/gist_publisher.py`, `bugs/*` (whisper.md prüfen), `concepts/Try_Faulheits_catch.md`, `_erledigt/*` (7), `SUPERVISOR_KODEX.md`, `DECISIONS_PENDING.md`, `PROJECT_BOOTSTRAP_README.md`, `GIST_LINK.md`, `mjolnir.md`, `.gitignore`, `fabrik_meta_workflow.json/.html`.
-- **ANPASSEN:** `README.md` (Struktur-Tabelle nach Umzug), `REPO_INDEX.md` (Re-Sync, Drift seit 05-18), `DESIGN.md` (Platzhalter füllen oder als Schema kennzeichnen), `uebergabe_template_v1_0.md` (Abgrenzung zu HANDOVER/mjolnir), `bugs/zerberus/whisper.md` (vermutlich → Erledigt), `GLOBAL_LESSONS.md` (reiche Prosa aus KONTEXT zurückholen).
+- **Behalten unverändert:** alle `templates/*` (10), alle `lessons/*` außer zerberus_lessons (Frage offen), `workflow/MARATHON_WORKFLOW.md`, `workflow/gist_publisher.py`, `bugs/*` (whisper.md prüfen), `concepts/Try_Faulheits_catch.md`, `_erledigt/*` (7), `SUPERVISOR_KODEX.md`, `DECISIONS_PENDING.md`, `PROJECT_BOOTSTRAP_README.md`, `GIST_LINK.md`, `HANDOVER.json`, `.gitignore`, `fabrik_meta_workflow.json/.html`.
+- **ANPASSEN:** `README.md` (Struktur-Tabelle nach Umzug), `REPO_INDEX.md` (Re-Sync, Drift seit 05-18), `DESIGN.md` (Platzhalter füllen oder als Schema kennzeichnen), `uebergabe_template_v1_0.md` (Abgrenzung zu HANDOVER), `bugs/zerberus/whisper.md` (vermutlich → Erledigt), `GLOBAL_LESSONS.md` (reiche Prosa aus KONTEXT zurückholen).
 - **Mergen:** `GLOBAL_LESSONS_KONTEXT.md` → in GLOBAL_LESSONS; `LESSONS_KONSOLIDIERT.md` → unique-Items in `lessons/`; `lessons/README.md` ggf. in INDEX.md.
 - **Verschieben (nur Ortswechsel):** 3 Root-FR-Archive → `_erledigt/`; `WORKFLOW_SUMMARY.md` raus aus `_drafts_gist/`; Schaltplan/Design/Intake/Concept-Files in ihre Buckets.
 - **Archivieren:** `REPO_INVENTORY.md`, `SUPERVISOR_BRIEFING.md`, `GIT_DIAGNOSE.md`, `GLOBAL_LESSONS_KONTEXT.md`, `LESSONS_KONSOLIDIERT.md`, beide Gist-Drafts.
@@ -284,7 +284,7 @@ Das System ist erstaunlich vollständig (Templates ✅, Lessons ✅, Workflow �
 
 3. **Kein „Lessons-Hierarchie-Index" auf oberster Ebene.** Die Schaltplan-JSON nennt das selbst als Fracture (`fr.lessons-no-index`): GLOBAL_LESSONS / LESSONS_KONSOLIDIERT / KONTEXT / lessons/ / projekt-lessons haben keinen gemeinsamen Einstieg. `lessons/INDEX.md` deckt nur den Unterordner ab. → ein Top-Level-`LESSONS_MAP.md`, das alle Ebenen verlinkt.
 
-4. **Kein `CHANGELOG.md` für das Meta-Repo selbst.** Templates verlangen es von jedem Projekt, das Meta-Repo führt aber keins (Historie steckt verstreut in `_erledigt/` + mjolnir). → optional.
+4. **Kein `CHANGELOG.md` für das Meta-Repo selbst.** Templates verlangen es von jedem Projekt, das Meta-Repo führt aber keins (Historie steckt verstreut in `_erledigt/` + HANDOVER). → optional.
 
 5. **Kein Verteilungs-Mechanismus für globale Lessons IN laufende Projekte** dokumentiert. Der Kontext sagt „Lessons werden während des Laufs an Worker UND Supervisor mitgegeben" — der Schaltplan hat dafür Cron-Knoten (`be.cron.lessons`, HITL-gated Merge), aber lokal fehlt die Beschreibung, wie GLOBAL_LESSONS konkret in ein Projekt gespiegelt wird (nur Gist-Pflicht ist dokumentiert). → kurzer Abschnitt in `workflow/`.
 

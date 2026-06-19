@@ -33,10 +33,10 @@ Architekt fasst kein Terminal an. Supervisor schickt keinen Inline-Befehl. Coda 
 | [`PROJECT_BOOTSTRAP_README.md`](PROJECT_BOOTSTRAP_README.md) | Anleitung: frische Coda-Session setzt neues Projekt auf |
 | [`DECISIONS_PENDING.md`](DECISIONS_PENDING.md) | Offene Meta-Layer-Architektur-Fragen + getroffene Entscheidungen |
 | [`GIST_LINK.md`](GIST_LINK.md) | Gist-Brücke: Index- + Claude-KB-Gist-URLs (Supervisor-Lesezugang) |
-| [`mjolnir.md`](mjolnir.md) | Session-Abschluss-State (Single-Slot, STATUS-Header) |
+| [`HANDOVER.json`](HANDOVER.json) | Session-Abschluss-State (Single-Slot, STATUS-Header) |
 | [`schaltplan/`](schaltplan/) | **Steuer-/Plan-Files** — Fabrik-Meta-Workflow als JSON (SSOT) + HTML-Render |
 | [`workflow/`](workflow/) | Marathon-Workflow-Dokumentation (Rollen, Datei-Hierarchie, Session-Zyklus, Catches) |
-| [`templates/`](templates/) | Bootstrap-Vorlagen für neue Projekte (CLAUDE, SUPERVISOR, mjolnir, FEATURE_REQUEST, Übergabe u.a.) |
+| [`templates/`](templates/) | Bootstrap-Vorlagen für neue Projekte (CLAUDE, SUPERVISOR, HANDOVER, SCHALTPLAN, FEATURE_REQUEST, Übergabe u.a.) |
 | [`lessons/`](lessons/) | Technologie-spezifische Lessons (siehe [`lessons/INDEX.md`](lessons/INDEX.md) für Hierarchie) |
 | [`concepts/`](concepts/) | Konzept-/Strategie-Dokumente (Faulheits-Catch-Ursprung, Orchestrator-Konzept, Token-Opt) |
 | [`bugs/`](bugs/) | Projektspezifische Bug-Tracker (pro Projekt ein Unterordner) |
@@ -56,7 +56,7 @@ Projekte referenzieren diese Knowledge-Base direkt aus dem Repo — nicht kopier
 Projektspezifische Files tragen IMMER den Projektnamen als Suffix:
 - `CLAUDE_{PROJEKT}.md`, `SUPERVISOR_{PROJEKT}.md`, `MARATHON_WORKFLOW_{PROJEKT}.md`, `lessons_{PROJEKT}.md`
 - `FEATURE_REQUEST_{kurzname}.md` (kebab-case aus Auftrag-Frontmatter, NIE Projektname)
-- Ausnahmen: `mjolnir.md`, `PROJECT_BOOTSTRAP_README.md`, `REPO_INDEX.md` heißen immer so.
+- Ausnahmen: `HANDOVER.json`, `PROJECT_BOOTSTRAP_README.md`, `REPO_INDEX.md` heißen immer so.
 
 `templates/` enthält Schablonen für Tag 1 eines neuen Projekts. `lessons/` ist hingegen lebendig — wird bei jedem Patch konsultiert.
 

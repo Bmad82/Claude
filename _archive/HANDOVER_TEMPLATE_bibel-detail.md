@@ -1,4 +1,10 @@
-<!-- TEMPLATE | Kopie als HANDOVER_{PROJEKT}.md ins Projekt-Root | Detail-Übergabe zwischen Sessions | ergänzt mjolnir.md (Status-Layer), nicht ersetzt -->
+<!-- ARCHIVIERT 2026-06-19 (FR supervisor-aufbau). ABGELÖST — nicht mehr verwenden.
+     Dieses Bibel-Prosa-Detail-Layer-Handover ist durch das neue Modell ersetzt:
+       - Dauerhaftes (Modul-Status, Test-Stände, Bugs/Risiken, verworfene Ansätze) -> SCHALTPLAN_PROJEKT.json
+       - heißer In-Flight-Kontext (Status-Kopf + Historie) -> HANDOVER.json (templates/HANDOVER_TEMPLATE.json)
+     Begründung + Entscheidung: DECISIONS_PENDING.md (Eintrag supervisor-aufbau). Nur zur Historie aufbewahrt. -->
+
+<!-- TEMPLATE (HISTORISCH) | war: Kopie als HANDOVER_{PROJEKT}.md ins Projekt-Root | Detail-Übergabe zwischen Sessions | ergänzte mjolnir.md (Status-Layer) -->
 
 # HANDOVER_{PROJEKT}.md | Bibel-Format
 Letzte Session: Patch {N} ({DATUM}) | Nächste Session liest dies NACH mjolnir.md, VOR MARATHON_WORKFLOW
