@@ -1,24 +1,133 @@
-# Frontend & JavaScript
+lessons frontend-js | maschinen-only | schema: wall_signatur | kategorie | fix | kontext | quelle
 
-- `'\n'` in Python-HTML-Strings wird als echtes Newline gerendert → bricht JS-String-Literale. Immer `'\\n'` verwenden (Zerberus P69c)
-- `crypto.randomUUID()` versagt in HTTP-Non-Secure-Kontexten (LAN ohne HTTPS) → Fallback-UUID-Generator bereitstellen (Zerberus P68)
-- `$1` = JS-Regex-Backreference, `\1` = Python `re.sub`-Backreference — nicht verwechseln (Zerberus P69a)
-- Python-Inline-Flags `(?i)` / `(?m)` / `(?s)` werden von JS `RegExp` abgelehnt — vor Validierung rausstrippen und in flags-String übernehmen (Zerberus P90)
-- `keypress` ist deprecated → `keydown` verwenden
-- Buttons in Formularen brauchen `type="button"` — sonst ungewollter form-submit
-- LLM ohne klare Persona fällt in generisches Verhalten zurück ("Ich bin ein Computerprogramm") — immer expliziten Persona-Prompt setzen (Zerberus P81)
-- Chart.js: `chart.umd.min.js` allein reicht NICHT für Touch-Pinch-Zoom. Lade-Reihenfolge: chart.umd → hammer.js → chartjs-plugin-zoom. Ohne hammer.js scheitert Zoom silent (Zerberus P91)
-- Chart.js `new Chart()` auf dasselbe Canvas = Memory-Leak → immer `.destroy()` + Referenz null setzen vor Neu-Render (Zerberus P91)
-- Chart.js responsive: Container braucht feste Höhe (`position: relative; height: Xpx`) — ohne rendert es 0px oder bläht sich auf (Zerberus P91)
-- Emoji-Surrogate-Pairs (`📄` = `\uD83D\uDCC4`) können Windows-Encoding-Fehler in Python-Strings erzeugen → ASCII-Alternativen verwenden (Zerberus P68)
-- JS-Syntax in Python-HTML-Strings immer mit `node --check` als Pre-Commit-Verifizierung: HTML aus dem Router rendern, `<script>`-Blöcke extrahieren, einzeln durch `node --check` jagen. Schnellere Variante als Playwright mit `pageerror`-Listener (Zerberus P100)
-- Retry-Button nach Frontend-Timeout darf NICHT blind den Request wiederholen. Der Frontend-Timeout bricht nur `fetch()` ab — das Backend arbeitet weiter und speichert die Antwort. Naiver Retry = doppelter LLM-Call + doppelte Kosten. Pattern: Erst per REST-Endpoint prüfen ob die Antwort inzwischen in der DB ist, nur bei echtem Fehlen nochmal senden (Zerberus P109)
-- **SSE-Heartbeat statt statischer Timeout:** Fixe Client-Timeouts (z.B. 45 s) sind entweder zu kurz (CPU-Fallback) oder zu lang (Mobile-UX). Besser: Backend sendet `event: heartbeat\ndata: ok\n\n` alle 5 s während Langlauf-Jobs, Frontend `addEventListener('heartbeat', …)` setzt einen kurzen Watchdog (15 s) zurück. Hard-Stop bei z.B. 120 s total verhindert Leaks. So bekommt GPU-Pfad straffe UX, CPU-Pfad bleibt handlungsfähig bis zum Maximum (Zerberus P114a)
-- **`retry:`-Feld am SSE-Stream-Anfang:** `yield "retry: 5000\n\n"` als erste SSE-Nachricht setzt das EventSource-Reconnect-Interval dauerhaft für diese Verbindung (SSE-Spec). 5 s ist zahm genug für Mobile ohne Reconnect-Storm (Zerberus P114a)
-- **Watchdog-Reset per globalem Funktions-Pointer:** SSE-Listener lebt länger als eine einzelne fetch-Transaktion. Statt harter Kopplung: `window.__appSseWatchdogReset` ist während des Requests gesetzt, im `finally` wieder null. Der Heartbeat-Listener ruft `window.__appSseWatchdogReset?.()` — no-op wenn grade kein Request läuft (Zerberus P114a)
-- Dark Theme in Produktionsumgebungen: nicht nur Ästhetik — bei wechselnden Lichtverhältnissen besser lesbar
-- Single-File HTML für Offline-/Shop-Floor-Nutzung: alles inline, keine externen Abhängigkeiten, Verteilung per USB/Netzlaufwerk
-- `autocomplete="off"` bzw. `autocomplete="new-password"` auf Inputs gegen Browser-Autofill-Leisten
-- Python-Regex `(?P<name>...)` Named Groups werden von JS `RegExp` nicht verstanden → vor `new RegExp()` in Standard-Groups konvertieren
-- **JS-Regex-Charakterklassen mit Newline-Escapes in Python-Triple-Quotes:** `[^\n\r\[]+` im JS-Literal innerhalb `"""..."""` wird vom Python-Parser konsumiert, landet als echter Zeilenumbruch im Regex-Source → JS-Error `Invalid regular expression: missing /`. Entweder `\\n\\r` (Python-Doppel-Escape) oder die simplere Alternative `(.+)` (matcht default kein `\n` — seit JS-Regex ohne `s`-Flag). Analog zu `\n`-in-JS-Strings-Lesson (Zerberus P118a)
-- **Klickbare Entscheidungsboxen als UX-Pattern:** Wenn das LLM dem User eine Entscheidung stellt (Ja/Nein, 2-3 Optionen), soll das Frontend Buttons rendern statt Text. Pattern: LLM gibt Marker `[DECISION][OPTION:wert] Label[/DECISION]` aus, Frontend parst per Regex und baut `<button>` über DOM-API. **XSS-safe:** Text außerhalb der Marker als `document.createTextNode`, nur Buttons strukturell via `createElement` — NIE `innerHTML` mit LLM-Content mischen. Das LLM wird per optionalem System-Prompt-Zusatz dazu gebracht, die Marker zu verwenden (Feature-Flag in Settings) (Zerberus P118a)
+wall_signatur | '\n' in python-html-string wird echtes newline, bricht js-string-literal, '\\n'
+kategorie | frontend/python-html
+fix | in python-html-strings immer '\\n' statt '\n'
+kontext | js-string-literale in python-generiertem html
+quelle | Zerberus P69c
+
+wall_signatur | crypto.randomUUID versagt http non-secure, lan ohne https, fallback-uuid
+kategorie | frontend/web-api
+fix | fallback-uuid-generator bereitstellen, crypto.randomUUID nur im secure-context
+kontext | lan ohne https
+quelle | Zerberus P68
+
+wall_signatur | $1 js-regex-backreference vs \1 python re.sub-backreference verwechselt
+kategorie | frontend/regex
+fix | js-regex: $1 | python re.sub: \1 — nicht verwechseln
+kontext | regex zwischen js und python portieren
+quelle | Zerberus P69a
+
+wall_signatur | python inline-flags (?i)(?m)(?s) von js RegExp abgelehnt
+kategorie | frontend/regex
+fix | python inline-flags vor js-validierung rausstrippen, in flags-string uebernehmen
+kontext | python-regex nach js RegExp portieren
+quelle | Zerberus P90
+
+wall_signatur | keypress deprecated, keydown
+kategorie | frontend/events
+fix | keydown statt keypress
+kontext |
+quelle |
+
+wall_signatur | button in formular ohne type="button", ungewollter form-submit
+kategorie | frontend/forms
+fix | buttons in formularen brauchen type="button"
+kontext |
+quelle |
+
+wall_signatur | llm ohne persona generisch "ich bin ein computerprogramm", persona-prompt
+kategorie | frontend/llm
+fix | expliziten persona-prompt setzen
+kontext | ohne klare persona faellt llm in generisches verhalten zurueck
+quelle | Zerberus P81
+
+wall_signatur | chart.js pinch-zoom, chart.umd hammer.js chartjs-plugin-zoom lade-reihenfolge, zoom scheitert silent
+kategorie | frontend/chartjs
+fix | lade-reihenfolge chart.umd → hammer.js → chartjs-plugin-zoom | ohne hammer.js scheitert touch-zoom silent
+kontext | chart.js touch-pinch-zoom
+quelle | Zerberus P91
+
+wall_signatur | new Chart() auf dasselbe canvas memory-leak, .destroy() referenz null
+kategorie | frontend/chartjs
+fix | vor neu-render .destroy() + referenz null setzen
+kontext | chart auf dasselbe canvas neu rendern
+quelle | Zerberus P91
+
+wall_signatur | chart.js responsive container ohne feste hoehe rendert 0px oder blaeht auf
+kategorie | frontend/chartjs
+fix | container position:relative + feste height:Xpx
+kontext | responsive chart
+quelle | Zerberus P91
+
+wall_signatur | emoji surrogate-pair 📄 windows-encoding-fehler python-string
+kategorie | frontend/encoding
+fix | ascii-alternativen statt emoji in python-strings
+kontext | windows-encoding
+quelle | Zerberus P68
+
+wall_signatur | js-syntax in python-html-string, node --check, <script>-block extrahieren, pageerror-listener
+kategorie | frontend/verify
+fix | html aus router rendern, <script>-bloecke extrahieren, einzeln durch node --check (schneller als playwright pageerror)
+kontext | js eingebettet in python-generiertem html, pre-commit
+quelle | Zerberus P100
+
+wall_signatur | retry-button nach frontend-timeout doppelter llm-call doppelte kosten, fetch abgebrochen backend arbeitet weiter
+kategorie | frontend/retry
+fix | retry erst per rest-endpoint pruefen ob antwort schon in db, nur bei echtem fehlen nochmal senden
+kontext | frontend-timeout bricht nur fetch, backend committet trotzdem
+quelle | Zerberus P109
+
+wall_signatur | sse-heartbeat statt statischem timeout, "event: heartbeat", watchdog 15s, hard-stop 120s
+kategorie | frontend/sse
+fix | backend sendet "event: heartbeat\ndata: ok" alle 5s, frontend addEventListener('heartbeat') setzt watchdog (15s) zurueck, hard-stop 120s gegen leaks
+kontext | langlauf-jobs: gpu-pfad straff, cpu-fallback bis max
+quelle | Zerberus P114a
+
+wall_signatur | "retry: 5000" als erste sse-nachricht, eventsource reconnect-interval
+kategorie | frontend/sse
+fix | yield "retry: 5000\n\n" als erste sse-nachricht setzt reconnect-interval dauerhaft fuer die verbindung
+kontext | sse-spec, 5s zahm fuer mobile ohne reconnect-storm
+quelle | Zerberus P114a
+
+wall_signatur | sse-listener lebt laenger als fetch, window.__appSseWatchdogReset finally null
+kategorie | frontend/sse
+fix | window.__appSseWatchdogReset waehrend request gesetzt, im finally null | heartbeat-listener ruft ?.() (no-op wenn kein request)
+kontext | sse-listener ueberlebt einzelne fetch-transaktion
+quelle | Zerberus P114a
+
+wall_signatur | dark theme produktionsumgebung wechselnde lichtverhaeltnisse
+kategorie | frontend/ux
+fix | dark theme bei wechselnden lichtverhaeltnissen (nicht nur aesthetik, besser lesbar)
+kontext | shop-floor/produktion
+quelle |
+
+wall_signatur | single-file html offline shop-floor, alles inline keine externen deps, usb-verteilung
+kategorie | frontend/deployment
+fix | single-file html: css/js inline, keine externen abhaengigkeiten, verteilung per usb/netzlaufwerk
+kontext | offline-/shop-floor-nutzung
+quelle |
+
+wall_signatur | autocomplete off / new-password gegen browser-autofill-leiste
+kategorie | frontend/forms
+fix | autocomplete="off" bzw "new-password" auf inputs gegen autofill
+kontext |
+quelle |
+
+wall_signatur | python (?P<name>) named groups von js RegExp nicht verstanden
+kategorie | frontend/regex
+fix | python named groups vor new RegExp in standard-groups konvertieren
+kontext | python-regex nach js
+quelle |
+
+wall_signatur | js-regex [^\n\r\[]+ in python triple-quote, "Invalid regular expression missing /", \\n\\r doppel-escape
+kategorie | frontend/regex
+fix | in """...""" entweder \\n\\r (python-doppel-escape) oder simpler (.+) (matcht ohne s-flag kein newline)
+kontext | js-regex-charklassen mit newline-escapes in python-triple-quotes
+quelle | Zerberus P118a
+
+wall_signatur | klickbare entscheidungsbox [DECISION][OPTION:wert], createTextNode createElement, nie innerHTML mit llm-content
+kategorie | frontend/xss
+fix | llm gibt marker [DECISION][OPTION:wert] Label[/DECISION], frontend parst per regex baut <button> via dom | xss-safe: text via createTextNode, buttons via createElement, NIE innerHTML mit llm-content
+kontext | llm-gestellte entscheidungen als buttons (feature-flag in settings)
+quelle | Zerberus P118a

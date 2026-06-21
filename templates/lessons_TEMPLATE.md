@@ -1,36 +1,22 @@
-<!-- TEMPLATE | Kopie als lessons_{PROJEKT}.md ins Projekt-Root | Stolperstein-Sammlung | konsultieren VOR Aufgabe | eintragen NACH ≥2-Min-Falle -->
+TEMPLATE | kopie als lessons_{PROJEKT}.md ins projekt-repo | maschinen-only | read-only fuer worker, geschrieben vom cron
 
-# lessons_{PROJEKT}.md | Bibel-Format
-Stolpersteine {PROJEKT} | konkreter+wiederverwendbarer Fakt mit Patch-Referenz
+zweck | projektspezifische, projekt-lokale lessons | wird NICHT vom worker direkt befuellt | der worker legt erkenntnisse als finding ins project-root (templates/FINDING_TEMPLATE.md), der cron promoviert project-quirks hierher (lokal) bzw. zur globalen schicht (>=2 projekte/uebertragbar, siehe CRON_PROMOTION_SPEC.md)
+lookup | worker matcht per lessons_lookup.py (tf-idf top-3) gegen wall_signatur, laedt nie komplett
+schema je eintrag: wall_signatur | kategorie | fix | kontext | quelle
+wall_signatur = literale symptom-/wand-vokabeln (error-klasse, traceback-phrase, lib-name, literal-strings) — was der lookup matcht, nicht die loesung umschreiben
+kontext = eine zeile anwendungsgrenze (wann gilt, wann nicht)
 
-## Lese-Reihenfolge
-1. **Erst** `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` (6 Faulheits-Catches + Selbsttest-Pattern + Bibel-Cheat-Sheet)
-2. **Dann** projektspezifische Lessons hier
-3. **Bei Tech-Themen** zusätzlich `C:\Users\chris\Python\Claude\lessons\<technologie>.md`
+lese-reihenfolge (worker, vor aufgabe)
+1 lessons_lookup.py --task '<aufgabe>' (tf-idf top-3 ueber lessons_{PROJEKT}.md, ~500 token)
+2 GLOBAL_LESSONS.md (workflow-catches + repair-eskalations-protokoll, universell)
+3 bei tech-themen: passende lessons/{technologie}.md aus dem Claude-repo
 
-## Format pro Eintrag
-- **Kernaussage** (fettgedruckt). Kurze Begründung + Patch-Nr in Klammern. Keine Romanlänge | jedes Wort trägt.
+---
 
-## Plattform / Betriebssystem
-- **{Lesson}** {Begründung}. (P{N})
+wall_signatur | {literale wand-vokabeln}
+kategorie | {z.b. backend/state, frontend/ui, cli/tool-drift, test/methodik}
+fix | {knapp, was tun}
+kontext | {anwendungsgrenze}
+quelle | {patch-/finding-/commit-ref, sonst leer}
 
-## Backend / State
-- **{Lesson}** {Begründung}. (P{N})
-
-## Frontend / UI
-- **{Lesson}** {Begründung}. (P{N})
-
-## Test-Methodik
-- **{Lesson}** {Begründung}. (P{N})
-
-## Workflow / Kommunikation
-- **{Lesson}** {Begründung}. (P{N})
-
-## CLI / Tool-Drift
-- **{Lesson}** {Begründung}. (P{N})
-
-## Carry-over (aus globalem lessons-Repo)
-- {Verweis auf C:\Users\chris\Python\Claude\lessons\<datei>.md wenn relevant}
-
-## Promoviert zu GLOBAL_LESSONS (nicht mehr hier volltext)
-- {Titel} → siehe GLOBAL_LESSONS.md. Promotiert {Datum}. Originaler Anlass: P{N}.
+pflege | NUR der cron schreibt hier | promoviert ein finding global, bleibt der project-quirk lokal hier | dubletten vermeiden: bestehende wall_signatur um symptom-variante ergaenzen statt neuen block

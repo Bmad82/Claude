@@ -1,5 +1,7 @@
 # Übergabe-Schema (Conversation-Handover) — Template v1.0
 
+<!-- EINORDNUNG | Das ist der REICHE Chat→Chat-Handover (Supervisor-Instanz zu Supervisor-Instanz): spine, fractures, D3-verbatim, Register/Stimmung. Mensch-/Generierungs-Spec, daher Prosa erlaubt — NICHT token-opt-flachwalzen. Klar getrennt vom projekt-`HANDOVER.json` (maschineller Coda-Staffelstab, Status-Kopf + Historie). Beide existieren nebeneinander, keine Dublette. -->
+
 ## Wozu / Trigger
 Anker für's Gedächtnis. Wenn Chris sagt **"mach mir ein Übergabe-JSON"** /
 "Übergabe" / "Window-Handover" (typisch bei ~50% Kontext) → ein JSON in

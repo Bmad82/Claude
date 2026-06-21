@@ -1,13 +1,12 @@
-# Lessons Learned — Globale Wissensbasis
+lessons/ | globale technologie-wissensbasis | maschinen-only
 
-Hier landen projektübergreifende Erkenntnisse, die in jedem Projekt relevant sein können.
-Thematisch sortiert, eine Datei pro Themengebiet.
+projektuebergreifende, thematisch sortierte stolpersteine — eine datei pro technologie | navigation + hierarchie siehe INDEX.md
+schema je eintrag: wall_signatur | kategorie | fix | kontext | quelle
 
-## Regeln
-- Jeder Eintrag: Problem → Lösung/Workaround, kurz und konkret
-- Projektspezifisches bleibt im jeweiligen Projekt (z.B. in `lessons.md`)
-- Hier nur universell Übertragbares
-- Einträge tokensparend formulieren — keine Romane
-- Quellprojekt + Patchnummer als Referenz in Klammern, z.B. (Zerberus P89)
+regeln
+- read-only fuer supervisor/worker/solver | erkenntnis → finding ins project-root, nur der cron promoviert (siehe INDEX.md)
+- nur universell uebertragbares hier | projektspezifisches bleibt im projekt-repo (lessons_{PROJEKT}.md)
+- token-opt: artikelfrei, pipe-separiert, keine ##, kein fett, kein prosa-padding
+- quelle als ref (z.b. Zerberus P89), sonst leer
 
-⚠️ **DIESES REPO IST PUBLIC.** Keine Secrets, Keys, Passwörter, IPs, interne URLs.
+DIESES REPO IST PUBLIC | keine secrets, keys, passwoerter, ips, interne urls

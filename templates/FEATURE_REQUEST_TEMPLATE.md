@@ -1,90 +1,50 @@
-<!-- TEMPLATE | Dateiname: FEATURE_REQUEST_{kurzname}.md (kebab-case aus Frontmatter) - NIE Projektname als Filename | Kopie ins Projekt-Root | Coda arbeitet diese Datei beim Session-Start als Priorität ab -->
+<!-- TEMPLATE | dateiname FEATURE_REQUEST_{kurzname}.md (kebab-case aus frontmatter) — NIE projektname als filename | kopie ins projekt-root | coda arbeitet diese datei beim session-start als prioritaet ab -->
 
-# FEATURE_REQUEST: {Auftrags-Titel}
+FEATURE_REQUEST: {auftrags-titel}
+datum | {YYYY-MM-DD}
+auftraggeber | supervisor (chat) | chris (direkt)
+empfaenger | coda
+kurzname | {kurz-eindeutig, kein leerzeichen}
+erwartete dauer | {N sessions}
 
-**Datum:** {YYYY-MM-DD}
-**Auftraggeber:** Supervisor (Chat-Fenster) | Chris (direkt)
-**Empfänger:** Coda
-**Kurzname:** {kurz-eindeutig, kein Leerzeichen}
-**Erwartete Dauer:** {N Sessions}
+KONTEXT
+{warum dieser auftrag? 2-5 saetze, geschaeftsmotivation nicht "ich hab lust". vor-auftrag → verweisen. quelle/konzept-datei → pfad nennen}
+quelle (falls vorhanden) | {pfad zur konzept-datei}
 
----
+AKZEPTANZKRITERIEN (TL;DR)
+- [ ] {kriterium 1 — binaer abpruefbar}
+- [ ] {kriterium 2 — binaer abpruefbar}
+- [ ] {kriterium N — binaer abpruefbar}
+- [ ] selbsttest A-D durchgelaufen (bei workflow-themen pflicht)
+- [ ] commit + push erfolgt, $LASTEXITCODE = 0 verifiziert
+- [ ] HANDOVER.json mit status-header geschrieben
 
-## Kontext
+SCHRITT 01 — {titel}
+{beschreibung. konkrete done-definition am ende}
 
-{Warum dieser Auftrag? 2-5 Sätze. Geschäftsmotivation, nicht „ich hab Lust". Wenn ein Vor-Auftrag existiert: Verweis darauf. Wenn eine Quelle/Konzept-Datei existiert: Pfad nennen.}
-
-Quelle (falls vorhanden): `{Pfad zur Konzept-Datei}`
-
----
-
-## Akzeptanzkriterien (TL;DR)
-
-- [ ] {Kriterium 1 — binär abprüfbar}
-- [ ] {Kriterium 2 — binär abprüfbar}
-- [ ] {Kriterium N — binär abprüfbar}
-- [ ] Selbsttest A-D durchgelaufen (bei Workflow-Themen Pflicht)
-- [ ] Commit + Push erfolgt, `$LASTEXITCODE = 0` verifiziert
-- [ ] `HANDOVER.json` mit STATUS-Header geschrieben
-
----
-
-## Schritt 01 — {Titel}
-
-{Beschreibung. Konkrete Done-Definition am Ende.}
-
----
-
-## Schritt 02 — {Titel}
-
+SCHRITT 02 — {titel}
 {...}
 
----
+SCHRITT 0N — selbsttest (phase A-D, PFLICHT bei workflow-themen)
+A setup | {zustand erzeugen der das neue pattern triggert}
+B replay (frischer kontext) | {sub-agent oder zweite session simuliert frische coda-aufnahme}
+C adversarial (konflikt provozieren) | {gegnerische aktion + pruefung ob schutz greift}
+D cleanup | {test-artefakte loeschen + listing der working-tree-root verifiziert sauberkeit}
 
-## Schritt 0N — Selbsttest (Phase A-D, PFLICHT bei Workflow-Themen)
+SCHRITT 0M — commit + push
+branch | {main | worktree-name}
+commits idealerweise getrennt: 1 {feat|fix|refactor}({scope}): {1-satz} | 2 ...
+push auf origin/{branch}, $LASTEXITCODE = 0 verifizieren
+bei fehler: in HANDOVER.json unter BLOCKIERT dokumentieren, auf deutsch
 
-### Phase A — Setup
-{Zustand erzeugen, der das neue Pattern triggert}
+SCHRITT 0L — HANDOVER.json schreiben
+ueberschreibe {projekt-root}/HANDOVER.json mit status-header (FERTIG|IN_ARBEIT|BLOCKIERT) + fortschritt + was-chris-physisch-tun-muss + auftragshistorie
+vorlage C:\Users\chris\Python\Claude\templates\HANDOVER_TEMPLATE.json
 
-### Phase B — Replay (frischer Kontext)
-{Sub-Agent oder zweite Session simuliert frische Coda-Aufnahme}
+WICHTIGE HINWEISE
+- token-opt fuer alle maschinen-files (lessons/CLAUDE/SUPERVISOR/MARATHON_WORKFLOW: artikelfrei, pipe, keine ##/fett) | prosa fuer mensch-files (README/DESIGN/ROADMAP) | niemals mischen innerhalb einer datei
+- konflikt/unklarheit → nicht raten | in DECISIONS_PENDING.md festhalten + in HANDOVER.json unter BLOCKIERT verweisen
+- erkenntnis → finding in FINDINGS_{PROJEKT}.md (read-only-modell), keine lesson direkt schreiben
+- quellen-files bleiben unveraendert liegen | verteilung ueber GLOBAL_LESSONS/SUPERVISOR_KODEX/templates, nicht durch verschieben der ursprungsdatei
 
-### Phase C — Adversarial (Konflikt provozieren)
-{Gegnerische Aktion + Prüfung ob Schutz greift}
-
-### Phase D — Cleanup
-{Test-Artefakte löschen + Listing der Working-Tree-Root verifiziert Sauberkeit}
-
----
-
-## Schritt 0M — Commit + Push
-
-Branch: {main | worktree-Name}
-Commits idealerweise getrennt:
-1. `{feat|fix|refactor}({scope}): {1-Satz}`
-2. ...
-
-Push auf `origin/{branch}`. Verifiziere `$LASTEXITCODE = 0`.
-Bei Fehler: in HANDOVER.json unter BLOCKIERT dokumentieren, auf Deutsch.
-
----
-
-## Schritt 0L — HANDOVER.json schreiben
-
-Überschreibe `{Projekt-Root}/HANDOVER.json` mit STATUS-Header (FERTIG | IN_ARBEIT | BLOCKIERT) + Fortschritt + Was-Chris-physisch-tun-muss + Auftragshistorie.
-
-Vorlage: `C:\Users\chris\Python\Claude\templates\HANDOVER_TEMPLATE.json`
-
----
-
-## Wichtige Hinweise
-
-- **Bibel-Format nutzen** für alle Maschinen-Files. **Prosa nutzen** für alle Menschen-Files. **Niemals mischen** innerhalb einer Datei.
-- **Bei Konflikten oder Unklarheiten:** Nicht raten. In `DECISIONS_PENDING.md` festhalten und in HANDOVER.json unter BLOCKIERT verweisen.
-- **Quellen-Files** bleiben unverändert liegen. Verteilung geschieht über GLOBAL_LESSONS.md, SUPERVISOR_KODEX.md, templates/ — nicht durch Verschieben der Ursprungsdatei.
-
----
-
-```
-LIFECYCLE|FERTIG: rename zu *_ERLEDIGT.md|IN_ARBEIT: Datei bleibt, HANDOVER.json trägt STATUS|BLOCKIERT: Datei bleibt + Grund in DECISIONS_PENDING.md|QUEUED-Fall: neuer FEATURE_REQUEST während IN_ARBEIT → _QUEUED.md
-```
+LIFECYCLE | FERTIG: rename _ERLEDIGT.md | IN_ARBEIT: datei bleibt, HANDOVER.json traegt status | BLOCKIERT: datei bleibt + grund in DECISIONS_PENDING.md | QUEUED: neuer FR waehrend IN_ARBEIT → _QUEUED.md

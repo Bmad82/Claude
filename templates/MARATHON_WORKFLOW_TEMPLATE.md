@@ -1,66 +1,38 @@
-<!-- TEMPLATE | Kopie als MARATHON_WORKFLOW_{PROJEKT}.md ins Projekt-Root | Aufgabenliste mit Status nach jedem Patch updaten -->
+<!-- TEMPLATE | kopie als MARATHON_WORKFLOW_{PROJEKT}.md ins projekt-root | aufgabenliste mit status nach jedem patch updaten -->
 
-# MARATHON_WORKFLOW_{PROJEKT}.md | Bibel-Format
-Aufgabenliste {PROJEKT} | Status nach jedem Patch updaten
+MARATHON_WORKFLOW_{PROJEKT}.md | maschinen-only | token-opt
+aufgabenliste {PROJEKT} | status nach jedem patch updaten
+status-symbole: ⬜ offen · 🔄 in arbeit · ✅ fertig · ⏸ blockiert · ⚠ teilweise
 
-Status-Symbole: ⬜ offen · 🔄 in Arbeit · ✅ fertig · ⏸ blockiert · ⚠ teilweise
+REGEL-0 — faulheits-catches gelten VOR jeder patch-logik
+siehe GLOBAL_LESSONS.md sektion DIE-6-FAULHEITS-CATCHES-INDEX
 
-## Regel 0 — Faulheits-Catches gelten VOR jeder Patch-Logik
-Siehe `C:\Users\chris\Python\Claude\GLOBAL_LESSONS.md` Sektion „Die 6 Faulheits-Catches — Quick Reference".
+SESSION-ZYKLUS (pflicht)
+1 konflikt-check | HANDOVER.json mit STATUS:IN_ARBEIT + abweichender FR-kurzname → QUEUED-pattern (siehe CLAUDE_{PROJEKT}.md session-start-pflicht)
+2 FEATURE_REQUEST_{kurzname}.md pruefen | existiert? → abarbeiten | bei STATUS=FERTIG → rename _ERLEDIGT.md
+3 HANDOVER.json einlesen (status-header zuerst), NICHT loeschen (status ueberschrieben, historie append-only)
+4 SCHALTPLAN_PROJEKT.json lesen (projekt-gedaechtnis: module, status, brueche)
+5 python scripts/lessons_lookup.py --task '<aufgabe>' (tf-idf top-3, mw-v2a paket 1) | globale quellen GLOBAL_LESSONS.md, SUPERVISOR_KODEX.md | task-regeln aus playbooks/, pfad-regeln aus .claude/rules/ (mw-v2b paket 2)
+6 naechsten ⬜-eintrag aus workflow ziehen
+7 patch durchfuehren | status updaten
+8 doku-pflicht (CLAUDE/SUPERVISOR/CHANGELOG) | erkenntnis → finding in FINDINGS_{PROJEKT}.md (read-only-modell, KEINE lesson direkt) | git commit+push (coda macht SELBST, kein auftrag an chris)
+9 auffuell-check (siehe auffuell-regel) | auftrag erledigt UND <300k → naechstes item aus FR/workflow/backlog statt abschliessen
+10 HANDOVER.json mit status-header schreiben (session-ende, ausnahmslos)
 
-## Session-Zyklus (PFLICHT)
-1. **Konflikt-Check:** `HANDOVER.json` mit `STATUS: IN_ARBEIT` + abweichender FEATURE_REQUEST-Kurzname → QUEUED-Pattern (siehe CLAUDE_{PROJEKT}.md Session-Start-Pflicht).
-2. `FEATURE_REQUEST_{kurzname}.md` prüfen | existiert? → abarbeiten | bei STATUS=FERTIG umbenennen zu `_ERLEDIGT.md`.
-3. `HANDOVER.json` einlesen (STATUS-Header zuerst), Datei NICHT löschen (status wird überschrieben, historie ist append-only).
-4. `SCHALTPLAN_PROJEKT.json` lesen (Projekt-Gedächtnis: Module, Status, Brüche).
-5. `python scripts/lessons_lookup.py --task '<aufgabe>'` (TF-IDF Top-3, mw-v2a Paket 1) | globale Quellen: `GLOBAL_LESSONS.md`, `SUPERVISOR_KODEX.md` | task-spezifische Regeln aus `playbooks/`, pfadspezifische aus `.claude/rules/` (mw-v2b Paket 2).
-6. Nächsten ⬜-Eintrag aus Workflow ziehen.
-7. Patch durchführen | Status updaten.
-8. Doku-Pflicht (CLAUDE/SUPERVISOR/CHANGELOG/lessons) | git commit+push (Coda macht SELBST, kein Auftrag an Chris).
-9. **Auffüll-Check** (siehe Session-Auffüll-Regel unten): Auftrag erledigt UND < 300k Token verbraucht → nächstes Item aus FEATURE_REQUEST/Workflow/BACKLOG nehmen statt abzuschließen.
-10. `HANDOVER.json` mit STATUS-Header schreiben (Session-Ende, ausnahmslos).
+SESSION-AUFFUELL-REGEL (2026-05-21)
+primaerauftrag fertig UND token <300k → NICHT abschliessen, weiterarbeiten
+reihenfolge: 1 weitere punkte im selben FEATURE_REQUEST (N+3, N+4...) | 2 offene MARATHON_WORKFLOW-items ohne abhaengigkeiten | 3 backlog nach prioritaet (sofort > mittelfristig > nice-to-have) | 4 test-schulden (pre-existing failures) | 5 doku-hygiene
+stopp-schwelle ~350k (50k reserve)
+AUSNAHMEN, nie als auffueller: destruktive ops (db-migration, auth-refactor, faiss-switch) | chris-entscheidungs-items (DECISIONS_PENDING) | externe ressourcen (docker-pull, modell-download >1gb) | test-suite-fundamentalumbau
+doku bei auffuell-patches: eigener commit pro folge-patch | finding falls noetig | KEIN separater HANDOVER/SUPERVISOR/gist pro zwischen-patch | am session-ende EIN HANDOVER der alle patches zusammenfasst
+anti-pattern: "patch fertig bei 120k → doku → handover → stopp" verbrennt 80% des budgets
 
-## Session-Auffüll-Regel (2026-05-21)
+PHASE-1 — {PHASENNAME} (# | ziel | braucht | status | notizen)
+1 | {aufgabe} | — | ⬜ | {hinweis/patch-nr}
 
-Primärer Auftrag erledigt UND Token-Stand < 300k → NICHT abschließen, weiterarbeiten.
+PHASE-2 — {PHASENNAME} (# | ziel | braucht | status | notizen)
+n | {aufgabe} | #{vorher} | ⬜ | {hinweis}
 
-Auffüll-Reihenfolge:
-1. Weitere Punkte im selben FEATURE_REQUEST (z.B. N+3, N+4... bei Multi-Session-Plänen)
-2. Offene Items in MARATHON_WORKFLOW mit Status OFFEN + keine Abhängigkeiten
-3. BACKLOG-Items mit Status OFFEN, sortiert nach Priorität (Sofort > Mittelfristig > Nice-to-have)
-4. Bekannte Test-Schulden (pre-existing Failures fixen)
-5. Doku-Hygiene (veraltete Stand-Anker, README-Drift, Lessons-Konsolidierung)
+BACKLOG (ohne phase) | {idee/wunsch ohne termin}
 
-Stopp-Schwelle: ~350k Token (50k Reserve für sauberen Doku-Abschluss).
-
-Ausnahmen — NIE als Auffüller:
-- Destruktive Operationen (DB-Migration, Auth-Refactor, FAISS-Switch)
-- Items die Chris-Entscheidung brauchen (DECISIONS_PENDING)
-- Items die externe Ressourcen brauchen (Docker-Pull, Modell-Download > 1 GB)
-- Items die die Test-Suite fundamental ändern (neues Framework, Fixture-Umbau)
-
-Doku-Pflicht bei Auffüll-Patches:
-- Eigener `git commit` pro Folge-Patch (mit Patch-Nummer/Name)
-- Lesson-Eintrag falls nötig
-- KEIN separater HANDOVER/SUPERVISOR/Gist-Update pro Zwischen-Patch
-- Am Session-Ende: EIN HANDOVER der ALLE Patches zusammenfasst
-
-Anti-Pattern: "Patch fertig bei 120k → Doku → Handover → STOPP" — verbrennt 80% des Budgets für Overhead.
-
-## Phase 1 — {PHASENNAME}
-
-| # | Ziel | Braucht | Status | Notizen |
-|---|------|---------|--------|---------|
-| 1 | {Aufgabe} | — | ⬜ | {Hinweis/Patch-Nr} |
-
-## Phase 2 — {PHASENNAME}
-
-| # | Ziel | Braucht | Status | Notizen |
-|---|------|---------|--------|---------|
-| n | {Aufgabe} | #{vorher} | ⬜ | {Hinweis} |
-
-## Backlog (ohne Phase)
-- {Idee/Wunsch ohne Termin}
-
-## Decisions Pending
-Verweis auf `DECISIONS_{PROJEKT}.md` oder Projekt-Root `DECISIONS_PENDING.md`. Nicht inline doppeln.
+DECISIONS-PENDING | verweis auf DECISIONS_{PROJEKT}.md oder projekt-root DECISIONS_PENDING.md | nicht inline doppeln
