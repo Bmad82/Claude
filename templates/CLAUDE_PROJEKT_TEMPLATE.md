@@ -40,6 +40,14 @@ PROJEKTPFAD | {PFAD}
 TECH-STACK
 backend|{...} frontend|{...} db|{...} auth|{...} port|{...} startskript|{...}
 
+NEUSTART-LOKALER-DIENSTE (R-CLEAN-RESTART, global) | endzustand immer: genau EINE instanz, EIN fenster, nie zombie-stapel
+grundsatz | neustart lang laufenden lokalen dienstes beendet alt-instanz VOLLSTAENDIG vor start der neuen
+drei ebenen muessen weg | (1) prozess (2) reloader-kinder (3) terminal-fenster | alle drei, nicht nur ebene 1
+prozess!=fenster | prozess-kill schliesst cmd/terminal-fenster NICHT (fenster = eigener prozess cmd.exe) | sonst stapeln sich offene fenster
+reloader | --reload/watchfiles spawnt parent+worker-child | simpler pid-kill erwischt nur einen → anderer verwaist, haelt port+vram | beide killen
+methode | fenstertitel- oder portbasiert beenden | NIE breiter interpreter-kill (taskkill /IM python.exe nuked ALLE python-tools) | muster: instanz in fest betiteltes fenster starten → vor neustart alles mit dem titel killen → fenster+prozess+reloader-kind in einem rutsch
+gate | nach neustart verifizieren: nur EIN prozess auf dem port, nur EIN fenster | pruefen, nicht annehmen
+
 REGELN (zusaetzlich zu regel 0)
 1 erst lesen | dann schreiben | keine blinden ueberschreibungen
 2 .env nie leaken | nicht in logs

@@ -19,6 +19,12 @@ REPAIR-ESKALATIONS-PROTOKOLL
 6 | N waende ungebrochen → STATUS=BLOCKIERT → eskalation | merge-konflikte und undokumentierte waende laufen ueber denselben kanal an den menschen | merge ist eine wahl (seite/3-way-diff), kein blosses approve
 7 | eskalation fuettert den korpus read-only-konform | solver schreibt KEINE lesson, legt ein finding im project-root ab | befoerderung zur globalen lesson macht ausschliesslich der cron
 
+wall_signatur | dienst-neustart laesst alt-instanz leben, zombie-stapel, mehrere terminal-fenster, port/vram belegt nach restart, --reload watchfiles parent+worker verwaist, taskkill /IM python.exe nuked alle tools, uvicorn flask reloader pid-kill
+kategorie | lokale-dienste/neustart
+fix | neustart beendet alt-instanz VOLLSTAENDIG vor start der neuen, endzustand genau EINE instanz + EIN fenster | drei ebenen killen: prozess + reloader-worker-child + terminal-fenster (cmd.exe ist eigener prozess, prozess-kill schliesst fenster NICHT) | fenstertitel-/portbasiert beenden, NIE breiter interpreter-kill (taskkill /IM python.exe trifft ALLE python-tools) | muster: instanz in fest betiteltes fenster starten → vor neustart alles mit dem titel killen → fenster+prozess+reloader-kind in einem rutsch | gate danach: nur EIN prozess auf port + EIN fenster (pruefen, nicht annehmen)
+kontext | jeder lang laufende lokale dienst mit neustart (uvicorn/flask --reload, watchfiles, dev-server) auf windows | reine einmal-skripte ohne reload unkritisch
+quelle | R-CLEAN-RESTART global, 2026-06-21
+
 wall_signatur | reasoning-modell max_tokens, finish_reason=length leerer output, openrouter long-context 2x preis, "bezahlt null output", cost_guard.py, $42-vorfall
 kategorie | llm-api/cost-guard
 fix | vor jedem llm-call: reasoning-modell→max_tokens>=3x antwortlaenge | prompt>128k→2x-multiplier einrechnen | hard cap pro call (default $5), teure modelle nur mit override | post-call finish_reason=length+leer = warnung | shared modul cost_guard.py importieren nicht kopieren
